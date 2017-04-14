@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=Edge;chrome=1">
+        <link rel="stylesheet" href="css/main.css" type="text/css">
+        <title>FF-No-Ang</title>
+	</head>
+	<body>
+	    <noscript>
+	       <div class="alert">
+	           You need to enable JavaScript.
+	       </div>
+	    </noscript>
+	    <div id="intro">
+	        <h1 id="logo">
+	           <span id="logosparks">
+	               
+	           </span>
+	        </h1>
+	        <section id="parchment" class="createcharacter">
+	            <article id="createcharacter">
+	            	<h1>
+	            		<span class="left-ornament"></span>
+	            		A Massively Multiplayer Adventure
+	            		<span class="right-ornament"></span>
+         			</h1>
+					<div id="character" class="disabled">
+						<div></div>
+					</div>
+					<form action="none" method="get" accept-charset="utf-8">
+						<input type="text" id="nameinput" class="stroke" name="player-name" placeholder="Name your character" maxlength="15">
+					</form>
+					<div class="play button disabled">
+						<div></div>
+						<img src="img/common/spinner.gif" alt="">
+					</div>
+					<div class="ribbon">
+						<div class="top"></div>
+						<div class="bottom"></div>
+					</div>
+    			</article>
+			</section>
+		</div>
+		<div id="container">
+		    <div id="canvasborder">
+    			<div id="canvas">
+    				<canvas id="background"></canvas>
+    				<canvas id="entities"></canvas>
+    				<canvas id="foreground" class="clickable"></canvas>
+    			</div>
+    			<div id="achievement-notification">
+    			    <div class="coin">
+    			        <div id="coinsparks"></div>
+    			    </div>
+    			    <div id="achievement-info">
+        			    <div class="title">New Achievement Unlocked!</div>
+        			    <div class="name"></div>
+    			    </div>
+    			</div>
+    			<div id="bar-container">
+					<div id="healthbar">
+					</div>
+					<div id="hitpoints">
+					</div>
+					<div id="weapon"></div>
+					<div id="armor"></div>
+					<div id="notifications">
+					    <div>
+					       <span id="message1"></span>
+					       <span id="message2"></span>
+					    </div>
+					</div>
+                    <div id="playercount" class="clickable">
+                        <span class="count">0</span> <span>players</span>
+                    </div>
+                    <div id="barbuttons">
+                        <div id="chatbutton" class="barbutton clickable"></div>
+                        <div id="achievementsbutton" class="barbutton clickable"></div>
+                        <div id="helpbutton" class="barbutton clickable"></div>
+                        <div id="mutebutton" class="barbutton clickable active"></div>
+                    </div>
+    			</div>
+				<div id="chatbox">
+				    <form action="none" method="get" accept-charset="utf-8">
+					    <input id="chatinput" class="gp" type="text" maxlength="60">
+				    </form>
+				</div>
+                <div id="population">
+                    <div id="instance-population" class="">
+                        <span>0</span> <span>players</span> in your instance
+                    </div>
+                    <div id="world-population" class="">
+                        <span>0</span> <span>players</span> total
+                    </div>
+                </div>
+		    </div>
+		</div>
+        
+        <div id="resize-check"></div>
+		
+        <script type="text/javascript">
+            var ctx = document.querySelector('canvas').getContext('2d'),
+                parchment = document.getElementById("parchment");
+            
+            if(ctx.mozImageSmoothingEnabled === undefined) {
+                document.querySelector('body').className += ' upscaled';
+            }
+        </script>
+        
+        <script src="scripts/log/log.js"></script>
+        <script>
+                var require = { waitSeconds: 60 };
+        </script>
+        <!-- data-main attribute tells require.js to load
+             scripts/main.js after require-jquery.js loads. -->
+        <script data-main="scripts/main" src="scripts/require-jquery.js"></script>
+	</body>
+</html>
