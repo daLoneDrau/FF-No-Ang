@@ -17,6 +17,10 @@ define(['jquery', 'app'], function($, App) {
         	// create new app
         	app = new App();
             app.center();
+    		
+    		$('#parchment .startgame').click(function(event) {
+    			console.log("start")
+            });
             /* don't use yet
             if(Detect.isWindows()) {
                 // Workaround for graphical glitches on text
