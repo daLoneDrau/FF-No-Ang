@@ -1,20 +1,22 @@
 
 define(['jquery', 'app', 'com/dalonedrow/module/ff/constants/ffequipmentelements',
 	'com/dalonedrow/module/ff/constants/ffequipmentslots',
-	'com/dalonedrow/module/ff/systems/webserviceclient'], function($, App, FFEquipmentElements, FFEquipmentSlots, WebServiceClient) {
+	'com/dalonedrow/module/ff/systems/webserviceclient',
+	'com/dalonedrow/rpg/base/flyweights/baseinteractiveobject'],
+	function($, App, FFEquipmentElements, FFEquipmentSlots, WebServiceClient, BaseInteractiveObject) {
     var app, game, webserviceclient;
     console.log("main called");
     var initWebServiceClient = function() {
     	console.log("gg")
         webserviceclient = new WebServiceClient();
-        var list = webserviceclient.getEquipmentElementEntities();
+        var list = WebServiceClient.getInstance().getEquipmentElementEntities();
         for (var i = 0, len = list.length; i < len; i++) {
         	if (!list[i].value) {
         		list[i].value = 0;
         	}
         	FFEquipmentElements.values.push(new FFEquipmentElements(list[i].name, list[i].value));
         }
-        list = webserviceclient.getEquipmentSlotEntities();
+        list = WebServiceClient.getInstance().getEquipmentSlotEntities();
         for (var i = 0, len = list.length; i < len; i++) {
         	if (!list[i].value) {
         		list[i].value = 0;
@@ -23,7 +25,7 @@ define(['jquery', 'app', 'com/dalonedrow/module/ff/constants/ffequipmentelements
         }
     };
     var testVector = function() {
-    	log.info(webserviceclient.getTextEntityByName("START"));
+    	log.info(WebServiceClient.getInstance().getTextEntityByName("START"));
         require(['com/dalonedrow/engine/sprite/base/simplevector2'], function(SimpleVector2) {
         	var v = new SimpleVector2(1, 5);
         	console.log(v.toString());
