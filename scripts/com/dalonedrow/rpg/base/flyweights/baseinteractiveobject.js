@@ -1,9 +1,15 @@
 /**
  * 
  */
-define(['com/dalonedrow/engine/sprite/base/simplevector2', 'com/dalonedrow/engine/sprite/base/simplevector3',
-	'com/dalonedrow/rpg/base/flyweights/iospellcastdata', 'com/dalonedrow/rpg/base/constants/equipmentglobals'],
-		function(SimpleVector2, SimpleVector3, IOSpellCastData, EquipmentGlobals) {
+define(['require', 'com/dalonedrow/engine/sprite/base/simplevector2',
+	'com/dalonedrow/engine/sprite/base/simplevector3',
+	'com/dalonedrow/rpg/base/flyweights/inventorydata',
+	'com/dalonedrow/rpg/base/flyweights/ioitemdata',
+	'com/dalonedrow/rpg/base/flyweights/iospellcastdata',
+	'com/dalonedrow/rpg/base/constants/equipmentglobals',
+	'com/dalonedrow/rpg/base/constants/ioglobals'],
+		function(require, SimpleVector2, SimpleVector3, InventoryData, IOItemData, IOSpellCastData,
+				EquipmentGlobals, IoGlobals) {
 	function BaseInteractiveObject(id) {
 	    /** the animation ids associated with the interactive object. */
 	    var animations = {};
@@ -59,7 +65,9 @@ define(['com/dalonedrow/engine/sprite/base/simplevector2', 'com/dalonedrow/engin
 	    var typeFlags = 0;
 	    /** the {@link BaseInteractiveObject}'s weapon material. */
 	    var weaponmaterial = null;
-	    if (!isNaN(id)
+	    if (id
+	    		&& id !== null
+	    		&& !isNaN(id)
 	            && parseInt(Number(id)) === id
 	            && !isNaN(parseInt(id, 10))) {
 	        refId = parseInt(id, 10);
@@ -75,75 +83,93 @@ define(['com/dalonedrow/engine/sprite/base/simplevector2', 'com/dalonedrow/engin
 	     * @throws RPGException if the name is null
 	     */
 	    this.addAnimation = function(name, id) {
-	        if (arguments.length !== 2) {
+	    	if (name && id) {
+		        if (name === null
+		                || id === null) {
+		            var s = [];
+		            s.push("ERROR! BaseInteractiveObject.addAnimation() - ");
+		            s.push("null value sent in parameters");
+		            throw new Error(s.join(""));
+		        }
+		        if (typeof name !== "string") {
+		            var s = [];
+		            s.push("ERROR! BaseInteractiveObject.addAnimation() - ");
+		            s.push("animation name must be a string");
+		            throw new Error(s.join(""));
+		        }
+		        if (isNaN(id)
+		                || parseInt(Number(id)) !== id
+		                || isNaN(parseInt(id, 10))) {
+		            var s = [];
+		            s.push("ERROR! BaseInteractiveObject.addAnimation() - ");
+		            s.push("animation id must be an integer");
+		            throw new Error(s.join(""));
+		        }
+		        animations[name] = id;
+	    	} else {
 	            var s = [];
-	            s.push("ERROR! InteractiveObject.addAnimation() - ");
+	            s.push("ERROR! BaseInteractiveObject.addAnimation() - ");
 	            s.push("requires 2 parameters");
 	            throw new Error(s.join(""));
 	        }
-	        if (name === null
-	                || id === null) {
-	            var s = [];
-	            s.push("ERROR! InteractiveObject.addAnimation() - ");
-	            s.push("null value sent in parameters");
-	            throw new Error(s.join(""));
-	        }
-	        if (isNaN(id)
-	                || parseInt(Number(id)) !== id
-	                || isNaN(parseInt(id, 10))) {
-	            var s = [];
-	            s.push("ERROR! InteractiveObject.addAnimation() - ");
-	            s.push("animation id must be an integer");
-	            throw new Error(s.join(""));
-	        }
-	        animations[name] = id;
 	    }
 	    /**
 	     * Adds a behavior flag.
 	     * @param flag the flag
 	     */
 	    this.addBehaviorFlag = function(flag) {
-	        if (arguments.length !== 1) {
+	        if (flag
+	        		&& flag !== null
+	        		&& !isNaN(flag)
+	        		&& flag && (flag & (flag - 1)) === 0) {
+		        behaviorFlags |= flag;
+	        } else {
 	            var s = [];
-	            s.push("ERROR! InteractiveObject.addBehaviorFlag() - ");
-	            s.push("requires 1 parameters");
+	            s.push("ERROR! BaseInteractiveObject.addBehaviorFlag() - ");
+	            s.push("flag must be power of 2");
 	            throw new Error(s.join(""));
 	        }
-	        behaviorFlags |= flag;
 	    }
 	    /**
 	     * Adds a game flag.
 	     * @param flag the flag
 	     */
 	    this.addGameFlag = function(flag) {
-	        if (arguments.length !== 1) {
+	        if (flag
+	        		&& flag !== null
+	        		&& !isNaN(flag)
+	        		&& flag && (flag & (flag - 1)) === 0) {
+	        	gameFlags |= flag;
+	        } else {
 	            var s = [];
-	            s.push("ERROR! InteractiveObject.addGameFlag() - ");
-	            s.push("requires 1 parameters");
+	            s.push("ERROR! BaseInteractiveObject.addGameFlag() - ");
+	            s.push("flag must be power of 2");
 	            throw new Error(s.join(""));
 	        }
-	        gameFlags |= flag;
 	    }
 	    /**
 	     * Adds the IO to a group.
 	     * @param group the group
 	     */
 	    this.addGroup = function(group) {
-	        if (arguments.length !== 1) {
+	        if (group
+	        		&& group !== null
+	        		&& typeof group === "string") {
+		        var found = false;
+		        for (var i = 0; i < ioGroups.length; i++) {
+		            if (group === ioGroups[i]) {
+		                found = true;
+		                break;
+		            }
+		        }
+		        if (!found) {
+		            ioGroups.push(group);
+		        }
+	        } else {
 	            var s = [];
-	            s.push("ERROR! InteractiveObject.addGroup() - ");
-	            s.push("requires 1 parameters");
+	            s.push("ERROR! BaseInteractiveObject.addGroup() - ");
+	            s.push("group must be string");
 	            throw new Error(s.join(""));
-	        }
-	        var found = false;
-	        for (var i = 0; i < ioGroups.length; i++) {
-	            if (group === ioGroups[i]) {
-	                found = true;
-	                break;
-	            }
-	        }
-	        if (!found) {
-	            ioGroups.push(group);
 	        }
 	    }
 	    /**
@@ -151,29 +177,38 @@ define(['com/dalonedrow/engine/sprite/base/simplevector2', 'com/dalonedrow/engin
 	     * @param flag the flag
 	     */
 	    this.addIOFlag = function(flag) {
-	        if (arguments.length !== 1) {
+	        if (flag
+	        		&& flag !== null
+	        		&& !isNaN(flag)
+	        		&& flag && (flag & (flag - 1)) === 0) {
+	        	ioFlags |= flag;
+	        } else {
 	            var s = [];
-	            s.push("ERROR! InteractiveObject.addIOFlag() - ");
-	            s.push("requires 1 parameters");
+	            s.push("ERROR! BaseInteractiveObject.addIOFlag() - ");
+	            s.push("flag must be power of 2");
 	            throw new Error(s.join(""));
 	        }
 	        ioFlags |= flag;
 	    }
 	    /**
 	     * Adds an active spell on the object.
-	     * @param spellId the spell's id
+	     * @param id the spell's id
 	     */
-	    this.addSpellOn = function(spellId) {
-	        if (arguments.length !== 1) {
-	            var s = [];
-	            s.push("ERROR! InteractiveObject.addSpellOn() - ");
-	            s.push("requires 1 parameters");
+	    this.addSpellOn = function(id) {
+		    if (id
+		    		&& id !== null
+		    		&& !isNaN(id)
+		            && parseInt(Number(id)) === id
+		            && !isNaN(parseInt(id, 10))) {
+		        if (spellsOn === null) {
+		            spellsOn = [];
+		        }
+		        spellsOn.push(id);
+		    } else {
+	            s.push("ERROR! BaseInteractiveObject.addSpellOn() - ");
+	            s.push("spell id must be integer");
 	            throw new Error(s.join(""));
-	        }
-	        if (spellsOn === null) {
-	            spellsOn = [];
-	        }
-	        spellsOn.push(spellId);
+		    }
 	    }
 	    /**
 	     * Adds a type flag.
@@ -181,38 +216,41 @@ define(['com/dalonedrow/engine/sprite/base/simplevector2', 'com/dalonedrow/engin
 	     * @throws Error if an invalid type is set
 	     */
 	    this.addTypeFlag = function(flag) {
-	        if (arguments.length !== 1) {
-	            var s = [];
-	            s.push("ERROR! InteractiveObject.addTypeFlag() - ");
-	            s.push("requires 1 parameters");
+	        if (flag
+	        		&& flag !== null
+	        		&& !isNaN(flag)
+	        		&& flag && (flag & (flag - 1)) === 0) {
+	        	switch (flag) {
+		            case EquipmentGlobals.OBJECT_TYPE_DAGGER:
+		            case EquipmentGlobals.OBJECT_TYPE_1H:
+		            case EquipmentGlobals.OBJECT_TYPE_2H:
+		            case EquipmentGlobals.OBJECT_TYPE_BOW:
+		                this.clearTypeFlags();
+		                typeFlags |= EquipmentGlobals.OBJECT_TYPE_WEAPON;
+		                this.addIOFlag(IoGlobals.IO_02_ITEM);
+		                break;
+		            case EquipmentGlobals.OBJECT_TYPE_SHIELD:
+		            case EquipmentGlobals.OBJECT_TYPE_ARMOR:
+		            case EquipmentGlobals.OBJECT_TYPE_HELMET:
+		            case EquipmentGlobals.OBJECT_TYPE_LEGGINGS:
+		            case EquipmentGlobals.OBJECT_TYPE_RING:
+		                this.addIOFlag(IoGlobals.IO_02_ITEM);
+		            case EquipmentGlobals.OBJECT_TYPE_FOOD:
+		            case EquipmentGlobals.OBJECT_TYPE_GOLD:
+		                this.clearTypeFlags();
+		                break;
+		            case EquipmentGlobals.OBJECT_TYPE_WEAPON:
+		                throw new Error(
+		                        "Cannot set weapon type, must specify weapon class");
+		            default:
+		                throw new Error("Invalid object type " + flag);
+		        }
+		        typeFlags |= flag;
+		    } else {
+	            s.push("ERROR! BaseInteractiveObject.addSpellOn() - ");
+	            s.push("flag must be power of two");
 	            throw new Error(s.join(""));
-	        }
-	        switch (flag) {
-	            case EquipmentGlobals.OBJECT_TYPE_DAGGER:
-	            case EquipmentGlobals.OBJECT_TYPE_1H:
-	            case EquipmentGlobals.OBJECT_TYPE_2H:
-	            case EquipmentGlobals.OBJECT_TYPE_BOW:
-	                this.clearTypeFlags();
-	                typeFlags |= EquipmentGlobals.OBJECT_TYPE_WEAPON;
-	                this.addIOFlag(IoGlobals.IO_02_ITEM);
-	                break;
-	            case EquipmentGlobals.OBJECT_TYPE_SHIELD:
-	            case EquipmentGlobals.OBJECT_TYPE_ARMOR:
-	            case EquipmentGlobals.OBJECT_TYPE_HELMET:
-	            case EquipmentGlobals.OBJECT_TYPE_LEGGINGS:
-	            case EquipmentGlobals.OBJECT_TYPE_RING:
-	                this.addIOFlag(IoGlobals.IO_02_ITEM);
-	            case EquipmentGlobals.OBJECT_TYPE_FOOD:
-	            case EquipmentGlobals.OBJECT_TYPE_GOLD:
-	                this.clearTypeFlags();
-	                break;
-	            case EquipmentGlobals.OBJECT_TYPE_WEAPON:
-	                throw new Error(
-	                        "Cannot set weapon type, must specify weapon class");
-	            default:
-	                throw new Error("Invalid object type " + flag);
-	        }
-	        typeFlags |= flag;
+		    }
 	    }
 	    /** Clears all behavior flags that were set. */
 	    this.clearBehaviorFlags = function() {
@@ -234,14 +272,9 @@ define(['com/dalonedrow/engine/sprite/base/simplevector2', 'com/dalonedrow/engin
 	     * {@inheritDoc}
 	     */
 	    this.equals = function(obj) {
-	        if (arguments.length !== 1) {
-	            var s = [];
-	            s.push("ERROR! InteractiveObject.equals() - ");
-	            s.push("requires 1 parameters");
-	            throw new Error(s.join(""));
-	        }
 	        var equals = false;
-	        if (obj !== null
+	        if (obj
+	        		&& obj !== null
 	                && obj instanceof BaseInteractiveObject
 	                && refId === obj.getRefId()) {
 	            equals = true;
@@ -256,26 +289,33 @@ define(['com/dalonedrow/engine/sprite/base/simplevector2', 'com/dalonedrow/engin
 	     *             ever set on the interactive object
 	     */
 	    this.getAnimation = function(name) {
-	        if (arguments.length !== 1) {
+	    	if (name) {
+		        if (name === null) {
+		            var s = [];
+		            s.push("ERROR! BaseInteractiveObject.getAnimation() - ");
+		            s.push("null value sent in parameters");
+		            throw new Error(s.join(""));
+		        }
+		        if (typeof name !== "string") {
+		            var s = [];
+		            s.push("ERROR! BaseInteractiveObject.getAnimation() - ");
+		            s.push("animation name must be a string");
+		            throw new Error(s.join(""));
+		        }
+		        if (!animations.hasOwnProperty(name)) {
+		            var s = [];
+		            s.push("ERROR! BaseInteractiveObject.getAnimation() - ");
+		            s.push("no animation set for ");
+		            s.push(name);
+		            throw new Error(s.join(""));
+		        }
+		        return animations[name];
+	    	} else {
 	            var s = [];
 	            s.push("ERROR! BaseInteractiveObject.getAnimation() - ");
 	            s.push("no value sent in parameters");
 	            throw new Error(s.join(""));
 	        }
-	        if (name === null) {
-	            var s = [];
-	            s.push("ERROR! BaseInteractiveObject.getAnimation() - ");
-	            s.push("null value sent in parameters");
-	            throw new Error(s.join(""));
-	        }
-	        if (!animations.hasOwnProperty(name)) {
-	            var s = [];
-	            s.push("ERROR! BaseInteractiveObject.getAnimation() - ");
-	            s.push("no animation set for ");
-	            s.push(name);
-	            throw new Error(s.join(""));
-	        }
-	        return animations[name];
 	    }
 	    /**
 	     * Gets the {@link BaseInteractiveObject}'s armor material. 
@@ -306,13 +346,19 @@ define(['com/dalonedrow/engine/sprite/base/simplevector2', 'com/dalonedrow/engin
 	     * @return {@link var}
 	     */
 	    this.getIOGroup = function(index) {
-	        if (arguments.length !== 1) {
-	            var s = [];
-	            s.push("ERROR! InteractiveObject.getIOGroup() - ");
-	            s.push("requires 1 parameters");
+	    	var group;
+		    if (index
+		    		&& index !== null
+		    		&& !isNaN(index)
+		            && parseInt(Number(index)) === id
+		            && !isNaN(parseInt(index, 10))) {
+		    	group = ioGroups[index];
+		    } else {
+	            s.push("ERROR! BaseInteractiveObject.getIOGroup() - ");
+	            s.push("index must be integer");
 	            throw new Error(s.join(""));
-	        }
-	        return ioGroups[index];
+		    }
+		    return group;
 	    }
 	    /**
 	     * Gets item data for the {@link BaseInteractiveObject}.
@@ -419,13 +465,19 @@ define(['com/dalonedrow/engine/sprite/base/simplevector2', 'com/dalonedrow/engin
 	        return spellcastData;
 	    }
 	    this.getSpellOn = function(index) {
-	        if (arguments.length !== 1) {
-	            var s = [];
-	            s.push("ERROR! InteractiveObject.getSpellOn() - ");
-	            s.push("requires 1 parameters");
+	    	var spell;
+		    if (index
+		    		&& index !== null
+		    		&& !isNaN(index)
+		            && parseInt(Number(index)) === id
+		            && !isNaN(parseInt(index, 10))) {
+		    	spell = spellsOn[index];
+		    } else {
+	            s.push("ERROR! BaseInteractiveObject.getSpellOn() - ");
+	            s.push("index must be integer");
 	            throw new Error(s.join(""));
-	        }
-	        return spellsOn[index];
+		    }
+		    return spell;
 	    }
 	    /**
 	     * Gets the statCount
@@ -472,13 +524,19 @@ define(['com/dalonedrow/engine/sprite/base/simplevector2', 'com/dalonedrow/engin
 	     *         otherwise
 	     */
 	    this.hasBehaviorFlag = function(flag) {
-	        if (arguments.length !== 1) {
+	    	var has = false;
+	        if (flag
+	        		&& flag !== null
+	        		&& !isNaN(flag)
+	        		&& flag && (flag & (flag - 1)) === 0) {
+	        	has = (behaviorFlags & flag) === flag;
+	        } else {
 	            var s = [];
-	            s.push("ERROR! InteractiveObject.hasBehaviorFlag() - ");
-	            s.push("requires 1 parameters");
+	            s.push("ERROR! BaseInteractiveObject.hasBehaviorFlag() - ");
+	            s.push("flag must be power of 2");
 	            throw new Error(s.join(""));
 	        }
-	        return (behaviorFlags & flag) === flag;
+	        return has;
 	    }
 	    /**
 	     * Determines if the {@link BaseInteractiveObject} has a specific game flag.
@@ -487,13 +545,19 @@ define(['com/dalonedrow/engine/sprite/base/simplevector2', 'com/dalonedrow/engin
 	     *         otherwise
 	     */
 	    this.hasGameFlag = function(flag) {
-	        if (arguments.length !== 1) {
+	    	var has = false;
+	        if (flag
+	        		&& flag !== null
+	        		&& !isNaN(flag)
+	        		&& flag && (flag & (flag - 1)) === 0) {
+	        	has = (gameFlags & flag) === flag;
+	        } else {
 	            var s = [];
-	            s.push("ERROR! InteractiveObject.hasGameFlag() - ");
-	            s.push("requires 1 parameters");
+	            s.push("ERROR! BaseInteractiveObject.hasGameFlag() - ");
+	            s.push("flag must be power of 2");
 	            throw new Error(s.join(""));
 	        }
-	        return (gameFlags & flag) === flag;
+	        return has;
 	    }
 	    /**
 	     * Determines if the {@link BaseInteractiveObject} has a specific flag.
@@ -502,13 +566,19 @@ define(['com/dalonedrow/engine/sprite/base/simplevector2', 'com/dalonedrow/engin
 	     *         otherwise
 	     */
 	    this.hasIOFlag = function(flag) {
-	        if (arguments.length !== 1) {
+	    	var has = false;
+	        if (flag
+	        		&& flag !== null
+	        		&& !isNaN(flag)
+	        		&& flag && (flag & (flag - 1)) === 0) {
+	        	has = (ioFlags & flag) === flag;
+	        } else {
 	            var s = [];
-	            s.push("ERROR! InteractiveObject.hasIOFlag() - ");
-	            s.push("requires 1 parameters");
+	            s.push("ERROR! BaseInteractiveObject.hasIOFlag() - ");
+	            s.push("flag must be power of 2");
 	            throw new Error(s.join(""));
 	        }
-	        return (ioFlags & flag) === flag;
+	        return has;
 	    }
 	    /**
 	     * Determines if the {@link BaseInteractiveObject} has a specific type flag.
@@ -517,29 +587,38 @@ define(['com/dalonedrow/engine/sprite/base/simplevector2', 'com/dalonedrow/engin
 	     *         otherwise
 	     */
 	    this.hasTypeFlag = function(flag) {
-	        if (arguments.length !== 1) {
+	    	var has = false;
+	        if (flag
+	        		&& flag !== null
+	        		&& !isNaN(flag)
+	        		&& flag && (flag & (flag - 1)) === 0) {
+	        	has = (typeFlags & flag) === flag;
+	        } else {
 	            var s = [];
-	            s.push("ERROR! InteractiveObject.hasTypeFlag() - ");
-	            s.push("requires 1 parameters");
+	            s.push("ERROR! BaseInteractiveObject.hasTypeFlag() - ");
+	            s.push("flag must be power of 2");
 	            throw new Error(s.join(""));
 	        }
-	        return (typeFlags & flag) === flag;
+	        return has;
 	    }
 	    this.isInGroup = function(group) {
-	        if (arguments.length !== 1) {
+	    	var is = false;
+	        if (group
+	        		&& group !== null
+	        		&& typeof group === "string") {
+		        for (var i = 0; i < ioGroups.length; i++) {
+		            if (group === ioGroups[i]) {
+		                is = true;
+		                break;
+		            }
+		        }
+	        } else {
 	            var s = [];
-	            s.push("ERROR! InteractiveObject.isInGroup() - ");
-	            s.push("requires 1 parameters");
+	            s.push("ERROR! BaseInteractiveObject.isInGroup() - ");
+	            s.push("argument must be string");
 	            throw new Error(s.join(""));
 	        }
-	        var found = false;
-	        for (var i = 0; i < ioGroups.length; i++) {
-	            if (group === ioGroups[i]) {
-	                found = true;
-	                break;
-	            }
-	        }
-	        return found;
+	        return is;
 	    }
 	    /**
 	     * Gets the flag indicating if the item is loaded by script.
@@ -550,56 +629,73 @@ define(['com/dalonedrow/engine/sprite/base/simplevector2', 'com/dalonedrow/engin
 	    }
 	    /** Removes all active spells. */
 	    this.removeAllSpells = function() {
-	        spellsOn = [];
+	        spellsOn.length = 0;
 	    }
 	    /**
 	     * Removes a behavior flag.
 	     * @param flag the flag
 	     */
 	    this.removeBehaviorFlag = function(flag) {
-	        if (arguments.length !== 1) {
+	        if (flag
+	        		&& flag !== null
+	        		&& !isNaN(flag)
+	        		&& flag && (flag & (flag - 1)) === 0) {
+		        behaviorFlags &= ~flag;
+	        } else {
 	            var s = [];
-	            s.push("ERROR! InteractiveObject.removeBehaviorFlag() - ");
-	            s.push("requires 1 parameters");
+	            s.push("ERROR! BaseInteractiveObject.removeBehaviorFlag() - ");
+	            s.push("flag must be power of 2");
 	            throw new Error(s.join(""));
 	        }
-	        behaviorFlags &= ~flag;
 	    }
 	    /**
 	     * Removes a game flag.
 	     * @param flag the flag
 	     */
 	    this.removeGameFlag = function(flag) {
-	        if (arguments.length !== 1) {
+	        if (flag
+	        		&& flag !== null
+	        		&& !isNaN(flag)
+	        		&& flag && (flag & (flag - 1)) === 0) {
+	        	gameFlags &= ~flag;
+	        } else {
 	            var s = [];
-	            s.push("ERROR! InteractiveObject.removeGameFlag() - ");
-	            s.push("requires 1 parameters");
+	            s.push("ERROR! BaseInteractiveObject.removeGameFlag() - ");
+	            s.push("flag must be power of 2");
 	            throw new Error(s.join(""));
 	        }
-	        gameFlags &= ~flag;
 	    }
 	    /**
 	     * Removes the IO from a group.
 	     * @param group the group
 	     */
 	    this.removeGroup = function(group) {
+	        if (group
+	        		&& group !== null
+	        		&& typeof group === "string") {
+		        var index = -1;
+		        if (group !== null) {
+		            for (var i = 0; i < ioGroups.length; i++) {
+		                if (group === ioGroups[i]) {
+		                    index = i;
+		                    break;
+		                }
+		            }
+		        }
+		        if (index !== -1) {
+		            ioGroups.splice(index, 1);
+		        }
+	        } else {
+	            var s = [];
+	            s.push("ERROR! BaseInteractiveObject.removeGroup() - ");
+	            s.push("argument must be string");
+	            throw new Error(s.join(""));
+	        }
 	        if (arguments.length !== 1) {
 	            var s = [];
 	            s.push("ERROR! InteractiveObject.removeGroup() - ");
 	            s.push("requires 1 parameters");
 	            throw new Error(s.join(""));
-	        }
-	        var index = -1;
-	        if (group !== null) {
-	            for (var i = 0; i < ioGroups.length; i++) {
-	                if (group === ioGroups[i]) {
-	                    index = i;
-	                    break;
-	                }
-	            }
-	        }
-	        if (index !== -1) {
-	            ioGroups.splice(index, 1);
 	        }
 	    }
 	    /**
@@ -607,120 +703,152 @@ define(['com/dalonedrow/engine/sprite/base/simplevector2', 'com/dalonedrow/engin
 	     * @param flag the flag
 	     */
 	    this.removeIOFlag = function(flag) {
-	        if (arguments.length !== 1) {
+	        if (flag
+	        		&& flag !== null
+	        		&& !isNaN(flag)
+	        		&& flag && (flag & (flag - 1)) === 0) {
+	        	ioFlags &= ~flag;
+	        } else {
 	            var s = [];
-	            s.push("ERROR! InteractiveObject.removeIOFlag() - ");
-	            s.push("requires 1 parameters");
+	            s.push("ERROR! BaseInteractiveObject.removeIOFlag() - ");
+	            s.push("flag must be power of 2");
 	            throw new Error(s.join(""));
 	        }
-	        ioFlags &= ~flag;
 	    }
 	    /**
 	     * Removes an active spell.
-	     * @param spellId the spell's id
+	     * @param id the spell's id
 	     */
-	    this.removeSpellOn = function(spellId) {
-	        if (arguments.length !== 1) {
-	            var s = [];
-	            s.push("ERROR! InteractiveObject.removeSpellOn() - ");
-	            s.push("requires 1 parameters");
+	    this.removeSpellOn = function(id) {
+		    if (id
+		    		&& id !== null
+		    		&& !isNaN(id)
+		            && parseInt(Number(id)) === id
+		            && !isNaN(parseInt(id, 10))) {
+		        var index = 0;
+		        for (len = spellsOn.length; index < len; index++) {
+		            if (spellsOn[index] === id) {
+		                break;
+		            }
+		        }
+		        if (index < spellsOn.length) {
+		            spellsOn.splice(index, 1);
+		        } else {
+		            // spell id was never found
+		            // nothing to remove
+		        }
+		    } else {
+	            s.push("ERROR! BaseInteractiveObject.removeSpellOn() - ");
+	            s.push("argument must be integer");
 	            throw new Error(s.join(""));
-	        }
-	        var index = 0;
-	        for (; index < spellsOn.length; index++) {
-	            if (spellsOn[index] === spellId) {
-	                break;
-	            }
-	        }
-	        if (index < spellsOn.length) {
-	            spellsOn.splice(index, 1);
-	        } else {
-	            // spell id was never found
-	            // nothing to remove
-	        }
+		    }
 	    }
 	    /**
 	     * Removes a type flag.
 	     * @param flag the flag
 	     */
 	    this.removeTypeFlag = function(flag) {
-	        if (arguments.length !== 1) {
+	        if (flag
+	        		&& flag !== null
+	        		&& !isNaN(flag)
+	        		&& flag && (flag & (flag - 1)) === 0) {
+	        	typeFlags &= ~flag;
+	        } else {
 	            var s = [];
-	            s.push("ERROR! InteractiveObject.removeTypeFlag() - ");
-	            s.push("requires 1 parameters");
+	            s.push("ERROR! BaseInteractiveObject.removeTypeFlag() - ");
+	            s.push("flag must be power of 2");
 	            throw new Error(s.join(""));
 	        }
-	        typeFlags &= ~flag;
 	    }
 	    /**
 	     * Sets the {@link BaseInteractiveObject}'s armor material.
 	     * @param val the new value
 	     */
 	    this.setArmormaterial = function(val) {
-	        if (arguments.length !== 1) {
+	        if (val
+	        		&& val !== null
+	        		&& typeof val === "string") {
+		        armormaterial = val;
+	        } else {
 	            var s = [];
-	            s.push("ERROR! InteractiveObject.setArmormaterial() - ");
-	            s.push("requires 1 parameters");
+	            s.push("ERROR! BaseInteractiveObject.setArmormaterial() - ");
+	            s.push("argument must be string");
 	            throw new Error(s.join(""));
 	        }
-	        armormaterial = val;
 	    }
 	    /**
 	     * Sets the value of the damageSum.
 	     * @param val the new value to set
 	     */
 	    this.setDamageSum = function(val) {
-	        if (arguments.length !== 1) {
+		    if (val
+		    		&& val !== null
+		    		&& !isNaN(val)) {
+		        damageSum = val;
+		    } else {
 	            var s = [];
-	            s.push("ERROR! InteractiveObject.setDamageSum() - ");
-	            s.push("requires 1 parameters");
+	            s.push("ERROR! BaseInteractiveObject.setDamageSum() - ");
+	            s.push("argument must be floating-point");
 	            throw new Error(s.join(""));
-	        }
-	        damageSum = val;
+		    }
 	    }
 	    /**
 	     * Sets the initial position.
 	     * @param val the position to set
 	     */
 	    this.setInitPosition = function(val) {
-	        if (!(val instanceof SimpleVector2)) {
+		    if (val
+		    		&& val !== null
+		    		&& val instanceof SimpleVector2) {
+		        initPosition = val;
+		    } else {
 	            var s = [];
-	            s.push("ERROR! BaseInteractiveObject.setPosition() - ");
-	            s.push("requires a SimpleVector2");
+	            s.push("ERROR! BaseInteractiveObject.setInitPosition() - ");
+	            s.push("argument must be SimpleVector2");
 	            throw new Error(s.join(""));
-	        }
-	        initPosition = val;
+		    }
 	    }
 	    /**
 	     * Sets the IO's inventory.
 	     * @param data the inventory to set
 	     */
 	    this.setInventory = function(val) {
-	    	if (!(val instanceof InventoryData)) {
-	    		throw new Error("Argument must be of type InventoryData")
-	    	}
-	        inventory = val;
-	        inventory.setIo(this);
+	    	var InventoryData = require("com/dalonedrow/rpg/base/flyweights/inventorydata");
+		    if (val
+		    		&& val !== null
+		    		&& val instanceof InventoryData) {
+		        inventory = val;
+		        inventory.setIo(this);
+		    } else {
+	            var s = [];
+	            s.push("ERROR! BaseInteractiveObject.setInventory() - ");
+	            s.push("argument must be InventoryData");
+	            throw new Error(s.join(""));
+		    }
 	    }
 	    /**
 	     * Sets {@link ITEM} data for the {@link BaseInteractiveObject}.
 	     * @param data the new {@link ITEM}
 	     */
 	    this.setItemData = function(data) {
-	        if (arguments.length !== 1) {
+	    	var IOItemData = require("com/dalonedrow/rpg/base/flyweights/ioitemdata");
+		    if (data
+		    		&& data !== null
+		    		&& data instanceof IOItemData) {
+		        itemData = data;
+		        if (itemData !== null) {
+		            if (itemData.getIo() === null) {
+		                itemData.setIo(this);
+		            } else if (itemData.getIo().refId !== refId) {
+		                itemData.setIo(this);
+		            }
+		        }
+		    } else {
 	            var s = [];
-	            s.push("ERROR! InteractiveObject.setItemData() - ");
-	            s.push("requires 1 parameters");
+	            s.push("ERROR! BaseInteractiveObject.setItemData() - ");
+	            s.push("argument must be IOItemData");
 	            throw new Error(s.join(""));
-	        }
-	        itemData = data;
-	        if (itemData !== null) {
-	            if (itemData.getIo() === null) {
-	                itemData.setIo(this);
-	            } else if (itemData.getIo().refId !== refId) {
-	                itemData.setIo(this);
-	            }
-	        }
+		    }
 	    }
 	    /**
 	     * Sets the value of the level.

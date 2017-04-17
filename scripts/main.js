@@ -1,9 +1,12 @@
 
 define(['jquery', 'app', 'com/dalonedrow/module/ff/constants/ffequipmentelements',
 	'com/dalonedrow/module/ff/constants/ffequipmentslots',
+	'com/dalonedrow/module/ff/systems/ffinteractive',
 	'com/dalonedrow/module/ff/systems/webserviceclient',
-	'com/dalonedrow/rpg/base/flyweights/baseinteractiveobject'],
-	function($, App, FFEquipmentElements, FFEquipmentSlots, WebServiceClient, BaseInteractiveObject) {
+	'com/dalonedrow/engine/systems/base/interactive',
+	'test/baseinteractiveobjectTest'],
+	function($, App, FFEquipmentElements, FFEquipmentSlots, FFInteractive, WebServiceClient,
+			Interactive, BaseInteractiveObjectTest) {
     var app, game, webserviceclient;
     console.log("main called");
     var initWebServiceClient = function() {
@@ -24,6 +27,10 @@ define(['jquery', 'app', 'com/dalonedrow/module/ff/constants/ffequipmentelements
             FFEquipmentSlots.values.push(new FFEquipmentSlots(list[i].name, list[i].value));
         }
     };
+    var runTests = function() {
+    	var t = new BaseInteractiveObjectTest();
+    	t.test();
+    };
     var testVector = function() {
     	log.info(WebServiceClient.getInstance().getTextEntityByName("START"));
         require(['com/dalonedrow/engine/sprite/base/simplevector2'], function(SimpleVector2) {
@@ -31,6 +38,8 @@ define(['jquery', 'app', 'com/dalonedrow/module/ff/constants/ffequipmentelements
         	console.log(v.toString());
         });
         console.log(FFEquipmentSlots.valueOf("EQUIP_SLOT_WEAPON"));
+        Interactive.setInstance(new FFInteractive());
+        console.log(Interactive.getInstance());
     };
     /**
      * App initialization called when page loads.
@@ -213,7 +222,8 @@ define(['jquery', 'app', 'com/dalonedrow/module/ff/constants/ffequipmentelements
             initGame();
             */
             initWebServiceClient();
-            testVector();
+            //testVector();
+            runTests();
         });    	
     };
     initApp();
