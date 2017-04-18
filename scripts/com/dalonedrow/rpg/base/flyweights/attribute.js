@@ -1,8 +1,9 @@
 /**
  * 
  */
-define(function() {
-	function Attribute() {
+define(["com/dalonedrow/utils/hashcode"], function(Hashcode) {
+    function Attribute() {
+		Hashcode.call(this);
 	    /** the {@link Attribute}'s name abbreviation. */
 	    var abbreviation = null;
 	    /** the {@link Attribute}'s base value. */
@@ -137,5 +138,6 @@ define(function() {
 	        displayName = val;
 	    }
 	}
+    Attribute.prototype = Object.create(Hashcode.prototype);
 	return Attribute;
 });

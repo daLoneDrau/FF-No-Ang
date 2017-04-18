@@ -1,9 +1,10 @@
 /**
  * 
  */
-define(['require', 'com/dalonedrow/rpg/base/flyweights/baseinteractiveobject'], function(require,
-		BaseInteractiveObject) {
+define(['require', 'com/dalonedrow/rpg/base/flyweights/baseinteractiveobject',
+	"com/dalonedrow/utils/hashcode"], function(require, BaseInteractiveObject, Hashcode) {
     function InventoryData() {
+		Hashcode.call(this);
 	    /** the IO associated with this {@link InventoryData}. */
 	    var io = null;
 	    /** flag indicating the left ring needs to be replaced. */
@@ -358,5 +359,6 @@ define(['require', 'com/dalonedrow/rpg/base/flyweights/baseinteractiveobject'], 
 	        return leftRing;
 	    }
 	}
+    InventoryData.prototype = Object.create(Hashcode.prototype);
 	return InventoryData;
 });

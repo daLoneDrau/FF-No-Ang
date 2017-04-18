@@ -1,8 +1,9 @@
 /**
  * 
  */
-define(function() {
-	function BehaviourData() {
+define(["com/dalonedrow/utils/hashcode"], function(Hashcode) {
+    function BehaviourData() {
+		Hashcode.call(this);
 	    /** the list of animations for each behavior. */
 	    var animations = [];
 	    /** the parameter applied to a behavior. */
@@ -106,5 +107,6 @@ define(function() {
 	        target = val;
 	    }
 	}
+    BehaviourData.prototype = Object.create(Hashcode.prototype);
 	return BehaviourData;
 });

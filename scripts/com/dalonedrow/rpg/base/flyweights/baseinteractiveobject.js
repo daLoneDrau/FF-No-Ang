@@ -3,14 +3,15 @@
  */
 define(['require', 'com/dalonedrow/engine/sprite/base/simplevector2',
 	'com/dalonedrow/engine/sprite/base/simplevector3',
+	'com/dalonedrow/rpg/base/constants/equipmentglobals',
+	'com/dalonedrow/rpg/base/constants/ioglobals',
 	'com/dalonedrow/rpg/base/flyweights/inventorydata',
 	'com/dalonedrow/rpg/base/flyweights/ioitemdata',
-	'com/dalonedrow/rpg/base/flyweights/iospellcastdata',
-	'com/dalonedrow/rpg/base/constants/equipmentglobals',
-	'com/dalonedrow/rpg/base/constants/ioglobals'],
-		function(require, SimpleVector2, SimpleVector3, InventoryData, IOItemData, IOSpellCastData,
-				EquipmentGlobals, IoGlobals) {
+	'com/dalonedrow/rpg/base/flyweights/iospellcastdata', "com/dalonedrow/utils/hashcode"],
+		function(require, SimpleVector2, SimpleVector3, EquipmentGlobals, IoGlobals, InventoryData,
+				IOItemData, IOSpellCastData, Hashcode) {
 	function BaseInteractiveObject(id) {
+		Hashcode.call(this);
 	    /** the animation ids associated with the interactive object. */
 	    var animations = {};
 	    /** the {@link BaseInteractiveObject}'s armor material. */
@@ -855,26 +856,33 @@ define(['require', 'com/dalonedrow/engine/sprite/base/simplevector2',
 	     * @param level the new value to set
 	     */
 	    this.setLevel = function(val) {
-	        if (arguments.length !== 1) {
-	            var s = [];
-	            s.push("ERROR! InteractiveObject.setLevel() - ");
-	            s.push("requires 1 parameters");
+		    if (val
+		    		&& val !== null
+		    		&& !isNaN(val)
+		            && parseInt(Number(val)) === id
+		            && !isNaN(parseInt(val, 10))) {
+		        level = val;
+		    } else {
+	            s.push("ERROR! BaseInteractiveObject.setLevel() - ");
+	            s.push("argument must be integer");
 	            throw new Error(s.join(""));
-	        }
-	        level = val;
+		    }
 	    }
 	    /**
 	     * Sets the mainevent
 	     * @param val the mainevent to set
 	     */
 	    this.setMainevent = function(val) {
-	        if (arguments.length !== 1) {
+	        if (val
+	        		&& val !== null
+	        		&& typeof val === "string") {
+		        mainevent = val;
+	        } else {
 	            var s = [];
-	            s.push("ERROR! InteractiveObject.setMainevent() - ");
-	            s.push("requires 1 parameters");
+	            s.push("ERROR! BaseInteractiveObject.setMainevent() - ");
+	            s.push("argument must be string");
 	            throw new Error(s.join(""));
 	        }
-	        mainevent = val;
 	    }
 	    /**
 	     * Sets NPC data for the {@link BaseInteractiveObject}.
@@ -1096,5 +1104,6 @@ define(['require', 'com/dalonedrow/engine/sprite/base/simplevector2',
 	        weaponmaterial = val;
 	    }
 	}
+	BaseInteractiveObject.prototype = Object.create(Hashcode.prototype);
 	return BaseInteractiveObject;
 });

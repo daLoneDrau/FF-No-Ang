@@ -1,7 +1,7 @@
 /**
  * 
  */
-define(function() {
+define(["com/dalonedrow/utils/watchable"], function(Watchable) {
     function IOCharacter() {
 	    Watchable.call(this);
 	    var self = this;
