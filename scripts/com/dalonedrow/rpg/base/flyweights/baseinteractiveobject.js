@@ -859,10 +859,11 @@ define(['require', 'com/dalonedrow/engine/sprite/base/simplevector2',
 		    if (val
 		    		&& val !== null
 		    		&& !isNaN(val)
-		            && parseInt(Number(val)) === id
+		            && parseInt(Number(val)) === val
 		            && !isNaN(parseInt(val, 10))) {
 		        level = val;
 		    } else {
+	            var s = [];
 	            s.push("ERROR! BaseInteractiveObject.setLevel() - ");
 	            s.push("argument must be integer");
 	            throw new Error(s.join(""));
