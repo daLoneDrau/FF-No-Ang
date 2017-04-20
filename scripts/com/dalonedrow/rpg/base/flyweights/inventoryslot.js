@@ -1,7 +1,7 @@
 /**
  * 
  */
-define(function() {
+define(["com/dalonedrow/utils/watchable"], function(Watchable) {
     function InventorySlot() {
 	    Watchable.call(this);
 	    /** the item occupying the inventory slot. */

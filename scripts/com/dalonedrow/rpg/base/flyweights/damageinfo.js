@@ -1,8 +1,9 @@
 /**
  * 
  */
-define(function() {
+define(["com/dalonedrow/utils/hashcode"], function(Hashcode) {
     function DamageInfo() {
+		Hashcode.call(this);
 	    this.active = false;
 	    this.area = 0;                   // damage area type
 	    this.damages = 0;
@@ -22,5 +23,6 @@ define(function() {
 	    this.start_time = 0;
 	    this.type = 0;                   // damages type
 	}
+    DamageInfo.prototype = Object.create(Hashcode.prototype);
 	return DamageInfo;
 });

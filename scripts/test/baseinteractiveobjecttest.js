@@ -1,10 +1,15 @@
 define(["com/dalonedrow/engine/systems/base/projectconstants",
-	'com/dalonedrow/rpg/base/flyweights/baseinteractiveobject',
-	'com/dalonedrow/rpg/base/flyweights/inventorydata',
-	'com/dalonedrow/rpg/base/flyweights/ioitemdata'], function(ProjectConstants,
-			BaseInteractiveObject, InventoryData,IOItemData) {
+	"com/dalonedrow/rpg/base/flyweights/baseinteractiveobject",
+	"com/dalonedrow/rpg/base/flyweights/inventorydata",
+	'com/dalonedrow/rpg/base/flyweights/iocharacter',
+	'com/dalonedrow/rpg/base/flyweights/ioitemdata',
+	'com/dalonedrow/rpg/base/flyweights/ionpcdata'], function(ProjectConstants,
+			BaseInteractiveObject, InventoryData, IOCharacter, IOItemData, IoNpcData) {
 	function BaseInteractiveObjectTest() {
 		ProjectConstants.setInstance(new ProjectConstants());
+		IOCharacter.prototype.getAttributeMap = function() {
+			return [["ST", "STRENGTH"]];
+		};
 		this.test = function() {
 			try {
 				new BaseInteractiveObject();
@@ -279,6 +284,25 @@ define(["com/dalonedrow/engine/systems/base/projectconstants",
 			}
 			if (id.getIo().equals(io)) {
 				console.log("io set to IO for itemdata");
+			}
+			try {
+				io.setNPCData();
+			} catch (err) {
+				console.log("cannot setNPCData with undefined");
+			}
+			io.setNPCData(null);
+			if (io.getNPCData() === null) {
+				console.log("can setNPCData with null");
+			}
+			try {
+				io.setNPCData(new Object());
+			} catch (err) {
+				console.log("cannot setNPCData with object");
+			}
+			var npcdata = new IoNpcData();
+			io.setNPCData(npcdata);
+			if (npcdata.getHashcode() === io.getNPCData().getHashcode()) {
+				console.log("can setNPCData with IoNpcData");
 			}
 		}
 	};

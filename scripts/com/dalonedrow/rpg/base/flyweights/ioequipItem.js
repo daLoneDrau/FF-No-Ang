@@ -1,5 +1,8 @@
-define(["com/dalonedrow/engine/systems/base/projectconstants"], function(ProjectConstants) {
+define(["com/dalonedrow/engine/systems/base/projectconstants",
+	"com/dalonedrow/rpg/base/flyweights/equipmentitemmodifier", "com/dalonedrow/utils/hashcode"],
+		function(ProjectConstants, EquipmentItemModifier, Hashcode) {
     function IOEquipItem() {
+		Hashcode.call(this);
 	    /** the list of equipment modifiers. */
 	    var elements = [];
 	    var numElements =
@@ -28,5 +31,6 @@ define(["com/dalonedrow/engine/systems/base/projectconstants"], function(Project
 			}
 		}
 	}
+    IOEquipItem.prototype = Object.create(Hashcode.prototype);
 	return IOEquipItem;
 });

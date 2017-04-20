@@ -1,7 +1,10 @@
 /**
  * 
  */
-define(["com/dalonedrow/utils/watchable"], function(Watchable) {
+define(["com/dalonedrow/engine/systems/base/interactive",
+	"com/dalonedrow/engine/systems/base/projectconstants",
+	"com/dalonedrow/rpg/base/flyweights/attribute", "com/dalonedrow/utils/watchable"],
+		function(Interactive, ProjectConstants, Attribute, Watchable) {
     function IOCharacter() {
 	    Watchable.call(this);
 	    var self = this;
@@ -141,7 +144,7 @@ define(["com/dalonedrow/utils/watchable"], function(Watchable) {
 	                itemIO.getItemData().ARX_EQUIPMENT_UnEquip(getIo(), false);
 	            }
 	        }
-	        computeFullStats();
+	        this.computeFullStats();
 	    }
 	    /**
 	     * Clears the attribute modifier for a specific attribute.

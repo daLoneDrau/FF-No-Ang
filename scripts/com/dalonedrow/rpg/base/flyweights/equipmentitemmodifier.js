@@ -1,8 +1,9 @@
 /**
  * 
  */
-define(function() {
+define(["com/dalonedrow/utils/hashcode"], function(Hashcode) {
     function EquipmentItemModifier() {
+		Hashcode.call(this);
 	    /** the flag indicating whether the modifier is a percentage modifier. */
 	    percent = false;
 	    /** not used. yet. */
@@ -80,5 +81,6 @@ define(function() {
 	        value = val;
 	    }
 	}
+    EquipmentItemModifier.prototype = Object.create(Hashcode.prototype);
 	return EquipmentItemModifier;
 });

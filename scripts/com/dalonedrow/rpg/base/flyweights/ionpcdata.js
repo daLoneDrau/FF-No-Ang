@@ -1,16 +1,17 @@
 /**
  * 
  */
-define(['require', 'com/dalonedrow/engine/systems/base/interactive',
+define(['require', "com/dalonedrow/engine/systems/base/interactive",
 	'com/dalonedrow/rpg/base/constants/behaviourglobals',
 	'com/dalonedrow/rpg/base/constants/equipmentglobals',
 	'com/dalonedrow/rpg/base/constants/ioglobals',
 	'com/dalonedrow/rpg/base/constants/scriptglobals',
+	'com/dalonedrow/rpg/base/flyweights/baseinteractiveobject',
 	'com/dalonedrow/rpg/base/flyweights/behaviourdata',
 	'com/dalonedrow/rpg/base/flyweights/iocharacter',
 	'com/dalonedrow/rpg/base/systems/script'],
 		function(require, Interactive, BehaviourGlobals, EquipmentGlobals, IoGlobals, ScriptGlobals,
-				BehaviourData, IOCharacter, Script) {
+				BaseInteractiveObject, BehaviourData, IOCharacter, Script) {
 	function IoNpcData() {
 		IOCharacter.call(this);
 	    var absorb = 0;
@@ -506,6 +507,8 @@ define(['require', 'com/dalonedrow/engine/systems/base/interactive',
 	     * @throws RPGException if an error occurs
 	     */
 	    this.forceDeath = function(killerIO) {
+	    	var BaseInteractiveObject =
+	    		require("com/dalonedrow/rpg/base/flyweights/baseinteractiveobject");
 	    	if (!(killerIO instanceof BaseInteractiveObject)) {
 	            var s = [];
 	            s.push("ERROR! IoNpcData.forceDeath() - ");
@@ -1093,10 +1096,12 @@ define(['require', 'com/dalonedrow/engine/systems/base/interactive',
 	     * @param newIO the IO to set
 	     */
 	    this.setIo = function(val) {
+	    	var BaseInteractiveObject =
+	    		require("com/dalonedrow/rpg/base/flyweights/baseinteractiveobject");
 		    if (val
 		    		&& val !== null
 		    		&& val instanceof BaseInteractiveObject) {
-		        io = newIO;
+		        io = val;
 		    } else {
 	            var s = [];
 	            s.push("ERROR! IoNpcData.setIo() - ");
@@ -1227,6 +1232,8 @@ define(['require', 'com/dalonedrow/engine/systems/base/interactive',
 	     * @param wpnIO the weapon to set
 	     */
 	    this.setWeapon = function(wpnIO) {
+	    	var BaseInteractiveObject =
+	    		require("com/dalonedrow/rpg/base/flyweights/baseinteractiveobject");
 	    	if (val
 	    			&& val !== null
 	    			&& val instanceof BaseInteractiveObject) {
@@ -1293,6 +1300,8 @@ define(['require', 'com/dalonedrow/engine/systems/base/interactive',
 	     * @throws RPGException if an error occurs
 	     */
 	    var summonerIsPlayer = function(io) {
+	    	var BaseInteractiveObject =
+	    		require("com/dalonedrow/rpg/base/flyweights/baseinteractiveobject");
 	        var isPlayer = false;
 	    	if (io
 	    			&& io !== null
