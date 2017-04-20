@@ -32,7 +32,7 @@ define(['require', 'com/dalonedrow/engine/systems/base/interactive',
 	    var fDetect = 0;
 	    var fightdecision = 0;
 	    /** the {@link IoNpcData}'s gender. */
-	    var gender = 0;
+	    var gender = null;
 	    /** the IO associated with this {@link IoNpcData}. */
 	    var io = null;
 	    var lastmouth = 0;
@@ -457,7 +457,7 @@ define(['require', 'com/dalonedrow/engine/systems/base/interactive',
 		            throw new Error(s.join(""));
 			    }
 			    if (isNaN(val)
-			            || parseInt(Number(val)) !== id
+			            || parseInt(Number(val)) !== val
 			            || isNaN(parseInt(val, 10))) {
 		            s.push("ERROR! IoNpcData.damageNPC() - ");
 		            s.push("srcIoid must be integer");
@@ -928,9 +928,10 @@ define(['require', 'com/dalonedrow/engine/systems/base/interactive',
 		            s.push("dmg must be floating-point");
 		            throw new Error(s.join(""));
 			    }
-			    if (isNaN(val)
-			            || parseInt(Number(val)) !== id
-			            || isNaN(parseInt(val, 10))) {
+			    if (isNaN(srcIoid)
+			            || parseInt(Number(srcIoid)) !== srcIoid
+			            || isNaN(parseInt(srcIoid))) {
+			        var s = [];
 		            s.push("ERROR! IoNpcData.sendHitEvent() - ");
 		            s.push("srcIoid must be integer");
 		            throw new Error(s.join(""));
@@ -1003,7 +1004,7 @@ define(['require', 'com/dalonedrow/engine/systems/base/interactive',
 		                io, ScriptGlobals.SM_016_HIT, params, null);
 	    	} else {
 	            var s = [];
-	            s.push("ERROR! IoNpcData.damageNPC() - ");
+	            s.push("ERROR! IoNpcData.sendHitEvent() - ");
 	            s.push("requires 3 parameters");
 	            throw new Error(s.join(""));
 	        }
@@ -1014,155 +1015,276 @@ define(['require', 'com/dalonedrow/engine/systems/base/interactive',
 	     * @param srcIoid the source of the damage
 	     * @throws RPGException if an error occurs
 	     */
-	    var sendOuchEvent = function(final float dmg, final int srcIoid) {
-	        io.setDamageSum(io.getDamageSum() + dmg);
-	        // set the event sender
-	        if (Interactive.getInstance().hasIO(srcIoid)) {
-	            Script.getInstance().setEventSender(
-	                    Interactive.getInstance().getIO(srcIoid));
-	        } else {
-	            Script.getInstance().setEventSender(null);
+	    var sendOuchEvent = function(dmg, srcIoid) {
+	    	if (dmg && srcIoid
+	    			&& dmg !== null && srcIoid !== null) {
+			    if (isNaN(dmg)) {
+			        var s = [];
+		            s.push("ERROR! IoNpcData.sendOuchEvent() - ");
+		            s.push("dmg must be floating-point");
+		            throw new Error(s.join(""));
+			    }
+			    if (isNaN(srcIoid)
+			            || parseInt(Number(srcIoid)) !== srcIoid
+			            || isNaN(parseInt(srcIoid, 10))) {
+		            s.push("ERROR! IoNpcData.sendOuchEvent() - ");
+		            s.push("srcIoid must be integer");
+		            throw new Error(s.join(""));
+			    }
+		        io.setDamageSum(io.getDamageSum() + dmg);
+		        // set the event sender
+		        if (Interactive.getInstance().hasIO(srcIoid)) {
+		            Script.getInstance().setEventSender(
+		                    Interactive.getInstance().getIO(srcIoid));
+		        } else {
+		            Script.getInstance().setEventSender(null);
+		        }
+		        // check to see if the damage is coming from a summoned object
+		        var params;
+		        if (summonerIsPlayer(Script.getInstance().getEventSender())) {
+		            params = [{ "SUMMONED_OUCH": io.getDamageSum() }, { "OUCH": 0 }];
+		        } else {
+		            params = [{ "SUMMONED_OUCH": 0 }, { "OUCH": io.getDamageSum() }];
+		        }
+		        Script.getInstance().sendIOScriptEvent(io, ScriptGlobals.SM_045_OUCH, params, null);
+		        io.setDamageSum(0);
+	    	} else {
+	            var s = [];
+	            s.push("ERROR! IoNpcData.sendOuchEvent() - ");
+	            s.push("requires 2 parameters");
+	            throw new Error(s.join(""));
 	        }
-	        // check to see if the damage is coming from a summoned object
-	        Object[] params;
-	        if (summonerIsPlayer((IO) Script.getInstance().getEventSender())) {
-	            params = new Object[] {
-	                    "SUMMONED_OUCH", io.getDamageSum(),
-	                    "OUCH", 0f };
-	        } else {
-	            params = new Object[] {
-	                    "SUMMONED_OUCH", 0f,
-	                    "OUCH", io.getDamageSum() };
-	        }
-	        Script.getInstance().sendIOScriptEvent(io,
-	                ScriptGlobals.SM_045_OUCH, params, null);
-	        io.setDamageSum(0f);
 	    }
 	    /**
 	     * Sets the armorClass
 	     * @param val the armorClass to set
 	     */
-	    this.setArmorClass = function(final float val) {
-	        this.armorClass = val;
+	    this.setArmorClass = function(val) {
+		    if (val
+		    		&& val !== null
+		    		&& !isNaN(val)) {
+		        armorClass = val;
+		    } else {
+	            var s = [];
+	            s.push("ERROR! IoNpcData.setArmorClass() - ");
+	            s.push("argument must be floating-point");
+	            throw new Error(s.join(""));
+		    }
 	    }
 	    /**
 	     * Sets the {@link IoNpcData}'s gender.
 	     * @param val the gender to set
 	     */
-	    this.setGender = function(final int val) {
-	        gender = val;
-	        notifyWatchers();
+	    this.setGender = function(val) {
+		    if (val
+		    		&& val !== null
+		    		&& val instanceof Gender) {
+		        gender = val;
+		        this.notifyWatchers();
+		    } else {
+	            var s = [];
+	            s.push("ERROR! IoNpcData.setGender() - ");
+	            s.push("argument must be Gender");
+	            throw new Error(s.join(""));
+		    }
 	    }
 	    /**
 	     * Sets the IO associated with this {@link IoNpcData}.
 	     * @param newIO the IO to set
 	     */
-	    this.setIo = function(final IO newIO) {
-	        this.io = newIO;
+	    this.setIo = function(val) {
+		    if (val
+		    		&& val !== null
+		    		&& val instanceof BaseInteractiveObject) {
+		        io = newIO;
+		    } else {
+	            var s = [];
+	            s.push("ERROR! IoNpcData.setIo() - ");
+	            s.push("argument must be BaseInteractiveObject");
+	            throw new Error(s.join(""));
+		    }
 	    }
 	    /**
 	     * Sets the value of the movemode.
 	     * @param val the new value to set
 	     */
-	    this.setMovemode = function(final int val) {
-	        this.movemode = val;
+	    this.setMovemode = function(val) {
+	    	if (val
+	    			&& val !== null
+	    			&& !isNaN(val)
+		            && parseInt(Number(val)) === val
+		            && !isNaN(parseInt(val, 10))) {
+		        movemode = val;
+	    	} else {
+	            var s = [];
+	            s.push("ERROR! IoNpcData.setMovemode() - ");
+	            s.push("argument must be integer");
+	            throw new Error(s.join(""));
+	    	}
 	    }
 	    /**
 	     * Sets the {@link IoPcData}'s name.
 	     * @param val the name to set
 	     */
-	    this.setName = function(final char[] val) {
-	        name = val;
-	        notifyWatchers();
-	    }
-	    /**
-	     * Sets the {@link IoPcData}'s name.
-	     * @param val the name to set
-	     */
-	    this.setName = function(final String val) {
-	        name = val.toCharArray();
-	        notifyWatchers();
+	    this.setName = function(val) {
+	    	if (val && val !== null && typeof val === "string") {
+		        name = val;
+		        notifyWatchers();
+	    	} else {
+	            var s = [];
+	            s.push("ERROR! IoNpcData.setName() - ");
+	            s.push("argument must be string");
+	            throw new Error(s.join(""));
+	    	}
 	    }
 	    /**
 	     * Sets the value of the reachedtarget.
 	     * @param val the new value to set
 	     */
-	    this.setReachedtarget = function(final boolean val) {
-	        this.reachedtarget = val;
+	    this.setReachedtarget = function(val) {
+	    	if (val && val !== null && typeof val === "boolean") {
+	    		reachedtarget = val;
+	    	} else {
+	            var s = [];
+	            s.push("ERROR! IoNpcData.setName() - ");
+	            s.push("argument must be boolean");
+	            throw new Error(s.join(""));
+	    	}
 	    }
 	    /**
 	     * Sets the splatDamages
 	     * @param splatDamages the splatDamages to set
 	     */
-	    this.setSplatDamages = function(final int val) {
-	        this.splatDamages = val;
+	    this.setSplatDamages = function(val) {
+	    	if (val
+	    			&& val !== null
+	    			&& !isNaN(val)
+		            && parseInt(Number(val)) === val
+		            && !isNaN(parseInt(val, 10))) {
+	    		splatDamages = val;
+	    	} else {
+	            var s = [];
+	            s.push("ERROR! IoNpcData.setSplatDamages() - ");
+	            s.push("argument must be integer");
+	            throw new Error(s.join(""));
+	    	}
 	    }
 	    /**
 	     * Sets the splatTotNb
 	     * @param splatTotNb the splatTotNb to set
 	     */
-	    this.setSplatTotNb = function(final int val) {
-	        this.splatTotNb = val;
+	    this.setSplatTotNb = function(val) {
+	    	if (val
+	    			&& val !== null
+	    			&& !isNaN(val)
+		            && parseInt(Number(val)) === val
+		            && !isNaN(parseInt(val, 10))) {
+	    		splatTotNb = val;
+	    	} else {
+	            var s = [];
+	            s.push("ERROR! IoNpcData.setSplatTotNb() - ");
+	            s.push("argument must be integer");
+	            throw new Error(s.join(""));
+	    	}
 	    }
 	    /**
 	     * Sets the value of the tactics.
 	     * @param val the new value to set
 	     */
-	    this.setTactics = function(final int val) {
-	        this.tactics = val;
+	    this.setTactics = function(val) {
+	    	if (val
+	    			&& val !== null
+	    			&& !isNaN(val)
+		            && parseInt(Number(val)) === val
+		            && !isNaN(parseInt(val, 10))) {
+	    		tactics = val;
+	    	} else {
+	            var s = [];
+	            s.push("ERROR! IoNpcData.setTactics() - ");
+	            s.push("argument must be integer");
+	            throw new Error(s.join(""));
+	    	}
 	    }
 	    /**
 	     * Sets the {@link IoPcData}'s title.
 	     * @param val the title to set
 	     */
-	    this.setTitle = function(final char[] val) {
-	        title = val;
-	        notifyWatchers();
-	    }
-	    /**
-	     * Sets the {@link IoPcData}'s title.
-	     * @param val the title to set
-	     */
-	    this.setTitle = function(final String val) {
-	        title = val.toCharArray();
-	        notifyWatchers();
+	    this.setTitle = function(val) {
+	    	if (val
+	    			&& val !== null
+	    			&& typeof val === "string") {
+		        title = val;
+		        notifyWatchers();
+	    	} else {
+	            var s = [];
+	            s.push("ERROR! IoNpcData.setTitle() - ");
+	            s.push("argument must be string");
+	            throw new Error(s.join(""));
+	    	}
 	    }
 	    /**
 	     * Sets the NPC's weapon.
 	     * @param wpnIO the weapon to set
 	     */
-	    this.setWeapon = function(final IO wpnIO) {
-	        weapon = wpnIO;
-	        if (weapon !== null) {
-	            weaponInHand = weapon.getRefId();
-	        } else {
-	            weaponInHand = -1;
-	        }
+	    this.setWeapon = function(wpnIO) {
+	    	if (val
+	    			&& val !== null
+	    			&& val instanceof BaseInteractiveObject) {
+		        weapon = wpnIO;
+		        if (weapon !== null) {
+		            weaponInHand = weapon.getRefId();
+		        } else {
+		            weaponInHand = -1;
+		        }
+	    	} else {
+	            var s = [];
+	            s.push("ERROR! IoNpcData.setWeapon() - ");
+	            s.push("argument must be BaseInteractiveObject");
+	            throw new Error(s.join(""));
+	    	}
 	    }
 	    /**
 	     * Sets the value of the weaponInHand.
 	     * @param ioid the new value to set
 	     * @throws RPGException if an error occurs
 	     */
-	    this.setWeaponInHand = function(final int ioid) {
-	        this.weaponInHand = ioid;
-	        if (Interactive.getInstance().hasIO(weaponInHand)) {
-	            weapon = (IO) Interactive.getInstance().getIO(weaponInHand);
-	        } else {
-	            weapon = null;
-	        }
+	    this.setWeaponInHand = function(ioid) {
+	    	if (ioid
+	    			&& ioid !== null
+	    			&& !isNaN(ioid)
+		            && parseInt(Number(ioid)) === ioid
+		            && !isNaN(parseInt(ioid, 10))) {
+		        weaponInHand = ioid;
+		        if (Interactive.getInstance().hasIO(weaponInHand)) {
+		            weapon = Interactive.getInstance().getIO(weaponInHand);
+		        } else {
+		            weapon = null;
+		        }
+	    	} else {
+	            var s = [];
+	            s.push("ERROR! IoNpcData.setWeaponInHand() - ");
+	            s.push("argument must be integer");
+	            throw new Error(s.join(""));
+	    	}
 	    }
 	    /**
 	     * Sets the value of the xpvalue.
 	     * @param val the new value to set
 	     */
-	    this.setXpvalue = function(final int val) {
-	        this.xpvalue = val;
+	    this.setXpvalue = function(val) {
+	    	if (val
+	    			&& val !== null
+	    			&& !isNaN(val)
+		            && parseInt(Number(val)) === val
+		            && !isNaN(parseInt(val, 10))) {
+		        xpvalue = val;
+	    	} else {
+	            var s = [];
+	            s.push("ERROR! IoNpcData.setXpvalue() - ");
+	            s.push("argument must be integer");
+	            throw new Error(s.join(""));
+	    	}
 	    }
-	    /** Restores the NPC to their maximum life. */
-	    protected abstract void stopActiveAnimation();
-	    /** Restores the NPC to their maximum life. */
-	    protected abstract void stopIdleAnimation();
 	    /**
 	     * Determines if a summoned IO's summoner is a PC.
 	     * @param io the IO
@@ -1170,18 +1292,20 @@ define(['require', 'com/dalonedrow/engine/systems/base/interactive',
 	     *         otherwise
 	     * @throws RPGException if an error occurs
 	     */
-	    private boolean summonerIsPlayer = function(IO io) {
-	        boolean isPlayer = false;
-	        if (io !== null) {
-	            int summonerId = io.getSummoner();
+	    var summonerIsPlayer = function(io) {
+	        var isPlayer = false;
+	    	if (io
+	    			&& io !== null
+	    			&& io instanceof BaseInteractiveObject) {
+	            var summonerId = io.getSummoner();
 	            if (Interactive.getInstance().hasIO(summonerId)) {
-	                IO summoner = (IO) Interactive.getInstance().getIO(summonerId);
+	            	var summoner = Interactive.getInstance().getIO(summonerId);
 	                if (summoner.hasIOFlag(IoGlobals.IO_01_PC)) {
 	                    isPlayer = true;
 	                }
 	                summoner = null;
 	            }
-	        }
+	    	}
 	        return isPlayer;
 	    }
 	}
