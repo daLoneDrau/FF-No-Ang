@@ -32,6 +32,15 @@ define(["com/dalonedrow/utils/hashcode"], function(Hashcode) {
 			method = null;
 			args = null;
 		}
+		this.getArguments = function() {
+			return args;
+		}
+		this.getMethod = function() {
+			return method;
+		}
+		this.getObject = function() {
+			return object;
+		}
 		/**
 		 * Determines if the {@link ScriptTimerAction} has an existing action.
 		 * @return <tt>true</tt> if the {@link ScriptTimerAction} has an existing
@@ -47,13 +56,7 @@ define(["com/dalonedrow/utils/hashcode"], function(Hashcode) {
 		this.process = function() {
 			if (exists) {
 				exists = false;
-		        window[obj.internal_script]();
-				try {
-					method.invoke(object, args);
-				} catch (IllegalAccessException | IllegalArgumentException
-						| InvocationTargetException e) {
-					throw new RPGException(ErrorMessage.INTERNAL_ERROR, e);
-				}
+				object[method](args);
 			}
 		}
 		/**
@@ -62,21 +65,31 @@ define(["com/dalonedrow/utils/hashcode"], function(Hashcode) {
 		 * @param m the method invoked
 		 * @param a any arguments supplied to the method
 		 */
-		this.set = function(final Object o, final Method m, final Object[] a) {
-			exists = true;
-			object = o;
-			method = m;
-			args = a;
-		}
-		/**
-		 * Sets a new action to process.
-		 * @param action the new action to process
-		 */
-		this.set(final ScriptTimerAction action) {
-			exists = true;
-			object = action.object;
-			method = action.method;
-			args = action.args;
+		this.set = function() {
+			if (arguments.length === 1
+					&& arguments[0] !== undefined
+					&& arguments[0] === null
+					&& arguments[0] instanceof ScriptTimerAction) {
+				exists = true;
+				object = arguments[0].getObject();
+				method = arguments[0].getMethod();
+				args = arguments[0].getArguments();
+			} else if (arguments.length === 3) {
+				if (arguments[0] === undefined
+						|| arguments[1] === undefined
+						|| arguments[2] === undefined
+						|| arguments[0] === null
+						|| arguments[1] === null
+						|| arguments[2] === null) {
+					throw new Error("ScriptTimerAction.set() requires 3 arguments");
+				}
+				exists = true;
+				object = arguments[0];
+				method = arguments[1];
+				args = arguments[2];
+			} else {
+				throw new Error("ScriptTimerAction.set() requires 1 or 3 arguments");
+			}
 		}
 	}
     ScriptTimerAction.prototype = Object.create(Hashcode.prototype);

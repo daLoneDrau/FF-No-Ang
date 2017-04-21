@@ -1,13 +1,22 @@
 /**
  *
  */
-define(function() {
-    function IoPcData() {
+define(['require', "com/dalonedrow/engine/systems/base/interactive",
+	'com/dalonedrow/rpg/base/constants/equipmentglobals',
+	'com/dalonedrow/rpg/base/constants/ioglobals',
+	'com/dalonedrow/rpg/base/constants/scriptglobals',
+	'com/dalonedrow/rpg/base/flyweights/baseinteractiveobject',
+	'com/dalonedrow/rpg/base/flyweights/gender',
+	'com/dalonedrow/rpg/base/flyweights/iocharacter',
+	'com/dalonedrow/rpg/base/systems/script'],
+		function(require, Interactive, EquipmentGlobals, IoGlobals, ScriptGlobals,
+				BaseInteractiveObject, Gender, IOCharacter, Script) {
+	function IoPcData() {
 		IOCharacter.call(this);
 		/** the number of bags the player has. */
 		var bags = 0;
 		/** the {@link IoPcData}'s gender. */
-		var gender = -1;
+	    var gender = null;
 		/** the character's gold. */
 		var gold = 0;
 		/** interface flags. */
@@ -32,73 +41,137 @@ define(function() {
 		 * Adds an interface flag.
 		 * @param flag the flag
 		 */
-		this.addInterfaceFlag = function(val) {
-			interfaceFlags |= flag;
+		this.addInterfaceFlag = function(flag) {
+	        if (flag !== undefined
+	        		&& flag !== null
+	        		&& !isNaN(flag)
+	        		&& flag && (flag & (flag - 1)) === 0) {
+				interfaceFlags |= flag;
+	        } else {
+	            var s = [];
+	            s.push("ERROR! IoPcData.addInterfaceFlag() - ");
+	            s.push("flag must be power of 2");
+	            throw new Error(s.join(""));
+	        }
 		}
 		/**
 		 * Adds a key to the keyring.
 		 * @param key the key
 		 */
 		this.addKey = function(val) {
-			if (typeof val !== "string") {
-				throw new Error("Argument must be a string");
-			}
-			if (keyring === null) {
-				keyring = [];
-			}
-			var index = keyring.indexOf(val);
-			if (index === -1) {
-				keyring.push(key);
-				numKeys++;
-			}
+	        if (val !== undefined
+	        		&& val !== null) {
+	        	if (typeof val === "string") {
+					if (keyring === null) {
+						keyring = [];
+					}
+					var index = 0;
+					for (len = keyring.length; index < len; index++) {
+						if (keyring[index] === val) {
+							break;
+						}
+					}
+					if (index >= keyring.length) {
+						keyring.push(key);
+						numKeys++;
+					}
+	        	} else {
+		            var s = [];
+		            s.push("ERROR! IoPcData.addKey() - ");
+		            s.push("argument must be string");
+		            throw new Error(s.join(""));
+	        	}
+	        } else {
+	            var s = [];
+	            s.push("ERROR! IoPcData.addKey() - ");
+	            s.push("requires 1 argument");
+	            throw new Error(s.join(""));
+	        }
 		}
 		/**
 		 * Adjusts the {@link IoPcData}'s gold.
 		 * @param val the amount adjusted by
 		 */
 		this.adjustGold = function(val) {
-			gold += val;
-			if (gold < 0) {
-				gold = 0;
-			}
-			this.notifyWatchers();
+		    if (val !== undefined
+		    		&& val !== null
+		    		&& !isNaN(val)) {
+				gold += val;
+				if (gold < 0) {
+					gold = 0;
+				}
+				this.notifyWatchers();
+		    } else {
+	            var s = [];
+	            s.push("ERROR! IoPcData.adjustGold() - ");
+	            s.push("argument must be floating-point");
+	            throw new Error(s.join(""));
+		    }
 		}
 		/**
 		 * Adjusts the player's life by a specific amount.
 		 * @param dmg the amount
 		 */
 		var adjustLife = function(val) {
-			var ls = this.getLifeAttribute();
-			var mls = ["M", ls].join("");
-			this.setBaseAttributeScore(this.getLifeAttribute(), this.getBaseLife() + val);
-			if (this.getBaseLife() > this.getFullAttributeScore(mls)) {
-				// if Hit Points now > max
-				this.setBaseAttributeScore(ls, this.getFullAttributeScore(mls));
-			}
-			if (this.getBaseLife() < 0) {
-				// if life now < 0
-				this.setBaseAttributeScore(ls, 0);
-			}
-			ls = null;
-			mls = null;
+		    if (val !== undefined
+		    		&& val !== null
+		    		&& !isNaN(val)) {
+				var ls = this.getLifeAttribute();
+				var mls = ["M", ls].join("");
+				this.setBaseAttributeScore(this.getLifeAttribute(), this.getBaseLife() + val);
+				if (this.getBaseLife() > this.getFullAttributeScore(mls)) {
+					// if Hit Points now > max
+					this.setBaseAttributeScore(ls, this.getFullAttributeScore(mls));
+				}
+				if (this.getBaseLife() < 0) {
+					// if life now < 0
+					this.setBaseAttributeScore(ls, 0);
+				}
+				ls = null;
+				mls = null;
+		    } else {
+	            var s = [];
+	            s.push("ERROR! IoPcData.adjustLife() - ");
+	            s.push("argument must be floating-point");
+	            throw new Error(s.join(""));
+		    }
 		}
 		/**
 		 * Adjusts the player's mana by a specific amount.
 		 * @param dmg the amount
 		 */
-		this.adjustMana = function(dmg) {
-			
+		this.adjustMana = function(val) {
+		    if (val !== undefined
+		    		&& val !== null
+		    		&& !isNaN(val)) {
+		    } else {
+	            var s = [];
+	            s.push("ERROR! IoPcData.adjustMana() - ");
+	            s.push("argument must be floating-point");
+	            throw new Error(s.join(""));
+		    }
 		}
 		/**
 		 * Adjusts the {@link IoPcData}'s experience points.
 		 * @param val the amount adjusted by
 		 */
 		this.adjustXp = function(val) {
-			xp += val;
-			if (xp < 0) {
-				xp = 0;
-			}
-			this.notifyWatchers();
+		    if (val !== undefined
+		    		&& val !== null
+		    		&& !isNaN(val)
+		            && parseInt(Number(val)) === val
+		            && !isNaN(parseInt(val, 10))) {
+				xp += val;
+				if (xp < 0) {
+					xp = 0;
+				}
+				this.notifyWatchers();
+		    } else {
+	            var s = [];
+	            s.push("ERROR! IoPcData.adjustXp() - ");
+	            s.push("argument must be integer");
+	            throw new Error(s.join(""));
+		    }
 		}
 		/**
 		 * Damages the player.
@@ -109,6 +182,39 @@ define(function() {
 		 * @if an error occurs
 		 */
 		this.ARX_DAMAGES_DamagePlayer = function(dmg, type, source) {
+			if (dmg === undefined
+					|| dmg == null
+					|| type === undefined
+					|| type == null
+					|| source === undefined
+					|| source == null) {
+	            var s = [];
+	            s.push("ERROR! IoPcData.ARX_DAMAGES_DamagePlayer() - ");
+	            s.push("requires 3 parameters");
+	            throw new Error(s.join(""));
+			}
+		    if (isNaN(dmg)) {
+	            var s = [];
+	            s.push("ERROR! IoPcData.ARX_DAMAGES_DamagePlayer() - ");
+	            s.push("dmg must be floating-point");
+	            throw new Error(s.join(""));
+		    }
+		    if (isNaN(type)
+		            || parseInt(Number(type)) !== type
+		            || isNaN(parseInt(type, 10))) {
+	            var s = [];
+	            s.push("ERROR! IoPcData.ARX_DAMAGES_DamagePlayer() - ");
+	            s.push("type must be integer");
+	            throw new Error(s.join(""));
+		    }
+		    if (isNaN(source)
+		            || parseInt(Number(source)) !== source
+		            || isNaN(parseInt(source, 10))) {
+	            var s = [];
+	            s.push("ERROR! IoPcData.ARX_DAMAGES_DamagePlayer() - ");
+	            s.push("source must be integer");
+	            throw new Error(s.join(""));
+		    }
 			var damagesdone = 0;
 			this.computeFullStats();
 			if (!io.hasIOFlag(IoGlobals.PLAYERFLAGS_INVULNERABILITY)
@@ -235,13 +341,26 @@ define(function() {
 		 * @return {@link float}
 		 */
 		this.ARX_DAMAGES_DrainMana = function(val) {
+			if (val === undefined
+					|| val == null) {
+	            var s = [];
+	            s.push("ERROR! IoPcData.ARX_DAMAGES_DrainMana() - ");
+	            s.push("requires 3 parameters");
+	            throw new Error(s.join(""));
+			}
+		    if (isNaN(val)) {
+	            var s = [];
+	            s.push("ERROR! IoPcData.ARX_DAMAGES_DrainMana() - ");
+	            s.push("dmg must be floating-point");
+	            throw new Error(s.join(""));
+		    }
 			var manaDrained = 0;
 			if (!io.hasIOFlag(IoGlobals.PLAYERFLAGS_NO_MANA_DRAIN)) {
 				if (this.getBaseMana() >= val) {
-					adjustMana(-val);
+					this.adjustMana(-val);
 					manaDrained = val;
 				} else {
-					manaDrained = this.getBaseMana();
+					this.manaDrained = this.getBaseMana();
 					adjustMana(-manaDrained);
 				}
 			}
@@ -252,9 +371,22 @@ define(function() {
 		 * @param dmg the amount of healing
 		 */
 		this.ARX_DAMAGES_HealManaPlayer = function(val) {
+			if (val === undefined
+					|| val == null) {
+	            var s = [];
+	            s.push("ERROR! IoPcData.ARX_DAMAGES_HealManaPlayer() - ");
+	            s.push("requires 3 parameters");
+	            throw new Error(s.join(""));
+			}
+		    if (isNaN(val)) {
+	            var s = [];
+	            s.push("ERROR! IoPcData.ARX_DAMAGES_HealManaPlayer() - ");
+	            s.push("dmg must be floating-point");
+	            throw new Error(s.join(""));
+		    }
 			if (this.getBaseLife() > 0) { // player still alive
 				if (val > 0) {
-					adjustMana(val);
+					this.adjustMana(val);
 				}
 			}
 		}
@@ -263,6 +395,19 @@ define(function() {
 		 * @param dmg the amount of healing
 		 */
 		this.ARX_DAMAGES_HealPlayer = function(val) {
+			if (val === undefined
+					|| val == null) {
+	            var s = [];
+	            s.push("ERROR! IoPcData.ARX_DAMAGES_HealPlayer() - ");
+	            s.push("requires 3 parameters");
+	            throw new Error(s.join(""));
+			}
+		    if (isNaN(val)) {
+	            var s = [];
+	            s.push("ERROR! IoPcData.ARX_DAMAGES_HealPlayer() - ");
+	            s.push("dmg must be floating-point");
+	            throw new Error(s.join(""));
+		    }
 			if (this.getBaseLife() > 0) {
 				if (val > 0) {
 					// if (!BLOCK_PLAYER_CONTROLS)
@@ -303,23 +448,32 @@ define(function() {
 		 * @param itemIO the item
 		 * @return <tt>true</tt> if the player has the item equipped; <tt>false</tt>
 		 *         otherwise
-		 * @throws PooledException if an error occurs
-		 * @if an error occurs
 		 */
 		this.ARX_EQUIPMENT_IsPlayerEquip = function(itemIO) {
-			var isEquipped = false;
-			var i = ProjectConstants.getInstance().getMaxEquipped() - 1;
-			for (; i >= 0; i--) {
-				if (this.getEquippedItem(i) >= 0
-				        && Interactive.getInstance().hasIO(getEquippedItem(i))) {
-					var toequip = Interactive.getInstance().getIO(this.getEquippedItem(i));
-					if (toequip.equals(itemIO)) {
-						isEquipped = true;
-						break;
+	    	var BaseInteractiveObject =
+	    		require("com/dalonedrow/rpg/base/flyweights/baseinteractiveobject");
+		    if (itemIO !== undefined
+		    		&& itemIO !== null
+		    		&& itemIO instanceof BaseInteractiveObject) {
+				var isEquipped = false;
+				var i = ProjectConstants.getInstance().getMaxEquipped() - 1;
+				for (; i >= 0; i--) {
+					if (this.getEquippedItem(i) >= 0
+					        && Interactive.getInstance().hasIO(getEquippedItem(i))) {
+						var toequip = Interactive.getInstance().getIO(this.getEquippedItem(i));
+						if (toequip.equals(itemIO)) {
+							isEquipped = true;
+							break;
+						}
 					}
 				}
-			}
-			return isEquipped;
+				return isEquipped;
+		    } else {
+	            var s = [];
+	            s.push("ERROR! IoPcData.ARX_EQUIPMENT_IsPlayerEquip() - ");
+	            s.push("argument must be BaseInteractiveObject");
+	            throw new Error(s.join(""));
+		    }
 		}
 		/** Re-creates the player's appearance. */
 		this.ARX_EQUIPMENT_RecreatePlayerMesh = function() {
@@ -330,8 +484,7 @@ define(function() {
 		 * @throws PooledException if an error occurs
 		 * @if an error occurs
 		 */
-		this.ARX_EQUIPMENT_UnEquipPlayerWeapon = function()
-		        {
+		this.ARX_EQUIPMENT_UnEquipPlayerWeapon = function() {
 			var wpnId = getEquippedItem(EquipmentGlobals.EQUIP_SLOT_WEAPON);
 			if (wpnId >= 0
 			        && Interactive.getInstance().hasIO(wpnId)) {
@@ -361,7 +514,18 @@ define(function() {
 		 * @return
 		 */
 		this.canIdentifyEquipment = function(equipitem) {
-			return false;
+	    	var BaseInteractiveObject =
+	    		require("com/dalonedrow/rpg/base/flyweights/baseinteractiveobject");
+		    if (equipitem !== undefined
+		    		&& equipitem !== null
+		    		&& equipitem instanceof BaseInteractiveObject) {
+				return false;
+		    } else {
+	            var s = [];
+	            s.push("ERROR! IoPcData.canIdentifyEquipment() - ");
+	            s.push("argument must be BaseInteractiveObject");
+	            throw new Error(s.join(""));
+		    }
 		}
 		/** Clears all interface flags that were set. */
 		this.clearInterfaceFlags = function() {
@@ -407,8 +571,19 @@ define(function() {
 		 * @param index the key's index
 		 * @return {@link String}
 		 */
-		this.getKey = function(index) {
-			return keyring[index];
+		this.getKey = function(val) {
+		    if (val !== undefined
+		    		&& val !== null
+		    		&& !isNaN(val)
+		            && parseInt(Number(val)) === val
+		            && !isNaN(parseInt(val, 10))) {
+				return keyring[val];
+		    } else {
+	            var s = [];
+	            s.push("ERROR! IoPcData.getKey() - ");
+	            s.push("argument must be integer");
+	            throw new Error(s.join(""));
+		    }
 		}
 		/**
 		 * Gets the {@link IoPcData}'s level.
@@ -467,8 +642,18 @@ define(function() {
 		 * @param flag the flag
 		 * @return true if the {@link IoPcData} has the flag; false otherwise
 		 */
-		this.hasInterfaceFlag = function(val) {
-			return (interfaceFlags & flag) === flag;
+		this.hasInterfaceFlag = function(flag) {
+	        if (flag !== undefined
+	        		&& flag !== null
+	        		&& !isNaN(flag)
+	        		&& flag && (flag & (flag - 1)) === 0) {
+				return (interfaceFlags & flag) === flag;
+	        } else {
+	            var s = [];
+	            s.push("ERROR! IoPcData.hasInterfaceFlag() - ");
+	            s.push("flag must be power of 2");
+	            throw new Error(s.join(""));
+	        }
 		}
 		/**
 		 * Determines if the PC has a key in their keyring.
@@ -476,89 +661,191 @@ define(function() {
 		 * @return <tt>true</tt> if the PC has the key <tt>false></tt> otherwise
 		 */
 		this.hasKey = function(val) {
-			if (typeof val !== "string") {
-				throw new Error("Argument must be a string");
-			}
-			if (keyring === null) {
-				keyring = [];
-			}
-			var index = keyring.indexOf(val);
-			return index >= 0;
+	        if (val !== undefined
+	        		&& val !== null) {
+	        	if (typeof val === "string") {
+	    			if (keyring === null) {
+	    				keyring = [];
+	    			}
+	    			var index = keyring.indexOf(val);
+	    			return index >= 0;	        	
+	        	} else {
+		            var s = [];
+		            s.push("ERROR! IoPcData.hasKey() - ");
+		            s.push("argument must be string");
+		            throw new Error(s.join(""));
+	        	}
+	        } else {
+	            var s = [];
+	            s.push("ERROR! IoPcData.hasKey() - ");
+	            s.push("requires 1 argument");
+	            throw new Error(s.join(""));
+	        }
 		}
 		/**
 		 * Removes an interface flag.
 		 * @param flag the flag
 		 */
-		this.removeInterfaceFlag = function(val) {
-			interfaceFlags &= ~flag;
+		this.removeInterfaceFlag = function(flag) {
+	        if (flag !== undefined
+	        		&& flag !== null
+	        		&& !isNaN(flag)
+	        		&& flag && (flag & (flag - 1)) === 0) {
+				interfaceFlags &= ~flag;
+	        } else {
+	            var s = [];
+	            s.push("ERROR! IoPcData.removeInterfaceFlag() - ");
+	            s.push("flag must be power of 2");
+	            throw new Error(s.join(""));
+	        }
 		}
 		/**
 		 * Removes a key.
 		 * @param key the key's id
 		 */
 		this.removeKey = function(val) {
-			if (typeof val !== "string") {
-				throw new Error("Argument must be a string");
-			}
-			if (keyring === null) {
-				keyring = [];
-			}
-			var index = keyRing.indexOf(val);
-			if (index >= 0) {
-				keyring.splice(index, 1);
-				numKeys--;
-			}
+	        if (val !== undefined
+	        		&& val !== null) {
+	        	if (typeof val === "string") {
+	    			if (keyring === null) {
+	    				keyring = [];
+	    			}
+	    			var index = keyRing.indexOf(val);
+	    			if (index >= 0) {
+	    				keyring.splice(index, 1);
+	    				numKeys--;
+	    			}        	
+	        	} else {
+		            var s = [];
+		            s.push("ERROR! IoPcData.removeKey() - ");
+		            s.push("argument must be string");
+		            throw new Error(s.join(""));
+	        	}
+	        } else {
+	            var s = [];
+	            s.push("ERROR! IoPcData.removeKey() - ");
+	            s.push("requires 1 argument");
+	            throw new Error(s.join(""));
+	        }
 		}
 		/**
 		 * Sets the {@link IoPcData}'s gender.
 		 * @param val the gender to set
 		 */
 		this.setGender = function(val) {
-			gender = val;
-			this.notifyWatchers();
+		    if (val !== undefined
+		    		&& val !== null
+		    		&& val instanceof Gender) {
+				gender = val;
+				this.notifyWatchers();
+		    } else {
+	            var s = [];
+	            s.push("ERROR! IoPcData.setGender() - ");
+	            s.push("argument must be BaseInteractiveObject");
+	            throw new Error(s.join(""));
+		    }
 		}
 		/**
 		 * Sets the IO associated with the pc data.
 		 * @param newIO the IO to set
 		 */
 		this.setIo = function(val) {
-			io = val;
-			if (val !== null
-			        && val.getPCData() === null) {
-				val.setPCData(this);
-			}
+	    	var BaseInteractiveObject =
+	    		require("com/dalonedrow/rpg/base/flyweights/baseinteractiveobject");
+		    if (val !== undefined
+		    		&& val !== null
+		    		&& val instanceof BaseInteractiveObject) {
+		        io = val;
+				if (val !== null
+				        && val.getPCData() === null) {
+					val.setPCData(this);
+				}
+		    } else {
+	            var s = [];
+	            s.push("ERROR! IoPcData.setIo() - ");
+	            s.push("argument must be BaseInteractiveObject");
+	            throw new Error(s.join(""));
+		    }
 		}
 		/**
 		 * Sets the {@link IoPcData}'s level.
 		 * @param val the level to set
 		 */
 		this.setLevel = function(val) {
-			level = val;
-			this.notifyWatchers();
+		    if (val !== undefined
+		    		&& val !== null
+		    		&& !isNaN(val)
+		            && parseInt(Number(val)) === val
+		            && !isNaN(parseInt(val, 10))) {
+				level = val;
+				this.notifyWatchers();
+		    } else {
+	            var s = [];
+	            s.push("ERROR! IoPcData.setLevel() - ");
+	            s.push("argument must be integer");
+	            throw new Error(s.join(""));
+		    }
 		}
 		/**
 		 * Sets the {@link IoPcData}'s name.
 		 * @param val the name to set
 		 */
 		this.setName = function(val) {
-			name = val;
-			this.notifyWatchers();
+	        if (val !== undefined
+	        		&& val !== null) {
+	        	if (typeof val === "string") {
+	        		name = val;
+	    			this.notifyWatchers();
+	        	} else {
+		            var s = [];
+		            s.push("ERROR! IoPcData.setName() - ");
+		            s.push("argument must be string");
+		            throw new Error(s.join(""));
+	        	}
+	        } else {
+	            var s = [];
+	            s.push("ERROR! IoPcData.setName() - ");
+	            s.push("requires 1 argument");
+	            throw new Error(s.join(""));
+	        }
 		}
 		/**
 		 * Sets the {@link IoPcData}'s Profession.
 		 * @param val the profession to set
 		 */
 		this.setProfession = function(val) {
-			profession = val;
-			this.notifyWatchers();
+		    if (val !== undefined
+		    		&& val !== null
+		    		&& !isNaN(val)
+		            && parseInt(Number(val)) === val
+		            && !isNaN(parseInt(val, 10))) {
+				profession = val;
+				this.notifyWatchers();
+		    } else {
+	            var s = [];
+	            s.push("ERROR! IoPcData.setProfession() - ");
+	            s.push("argument must be integer");
+	            throw new Error(s.join(""));
+		    }
 		}
 		/**
 		 * Sets the {@link IoPcData}'s Race.
 		 * @param val the race to set
 		 */
 		this.setRace = function(val) {
-			race = val;
-			this.notifyWatchers();
+		    if (val !== undefined
+		    		&& val !== null
+		    		&& !isNaN(val)
+		            && parseInt(Number(val)) === val
+		            && !isNaN(parseInt(val, 10))) {
+				race = val;
+				this.notifyWatchers();
+		    } else {
+	            var s = [];
+	            s.push("ERROR! IoPcData.setRace() - ");
+	            s.push("argument must be integer");
+	            throw new Error(s.join(""));
+		    }
 		}
 	}
 	IoPcData.prototype = Object.create(IOCharacter.prototype);

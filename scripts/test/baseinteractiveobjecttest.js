@@ -1,37 +1,22 @@
 define(["com/dalonedrow/engine/systems/base/projectconstants",
 	"com/dalonedrow/rpg/base/flyweights/baseinteractiveobject",
 	"com/dalonedrow/rpg/base/flyweights/inventorydata",
-	'com/dalonedrow/rpg/base/flyweights/iocharacter',
-	'com/dalonedrow/rpg/base/flyweights/ioitemdata',
-	'com/dalonedrow/rpg/base/flyweights/ionpcdata'], function(ProjectConstants,
-			BaseInteractiveObject, InventoryData, IOCharacter, IOItemData, IoNpcData) {
+	"com/dalonedrow/rpg/base/flyweights/iocharacter",
+	"com/dalonedrow/rpg/base/flyweights/ioitemdata",
+	"com/dalonedrow/rpg/base/flyweights/ionpcdata",
+	"com/dalonedrow/rpg/base/flyweights/iopcdata",
+	"com/dalonedrow/rpg/base/flyweights/scriptable",
+	"test/basetester"], function(ProjectConstants,
+			BaseInteractiveObject, InventoryData, IOCharacter, IOItemData, IoNpcData, IoPcData,
+			Scriptable, BaseTester) {
 	function BaseInteractiveObjectTest() {
+		BaseTester.call(this);
 		ProjectConstants.setInstance(new ProjectConstants());
 		IOCharacter.prototype.getAttributeMap = function() {
 			return [["ST", "STRENGTH"]];
 		};
 		this.test = function() {
-			try {
-				new BaseInteractiveObject();
-			} catch (err) {
-				console.log("cannot create with undefined id")
-			}
-			try {
-				new BaseInteractiveObject(null);
-			} catch (err) {
-				console.log("cannot create with null id")
-			}
-			try {
-				new BaseInteractiveObject("test");
-			} catch (err) {
-				console.log("cannot create with string id")
-			}
-			try {
-				new BaseInteractiveObject(0.5);
-			} catch (err) {
-				console.log("cannot create with float id")
-			}
-			var io = new BaseInteractiveObject(1);
+			var io = this.intConstructorTest("BaseInteractiveObject");
 			try {
 				io.addAnimation();
 			} catch (err) {
@@ -302,8 +287,25 @@ define(["com/dalonedrow/engine/systems/base/projectconstants",
 			var npcdata = new IoNpcData();
 			io.setNPCData(npcdata);
 			if (npcdata.getHashcode() === io.getNPCData().getHashcode()) {
-				console.log("can setNPCData with IoNpcData");
+				console.log("can setNPCData with IoNpcData -- " + npcdata.getHashcode());
 			}
+			var over = new Scriptable();
+			try {
+				io.setOverscript({});
+			} catch (err) {
+				console.log("cannot setOverscript with object");
+			}
+			io.setOverscript(over);
+			if (over.getHashcode() === io.getOverscript().getHashcode()) {
+				console.log("can setOverscript with Scriptable");
+			}
+			var pcdata = new IoPcData();
+			io.setPCData(null);
+			io.setPCData(pcdata);
+			if (pcdata.getHashcode() === io.getPCData().getHashcode()) {
+				console.log("can setPCData with IoPcData -- " + pcdata.getHashcode());
+			}
+			this.intSetterTest(io, "setPoisonCharges", "getPoisonCharges");
 		}
 	};
 	return BaseInteractiveObjectTest;

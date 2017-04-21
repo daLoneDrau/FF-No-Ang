@@ -8,10 +8,11 @@ define(['require', "com/dalonedrow/engine/systems/base/interactive",
 	'com/dalonedrow/rpg/base/constants/scriptglobals',
 	'com/dalonedrow/rpg/base/flyweights/baseinteractiveobject',
 	'com/dalonedrow/rpg/base/flyweights/behaviourdata',
+	'com/dalonedrow/rpg/base/flyweights/gender',
 	'com/dalonedrow/rpg/base/flyweights/iocharacter',
 	'com/dalonedrow/rpg/base/systems/script'],
 		function(require, Interactive, BehaviourGlobals, EquipmentGlobals, IoGlobals, ScriptGlobals,
-				BaseInteractiveObject, BehaviourData, IOCharacter, Script) {
+				BaseInteractiveObject, BehaviourData, Gender, IOCharacter, Script) {
 	function IoNpcData() {
 		IOCharacter.call(this);
 	    var absorb = 0;
@@ -101,7 +102,7 @@ define(['require', "com/dalonedrow/engine/systems/base/interactive",
 	     * @param flag the flag
 	     */
 	    this.addBehavior = function(flag) {
-	        if (flag
+	        if (flag !== undefined
 	        		&& flag !== null
 	        		&& !isNaN(flag)
 	        		&& flag && (flag & (flag - 1)) === 0) {
@@ -118,7 +119,7 @@ define(['require', "com/dalonedrow/engine/systems/base/interactive",
 	     * @param flag the flag
 	     */
 	    this.addNPCFlag = function(flag) {
-	        if (flag
+	        if (flag !== undefined
 	        		&& flag !== null
 	        		&& !isNaN(flag)
 	        		&& flag && (flag & (flag - 1)) === 0) {
@@ -137,7 +138,7 @@ define(['require', "com/dalonedrow/engine/systems/base/interactive",
 	     * @throws RPGException if an error occurs
 	     */
 	    var applyPoisonDamage = function(srcIoid, isSpellDamage) {
-	    	if (srcIoid && isSpellDamage) {
+	    	if (srcIoid !== undefined && isSpellDamage !== undefined) {
 		        if (srcIoid === null
 		                || isSpellDamage === null) {
 		            var s = [];
@@ -217,7 +218,7 @@ define(['require', "com/dalonedrow/engine/systems/base/interactive",
 	     */
 	    this.ARX_DAMAGES_DrainMana = function(dmg) {
 	        var manaDrained = 0;
-		    if (dmg
+		    if (dmg !== undefined
 		    		&& dmg !== null
 		    		&& !isNaN(dmg)) {
 		        if (this.getBaseMana() >= dmg) {
@@ -240,7 +241,7 @@ define(['require', "com/dalonedrow/engine/systems/base/interactive",
 	     * @param dmg the amount of healing
 	     */
 	    this.ARX_DAMAGES_HealManaInter = function(dmg) {
-		    if (dmg
+		    if (dmg !== undefined
 		    		&& dmg !== null
 		    		&& !isNaN(dmg)) {
 		        if (this.getBaseLife() > 0) {
@@ -256,7 +257,7 @@ define(['require', "com/dalonedrow/engine/systems/base/interactive",
 		    }
 	    }
 	    this.ARX_NPC_Behaviour_Change = function(newBehavior, params) {
-	    	if (newBehavior && params) {
+	    	if (newBehavior !== undefined && params !== undefined) {
 		        if (newBehavior === null
 		                || params === null) {
 		            var s = [];
@@ -379,7 +380,7 @@ define(['require', "com/dalonedrow/engine/systems/base/interactive",
 	     * @throws RPGException if an error occurs
 	     */
 	    this.ARX_NPC_Revive = function(reposition) {
-	    	if (reposition
+	    	if (reposition !== undefined
 	    			&& reposition !== null) {
 		        if (typeof reposition !== "boolean") {
 		            var s = [];
@@ -449,7 +450,7 @@ define(['require', "com/dalonedrow/engine/systems/base/interactive",
 	     */
 	    this.damageNPC = function(dmg, srcIoid, isSpellDamage) {
 	        var damagesdone = 0;
-	    	if (dmg && srcIoid && isSpellDamage
+	    	if (dmg !== undefined && srcIoid !== undefined && isSpellDamage !== undefined
 	    			&& dmg !== null && srcIoid !== null && isSpellDamage !== null) {
 			    if (isNaN(dmg)) {
 			        var s = [];
@@ -509,7 +510,9 @@ define(['require', "com/dalonedrow/engine/systems/base/interactive",
 	    this.forceDeath = function(killerIO) {
 	    	var BaseInteractiveObject =
 	    		require("com/dalonedrow/rpg/base/flyweights/baseinteractiveobject");
-	    	if (!(killerIO instanceof BaseInteractiveObject)) {
+	    	if (killerIO === undefined
+	    			|| killerIO === null
+	    			|| !(killerIO instanceof BaseInteractiveObject)) {
 	            var s = [];
 	            s.push("ERROR! IoNpcData.forceDeath() - ");
 	            s.push("killerIO must be a BaseInteractiveObject");
@@ -752,7 +755,7 @@ define(['require', "com/dalonedrow/engine/systems/base/interactive",
 	     *         otherwise
 	     */
 	    this.hasBehavior = function(flag) {
-	        if (flag
+	        if (flag !== undefined
 	        		&& flag !== null
 	        		&& !isNaN(flag)
 	        		&& flag && (flag & (flag - 1)) === 0) {
@@ -770,7 +773,7 @@ define(['require', "com/dalonedrow/engine/systems/base/interactive",
 	     * @return true if the {@link IoNpcData} has the flag; false otherwise
 	     */
 	    this.hasNPCFlag = function(flag) {
-	        if (flag
+	        if (flag !== undefined
 	        		&& flag !== null
 	        		&& !isNaN(flag)
 	        		&& flag && (flag & (flag - 1)) === 0) {
@@ -794,7 +797,7 @@ define(['require', "com/dalonedrow/engine/systems/base/interactive",
 	     * @param healAmt the healing amount
 	     */
 	    this.healNPC = function(healAmt) {
-		    if (healAmt
+		    if (healAmt !== undefined
 		    		&& healAmt !== null
 		    		&& !isNaN(healAmt)) {
 		        if (this.getBaseLife() > 0) {
@@ -833,7 +836,7 @@ define(['require', "com/dalonedrow/engine/systems/base/interactive",
 	     */
 	    processDamage = function(dmg, srcIoid) {
 	        var damagesdone = 0;
-	    	if (dmg && srcIoid && dmg !== null && srcIoid !== null) {
+	    	if (dmg !== undefined && srcIoid !== undefined && dmg !== null && srcIoid !== null) {
 			    if (isNaN(dmg)) {
 			        var s = [];
 		            s.push("ERROR! IoNpcData.processDamage() - ");
@@ -876,7 +879,7 @@ define(['require', "com/dalonedrow/engine/systems/base/interactive",
 	     * @param flag the flag
 	     */
 	    this.removeBehavior = function(flag) {
-	        if (flag
+	        if (flag !== undefined
 	        		&& flag !== null
 	        		&& !isNaN(flag)
 	        		&& flag && (flag & (flag - 1)) === 0) {
@@ -893,7 +896,7 @@ define(['require', "com/dalonedrow/engine/systems/base/interactive",
 	     * @param flag the flag
 	     */
 	    this.removeNPCFlag = function(flag) {
-	        if (flag
+	        if (flag !== undefined
 	        		&& flag !== null
 	        		&& !isNaN(flag)
 	        		&& flag && (flag & (flag - 1)) === 0) {
@@ -923,7 +926,7 @@ define(['require', "com/dalonedrow/engine/systems/base/interactive",
 	     * @throws RPGException if an error occurs
 	     */
 	    var sendHitEvent = function(dmg, srcIoid, isSpellDamage) {
-	    	if (dmg && srcIoid && isSpellDamage
+	    	if (dmg !== undefined && srcIoid !== undefined && isSpellDamage !== undefined
 	    			&& dmg !== null && srcIoid !== null && isSpellDamage !== null) {
 			    if (isNaN(dmg)) {
 			        var s = [];
@@ -1019,7 +1022,7 @@ define(['require', "com/dalonedrow/engine/systems/base/interactive",
 	     * @throws RPGException if an error occurs
 	     */
 	    var sendOuchEvent = function(dmg, srcIoid) {
-	    	if (dmg && srcIoid
+	    	if (dmg !== undefined && srcIoid !== undefined
 	    			&& dmg !== null && srcIoid !== null) {
 			    if (isNaN(dmg)) {
 			        var s = [];
@@ -1063,7 +1066,7 @@ define(['require', "com/dalonedrow/engine/systems/base/interactive",
 	     * @param val the armorClass to set
 	     */
 	    this.setArmorClass = function(val) {
-		    if (val
+		    if (val !== undefined
 		    		&& val !== null
 		    		&& !isNaN(val)) {
 		        armorClass = val;
@@ -1079,7 +1082,7 @@ define(['require', "com/dalonedrow/engine/systems/base/interactive",
 	     * @param val the gender to set
 	     */
 	    this.setGender = function(val) {
-		    if (val
+		    if (val !== undefined
 		    		&& val !== null
 		    		&& val instanceof Gender) {
 		        gender = val;
@@ -1098,7 +1101,7 @@ define(['require', "com/dalonedrow/engine/systems/base/interactive",
 	    this.setIo = function(val) {
 	    	var BaseInteractiveObject =
 	    		require("com/dalonedrow/rpg/base/flyweights/baseinteractiveobject");
-		    if (val
+		    if (val !== undefined
 		    		&& val !== null
 		    		&& val instanceof BaseInteractiveObject) {
 		        io = val;
@@ -1114,7 +1117,7 @@ define(['require', "com/dalonedrow/engine/systems/base/interactive",
 	     * @param val the new value to set
 	     */
 	    this.setMovemode = function(val) {
-	    	if (val
+	    	if (val !== undefined
 	    			&& val !== null
 	    			&& !isNaN(val)
 		            && parseInt(Number(val)) === val
@@ -1132,7 +1135,7 @@ define(['require', "com/dalonedrow/engine/systems/base/interactive",
 	     * @param val the name to set
 	     */
 	    this.setName = function(val) {
-	    	if (val && val !== null && typeof val === "string") {
+	    	if (val !== undefined && val !== null && typeof val === "string") {
 		        name = val;
 		        notifyWatchers();
 	    	} else {
@@ -1147,7 +1150,7 @@ define(['require', "com/dalonedrow/engine/systems/base/interactive",
 	     * @param val the new value to set
 	     */
 	    this.setReachedtarget = function(val) {
-	    	if (val && val !== null && typeof val === "boolean") {
+	    	if (val !== undefined && val !== null && typeof val === "boolean") {
 	    		reachedtarget = val;
 	    	} else {
 	            var s = [];
@@ -1161,7 +1164,7 @@ define(['require', "com/dalonedrow/engine/systems/base/interactive",
 	     * @param splatDamages the splatDamages to set
 	     */
 	    this.setSplatDamages = function(val) {
-	    	if (val
+	    	if (val !== undefined
 	    			&& val !== null
 	    			&& !isNaN(val)
 		            && parseInt(Number(val)) === val
@@ -1179,7 +1182,7 @@ define(['require', "com/dalonedrow/engine/systems/base/interactive",
 	     * @param splatTotNb the splatTotNb to set
 	     */
 	    this.setSplatTotNb = function(val) {
-	    	if (val
+	    	if (val !== undefined
 	    			&& val !== null
 	    			&& !isNaN(val)
 		            && parseInt(Number(val)) === val
@@ -1197,7 +1200,7 @@ define(['require', "com/dalonedrow/engine/systems/base/interactive",
 	     * @param val the new value to set
 	     */
 	    this.setTactics = function(val) {
-	    	if (val
+	    	if (val !== undefined
 	    			&& val !== null
 	    			&& !isNaN(val)
 		            && parseInt(Number(val)) === val
@@ -1215,7 +1218,7 @@ define(['require', "com/dalonedrow/engine/systems/base/interactive",
 	     * @param val the title to set
 	     */
 	    this.setTitle = function(val) {
-	    	if (val
+	    	if (val !== undefined
 	    			&& val !== null
 	    			&& typeof val === "string") {
 		        title = val;
@@ -1234,7 +1237,7 @@ define(['require', "com/dalonedrow/engine/systems/base/interactive",
 	    this.setWeapon = function(wpnIO) {
 	    	var BaseInteractiveObject =
 	    		require("com/dalonedrow/rpg/base/flyweights/baseinteractiveobject");
-	    	if (val
+	    	if (val !== undefined
 	    			&& val !== null
 	    			&& val instanceof BaseInteractiveObject) {
 		        weapon = wpnIO;
@@ -1256,7 +1259,7 @@ define(['require', "com/dalonedrow/engine/systems/base/interactive",
 	     * @throws RPGException if an error occurs
 	     */
 	    this.setWeaponInHand = function(ioid) {
-	    	if (ioid
+	    	if (ioid !== undefined
 	    			&& ioid !== null
 	    			&& !isNaN(ioid)
 		            && parseInt(Number(ioid)) === ioid
@@ -1279,7 +1282,7 @@ define(['require', "com/dalonedrow/engine/systems/base/interactive",
 	     * @param val the new value to set
 	     */
 	    this.setXpvalue = function(val) {
-	    	if (val
+	    	if (val !== undefined
 	    			&& val !== null
 	    			&& !isNaN(val)
 		            && parseInt(Number(val)) === val
@@ -1303,7 +1306,7 @@ define(['require', "com/dalonedrow/engine/systems/base/interactive",
 	    	var BaseInteractiveObject =
 	    		require("com/dalonedrow/rpg/base/flyweights/baseinteractiveobject");
 	        var isPlayer = false;
-	    	if (io
+	    	if (io !== undefined
 	    			&& io !== null
 	    			&& io instanceof BaseInteractiveObject) {
 	            var summonerId = io.getSummoner();

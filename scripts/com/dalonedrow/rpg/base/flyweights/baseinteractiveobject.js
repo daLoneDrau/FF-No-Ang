@@ -1,16 +1,17 @@
 /**
  * 
  */
-define(['require', 'com/dalonedrow/engine/sprite/base/simplevector2',
-	'com/dalonedrow/engine/sprite/base/simplevector3',
-	'com/dalonedrow/rpg/base/constants/equipmentglobals',
-	'com/dalonedrow/rpg/base/constants/ioglobals',
-	'com/dalonedrow/rpg/base/flyweights/inventorydata',
-	'com/dalonedrow/rpg/base/flyweights/ioitemdata', 'com/dalonedrow/rpg/base/flyweights/ionpcdata',
+define(["require", "com/dalonedrow/engine/sprite/base/simplevector2",
+	"com/dalonedrow/engine/sprite/base/simplevector3",
+	"com/dalonedrow/rpg/base/constants/equipmentglobals",
+	"com/dalonedrow/rpg/base/constants/ioglobals",
+	"com/dalonedrow/rpg/base/flyweights/inventorydata",
+	"com/dalonedrow/rpg/base/flyweights/ioitemdata", "com/dalonedrow/rpg/base/flyweights/ionpcdata",
+	"com/dalonedrow/rpg/base/flyweights/iopcdata",
 	"com/dalonedrow/rpg/base/flyweights/iospellcastdata",
 	"com/dalonedrow/rpg/base/flyweights/scriptable", "com/dalonedrow/utils/hashcode"],
 		function(require, SimpleVector2, SimpleVector3, EquipmentGlobals, IoGlobals, InventoryData,
-				IOItemData, IoNpcData, IOSpellCastData, Scriptable, Hashcode) {
+				IOItemData, IoNpcData, IoPcData, IOSpellCastData, Scriptable, Hashcode) {
 	function BaseInteractiveObject(id) {
 		Hashcode.call(this);
 	    /** the animation ids associated with the interactive object. */
@@ -967,7 +968,7 @@ define(['require', 'com/dalonedrow/engine/sprite/base/simplevector2',
 	        if (data !== undefined) {
 	        	if (data === null) {
 	        		pcData = data;
-	        	} else if (data instanceof IoNpcData) {
+	        	} else if (data instanceof IoPcData) {
 	        		pcData = data;
 		            if (pcData.getIo() === null) {
 		            	pcData.setIo(this);
