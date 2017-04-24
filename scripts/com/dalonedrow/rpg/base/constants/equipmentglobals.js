@@ -29,7 +29,7 @@ define(function() {
 			EQUIP_SLOT_TORCH		: 4,
 			EQUIP_SLOT_WEAPON		: 2,
 			MAX_EQUIPPED			: 8,
-			MAX_SPELLS				: 0,
+			MAX_SPELLS				: 100,
 			OBJECT_TYPE_1H			: 1 << 2,
 			OBJECT_TYPE_2H			: 1 << 3,
 			OBJECT_TYPE_ARMOR		: 1 << 8,

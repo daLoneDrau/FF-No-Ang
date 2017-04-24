@@ -9,9 +9,11 @@ define(["require", "com/dalonedrow/engine/sprite/base/simplevector2",
 	"com/dalonedrow/rpg/base/flyweights/ioitemdata", "com/dalonedrow/rpg/base/flyweights/ionpcdata",
 	"com/dalonedrow/rpg/base/flyweights/iopcdata",
 	"com/dalonedrow/rpg/base/flyweights/iospellcastdata",
-	"com/dalonedrow/rpg/base/flyweights/scriptable", "com/dalonedrow/utils/hashcode"],
+	"com/dalonedrow/rpg/base/flyweights/scriptable", 
+	"com/dalonedrow/rpg/base/systems/spellmaster","com/dalonedrow/utils/hashcode"],
 		function(require, SimpleVector2, SimpleVector3, EquipmentGlobals, IoGlobals, InventoryData,
-				IOItemData, IoNpcData, IoPcData, IOSpellCastData, Scriptable, Hashcode) {
+				IOItemData, IoNpcData, IoPcData, IOSpellCastData, Scriptable, SpellMaster,
+				Hashcode) {
 	function BaseInteractiveObject(id) {
 		Hashcode.call(this);
 	    /** the animation ids associated with the interactive object. */
@@ -20,7 +22,7 @@ define(["require", "com/dalonedrow/engine/sprite/base/simplevector2",
 	    var armormaterial = "";
 	    /** any flags that have been set. */
 	    var behaviorFlags = 0;
-	    var damageSum = 0;
+	    var damageSum = 0.0;
 	    /** flags indicating the IO is taking damage of a specific type. */
 	    var dmgFlags = 0;
 	    /** any game flags that have been set. */
@@ -470,21 +472,6 @@ define(["require", "com/dalonedrow/engine/sprite/base/simplevector2",
 	    this.getSpellcastData = function() {
 	        return spellcastData;
 	    }
-	    this.getSpellOn = function(index) {
-	    	var spell;
-		    if (index !== undefined
-		    		&& index !== null
-		    		&& !isNaN(index)
-		            && parseInt(Number(index)) === id
-		            && !isNaN(parseInt(index, 10))) {
-		    	spell = spellsOn[index];
-		    } else {
-	            s.push("ERROR! BaseInteractiveObject.getSpellOn() - ");
-	            s.push("index must be integer");
-	            throw new Error(s.join(""));
-		    }
-		    return spell;
-	    }
 	    /**
 	     * Gets the statCount
 	     * @return {@link var}
@@ -588,6 +575,36 @@ define(["require", "com/dalonedrow/engine/sprite/base/simplevector2",
 	            throw new Error(s.join(""));
 	        }
 	        return has;
+	    }
+	    /**
+	     * Determines if the {@link BaseInteractiveObject} has a specific type of spell affecting
+	     * it.
+	     * @param type the spell type
+	     * @return <tt>true</tt> if the {@link BaseInteractiveObject} has the flag; <tt>false</tt>
+	     *         otherwise
+	     */
+	    this.hasSpellOn = function(type) {
+	    	var has = false;
+		    if (type !== undefined
+		    		&& type !== null
+		    		&& !isNaN(type)
+		            && parseInt(Number(type)) === type
+		            && !isNaN(parseInt(type, 10))) {
+		    	for (var i = spellsOn.length - 1; i >= 0; i--) {
+		    		var spell = SpellMaster.getInstance().getSpell(spellsOn[i]);
+		    		if (spell !== null
+		    				&& spell.getType() === type
+		    				&& spell.exists()) {
+		    			has = true;
+		    			break;
+		    		}
+		    	}
+		    } else {
+	            s.push("ERROR! BaseInteractiveObject.getSpellOn() - ");
+	            s.push("type must be integer");
+	            throw new Error(s.join(""));
+		    }
+		    return has;
 	    }
 	    /**
 	     * Determines if the {@link BaseInteractiveObject} has a specific type flag.
@@ -801,7 +818,8 @@ define(["require", "com/dalonedrow/engine/sprite/base/simplevector2",
 	    this.setDamageSum = function(val) {
 		    if (val !== undefined
 		    		&& val !== null
-		    		&& !isNaN(val)) {
+		    		&& !isNaN(val)
+		    		&& typeof val === "number") {
 		        damageSum = val;
 		    } else {
 	            var s = [];
@@ -1069,7 +1087,7 @@ define(["require", "com/dalonedrow/engine/sprite/base/simplevector2",
 	    this.setScript = function(val) {
 	    	var Scriptable = require("com/dalonedrow/rpg/base/flyweights/scriptable");
 	        if (val !== undefined
-	        		&& val === null
+	        		&& val !== null
 	        		&& val instanceof Scriptable) {
 		        script = val;
 		        val.setIO(this);

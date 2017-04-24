@@ -1,11 +1,12 @@
-define(["com/dalonedrow/rpg/base/constants/behaviourglobals", "com/dalonedrow/rpg/base/constants/ioglobals",
-	'com/dalonedrow/rpg/base/flyweights/baseinteractiveobject', "com/dalonedrow/utils/hashcode"],
-		function(BehaviourGlobalsGlobals, IOGlobals, BaseInteractiveObject, Hashcode) {
+define(["com/dalonedrow/rpg/base/constants/behaviourglobals",
+	"com/dalonedrow/rpg/base/constants/ioglobals", 
+	"com/dalonedrow/rpg/base/flyweights/baseinteractiveobject", "com/dalonedrow/utils/hashcode"],
+		function(BehaviourGlobals, IOGlobals, BaseInteractiveObject, Hashcode) {
 	function BehaviorParameters(initParams, bParam) {
 	    Hashcode.call(this);
         if (initParams === undefined
         		|| initParams === null
-        		|| typeof group !== "string") {
+        		|| typeof initParams !== "string") {
             var s = [];
             s.push("ERROR! BehaviorParameters() - ");
             s.push("initParams must be string");
@@ -13,7 +14,8 @@ define(["com/dalonedrow/rpg/base/constants/behaviourglobals", "com/dalonedrow/rp
         }
 	    if (bParam === undefined
 	    		|| bParam === null
-	    		|| isNaN(bParam)) {
+	    		|| isNaN(bParam)
+	    		|| typeof bParam !== "number") {
             var s = [];
             s.push("ERROR! BehaviorParameters() - ");
             s.push("bParam must be floating-point");
@@ -27,6 +29,49 @@ define(["com/dalonedrow/rpg/base/constants/behaviourglobals", "com/dalonedrow/rp
 	    var targetInfo = -1;
 	    var targetName = null;
 	    var split = initParams.split(" ");
+	    /**
+	     * Adds a flag.
+	     * @param flag the flag
+	     */
+	    this.addFlag = function(flag) {
+	        if (flag !== undefined
+	        		&& flag !== null
+	        		&& !isNaN(flag)
+		            && parseInt(Number(flag)) === flag
+	        		&& flag && (flag & (flag - 1)) === 0) {
+		        flags |= flag;
+	        } else {
+	            var s = [];
+	            s.push("ERROR! BehaviorParameters.addFlag() - ");
+	            s.push("flag must be power of 2");
+	            throw new Error(s.join(""));
+	        }
+	    }
+	    this.clearFlags = function() {
+	        flags = 0;
+	    }
+	    /**
+	     * @param val the value to set
+	     */
+	    this.setAction = function(val) {
+	        if (val !== undefined) {
+	        	if (val === null) {
+	        		action = val;
+	        	} else if (typeof val === "string") {
+	        		action = val;	        	
+	        	} else {
+		            var s = [];
+		            s.push("ERROR! BehaviorParameters.setAction() - ");
+		            s.push("argument must be string");
+		            throw new Error(s.join(""));
+	        	}
+	        } else {
+	            var s = [];
+	            s.push("ERROR! BehaviorParameters.setAction() - ");
+	            s.push("requires 1 argument");
+	            throw new Error(s.join(""));
+	        }
+	    }
 	    for (var i = split.length - 1; i >= 0; i--) {
 	        if (split[i] === "STACK") {
 	            this.setAction("STACK");
@@ -41,22 +86,22 @@ define(["com/dalonedrow/rpg/base/constants/behaviourglobals", "com/dalonedrow/rp
 	            break;
 	        }
 	        if (split[i] === "L") {
-	        	this.addFlag(BehaviourGlobals.BehaviourGlobals_LOOK_AROUND);
+	        	this.addFlag(BehaviourGlobals.BEHAVIOUR_LOOK_AROUND);
 	        }
 	        if (split[i] === "S") {
-	        	this.addFlag(BehaviourGlobals.BehaviourGlobals_SNEAK);
+	        	this.addFlag(BehaviourGlobals.BEHAVIOUR_SNEAK);
 	        }
 	        if (split[i] === "D") {
-	        	this.addFlag(BehaviourGlobals.BehaviourGlobals_DISTANT);
+	        	this.addFlag(BehaviourGlobals.BEHAVIOUR_DISTANT);
 	        }
 	        if (split[i] === "M") {
-	        	this.addFlag(BehaviourGlobals.BehaviourGlobals_MAGIC);
+	        	this.addFlag(BehaviourGlobals.BEHAVIOUR_MAGIC);
 	        }
 	        if (split[i] === "F") {
-	        	this.addFlag(BehaviourGlobals.BehaviourGlobals_FIGHT);
+	        	this.addFlag(BehaviourGlobals.BEHAVIOUR_FIGHT);
 	        }
 	        if (split[i] === "A") {
-	        	this.addFlag(BehaviourGlobals.BehaviourGlobals_STARE_AT);
+	        	this.addFlag(BehaviourGlobals.BEHAVIOUR_STARE_AT);
 	        }
 	        if (split[i] === "0"
 	                || split[i] === "1"
@@ -64,65 +109,45 @@ define(["com/dalonedrow/rpg/base/constants/behaviourglobals", "com/dalonedrow/rp
 	            tactics = 0;
 	        }
 	        if (split[i] === "GO_HOME") {
-	            clearFlags();
-	            this.addFlag(BehaviourGlobals.BehaviourGlobals_GO_HOME);
+	        	this.clearFlags();
+	            this.addFlag(BehaviourGlobals.BEHAVIOUR_GO_HOME);
 	        }
 	        if (split[i] === "FRIENDLY") {
-	            clearFlags();
-	            this.addFlag(BehaviourGlobals.BehaviourGlobals_FRIENDLY);
+	        	this.clearFlags();
+	            this.addFlag(BehaviourGlobals.BEHAVIOUR_FRIENDLY);
 	            movemode = IoGlobals.NOMOVEMODE;
 	        }
 	        if (split[i] === "MOVE_TO") {
-	            clearFlags();
-	            this.addFlag(BehaviourGlobals.BehaviourGlobals_MOVE_TO);
+	        	this.clearFlags();
+	            this.addFlag(BehaviourGlobals.BEHAVIOUR_MOVE_TO);
 	            movemode = IoGlobals.WALKMODE;
 	        }
 	        if (split[i] === "FLEE") {
-	            clearFlags();
-	            this.addFlag(BehaviourGlobals.BehaviourGlobals_FLEE);
+	        	this.clearFlags();
+	            this.addFlag(BehaviourGlobals.BEHAVIOUR_FLEE);
 	            movemode = IoGlobals.RUNMODE;
 	        }
 	        if (split[i] === "LOOK_FOR") {
-	            clearFlags();
-	            this.addFlag(BehaviourGlobals.BehaviourGlobals_LOOK_FOR);
+	        	this.clearFlags();
+	            this.addFlag(BehaviourGlobals.BEHAVIOUR_LOOK_FOR);
 	            movemode = IoGlobals.WALKMODE;
 	        }
 	        if (split[i] === "HIDE") {
-	            clearFlags();
-	            this.addFlag(BehaviourGlobals.BehaviourGlobals_HIDE);
+	        	this.clearFlags();
+	            this.addFlag(BehaviourGlobals.BEHAVIOUR_HIDE);
 	            movemode = IoGlobals.WALKMODE;
 	        }
 	        if (split[i] === "WANDER_AROUND") {
-	            clearFlags();
-	            this.addFlag(BehaviourGlobals.BehaviourGlobals_WANDER_AROUND);
+	        	this.clearFlags();
+	            this.addFlag(BehaviourGlobals.BEHAVIOUR_WANDER_AROUND);
 	            movemode = IoGlobals.WALKMODE;
 	        }
 	        if (split[i] === "GUARD") {
-	            clearFlags();
-	            this.addFlag(BehaviourGlobals.BehaviourGlobals_GUARD);
+	        	this.clearFlags();
+	            this.addFlag(BehaviourGlobals.BEHAVIOUR_GUARD);
 	            movemode = IoGlobals.NOMOVEMODE;
 	            targetInfo = -2;
 	        }
-	    }
-	    /**
-	     * Adds a flag.
-	     * @param flag the flag
-	     */
-	    this.addFlag = function(flag) {
-	        if (flag !== undefined
-	        		&& flag !== null
-	        		&& !isNaN(flag)
-	        		&& flag && (flag & (flag - 1)) === 0) {
-		        flags |= flag;
-	        } else {
-	            var s = [];
-	            s.push("ERROR! BehaviorParameters.addFlag() - ");
-	            s.push("flag must be power of 2");
-	            throw new Error(s.join(""));
-	        }
-	    }
-	    var clearFlags = function() {
-	        flags = 0;
 	    }
 	    /**
 	     * @return the speechName
@@ -145,7 +170,7 @@ define(["com/dalonedrow/rpg/base/constants/behaviourglobals", "com/dalonedrow/rp
 	    /**
 	     * @return the movemode
 	     */
-	    this.getMovemode = function() {
+	    this.getMoveMode = function() {
 	        return movemode;
 	    }
 	    /**
@@ -176,6 +201,7 @@ define(["com/dalonedrow/rpg/base/constants/behaviourglobals", "com/dalonedrow/rp
 	        if (flag !== undefined
 	        		&& flag !== null
 	        		&& !isNaN(flag)
+		            && parseInt(Number(flag)) === flag
 	        		&& flag && (flag & (flag - 1)) === 0) {
 		        return (flags & flag) === flag;
 	        } else {
@@ -193,41 +219,20 @@ define(["com/dalonedrow/rpg/base/constants/behaviourglobals", "com/dalonedrow/rp
 	        if (flag !== undefined
 	        		&& flag !== null
 	        		&& !isNaN(flag)
+		            && parseInt(Number(flag)) === flag
 	        		&& flag && (flag & (flag - 1)) === 0) {
 		        flags &= ~flag;
 	        } else {
 	            var s = [];
-	            s.push("ERROR! BehaviorParameters.removeFlag() - ");
+	            s.push("ERROR! BehaviorParameters.hasFlag() - ");
 	            s.push("flag must be power of 2");
-	            throw new Error(s.join(""));
-	        }
-	    }
-	    /**
-	     * @param val the value to set
-	     */
-	    this.setAction = function(val) {
-	        if (val !== undefined) {
-	        	if (val === null) {
-	        		action = val;
-	        	} else if (typeof val === "string") {
-	        		action = val;	        	
-	        	} else {
-		            var s = [];
-		            s.push("ERROR! BehaviorParameters.setAction() - ");
-		            s.push("argument must be string");
-		            throw new Error(s.join(""));
-	        	}
-	        } else {
-	            var s = [];
-	            s.push("ERROR! BehaviorParameters.setAction() - ");
-	            s.push("requires 1 argument");
 	            throw new Error(s.join(""));
 	        }
 	    }
 	    /**
 	     * @param movemode the movemode to set
 	     */
-	    this.setMovemode = function(val) {
+	    this.setMoveMode = function(val) {
 		    if (val !== undefined
 		    		&& val !== null
 		    		&& !isNaN(val)
@@ -267,7 +272,7 @@ define(["com/dalonedrow/rpg/base/constants/behaviourglobals", "com/dalonedrow/rp
 		    		&& !isNaN(val)
 		            && parseInt(Number(val)) === val
 		            && !isNaN(parseInt(val, 10))) {
-		    	targetinfo = val;
+		    	targetInfo = val;
 		    } else {
 	            var s = [];
 	            s.push("ERROR! BehaviorParameters.setTargetinfo() - ");

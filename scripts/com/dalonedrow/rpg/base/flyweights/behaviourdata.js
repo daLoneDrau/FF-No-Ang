@@ -69,42 +69,105 @@ define(["com/dalonedrow/utils/hashcode"], function(Hashcode) {
 	     * @param val the parameter to set
 	     */
 	    this.setBehaviorParam = function(val) {
-	        behaviorParam = val;
+		    if (val !== undefined
+		    		&& val !== null
+		    		&& !isNaN(val)
+		    		&& typeof val === "number") {
+		    	behaviorParam = val;
+		    } else {
+	            var s = [];
+	            s.push("ERROR! BehaviourData.setBehaviorParam() - ");
+	            s.push("argument must be floating-point");
+	            throw new Error(s.join(""));
+		    }
 	    }
 	    /**
 	     * Sets the behavior flag that has been set.
 	     * @param val the new value to set
 	     */
 	    this.setBehaviour = function(val) {
-	        behaviour = val;
+		    if (val !== undefined
+		    		&& val !== null
+		    		&& !isNaN(val)
+		            && parseInt(Number(val)) === val
+		            && !isNaN(parseInt(val, 10))) {
+		        behaviour = val;
+		    } else {
+	            var s = [];
+	            s.push("ERROR! BehaviourData.setBehaviour() - ");
+	            s.push("argument must be integer");
+	            throw new Error(s.join(""));
+		    }
 	    }
 	    /**
 	     * Sets the flag indicating whether the behavior this.exists.
 	     * @param val the flag to set
 	     */
 	    this.setExists = function(val) {
-	        exists = val;
+		    if (val !== undefined
+		    		&& val !== null
+		    		&& typeof val === "boolean") {
+		        exists = val;
+		    } else {
+	            var s = [];
+	            s.push("ERROR! BehaviourData.setExists() - ");
+	            s.push("argument must be boolean");
+	            throw new Error(s.join(""));
+		    }
 	    }
 	    /**
 	     * Sets the movement mode.
 	     * @param val the mode to set
 	     */
-	    this.setMovemode = function(val) {
-	        moveMode = val;
+	    this.setMoveMode = function(val) {
+		    if (val !== undefined
+		    		&& val !== null
+		    		&& !isNaN(val)
+		            && parseInt(Number(val)) === val
+		            && !isNaN(parseInt(val, 10))) {
+		        moveMode = val;
+		    } else {
+	            var s = [];
+	            s.push("ERROR! BehaviourData.setMovemode() - ");
+	            s.push("argument must be integer");
+	            throw new Error(s.join(""));
+		    }
 	    }
 	    /**
 	     * Sets the this.tactics for the behavior.
 	     * @param val the value to set
 	     */
 	    this.setTactics = function(val) {
-	        tactics = val;
+		    if (val !== undefined
+		    		&& val !== null
+		    		&& !isNaN(val)
+		            && parseInt(Number(val)) === val
+		            && !isNaN(parseInt(val, 10))) {
+		        tactics = val;
+		    } else {
+	            var s = [];
+	            s.push("ERROR! BehaviourData.setTactics() - ");
+	            s.push("argument must be integer");
+	            throw new Error(s.join(""));
+		    }
 	    }
 	    /**
 	     * Sets the behavior this.target.
 	     * @param val the value to set
 	     */
 	    this.setTarget = function(val) {
-	        target = val;
+		    if (val !== undefined
+		    		&& val !== null
+		    		&& !isNaN(val)
+		            && parseInt(Number(val)) === val
+		            && !isNaN(parseInt(val, 10))) {
+		        target = val;
+		    } else {
+	            var s = [];
+	            s.push("ERROR! BehaviourData.setTarget() - ");
+	            s.push("argument must be integer");
+	            throw new Error(s.join(""));
+		    }
 	    }
 	}
     BehaviourData.prototype = Object.create(Hashcode.prototype);

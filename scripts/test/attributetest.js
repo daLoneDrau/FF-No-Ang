@@ -1,13 +1,13 @@
-define(['com/dalonedrow/rpg/base/flyweights/attribute'], function(Attribute) {
+define(['com/dalonedrow/rpg/base/flyweights/attribute', "test/basetester"], function(Attribute,
+		BaseTester) {
 	function AttributeTest() {
+		BaseTester.call(this);
 		this.test = function() {
 			var a = new Attribute("code", "name", "desc");
-			console.log(a.getAbbreviation());
-			console.log(a.getDisplayName());
-			console.log(a.getDescription());
-			a.setBase(10);
-			a.adjustModifier(2);
-			console.log(a.getFull());
+			this.stringMemberTest(a, "setAbbreviation", "getAbbreviation");
+			this.stringMemberTest(a, "setDescription", "getDescription");
+			this.stringMemberTest(a, "setDisplayName", "getDisplayName");
+			this.floatMemberTest(a, "setBase", "getBase");
 		}
 	};
 	return AttributeTest;

@@ -11,6 +11,7 @@ define(["com/dalonedrow/utils/hashcode"], function(Hashcode) {
 		var	exists = false;
 		/** any flags that have been set. */
 		var flags	= 0;
+		var id = -1;
 		var lastTurnUpdated = 0;
 		var lastUpdated = 0;
 		var longinfo = 0;
@@ -63,6 +64,13 @@ define(["com/dalonedrow/utils/hashcode"], function(Hashcode) {
 		 */
 		this.getCasterLevel = function() {
 			return casterLevel;
+		}
+		/**
+		 * Gets the ID.
+		 * @return {@link int}
+		 */
+		this.getId = function() {
+			return id;
 		}
 		/**
 		 * Gets the lastTurnUpdated
@@ -207,6 +215,24 @@ define(["com/dalonedrow/utils/hashcode"], function(Hashcode) {
 	            var s = [];
 	            s.push("ERROR! Spell.setCasterLevel() - ");
 	            s.push("argument must be floating-point");
+	            throw new Error(s.join(""));
+		    }
+		}
+		/**
+		 * Sets the caster
+		 * @param caster the caster to set
+		 */
+		this.setId = function(val) {
+		    if (val !== undefined
+		    		&& val !== null
+		    		&& !isNaN(val)
+		            && parseInt(Number(val)) === val
+		            && !isNaN(parseInt(val, 10))) {
+		    	id = val;
+		    } else {
+	            var s = [];
+	            s.push("ERROR! Spell.setId() - ");
+	            s.push("argument must be integer");
 	            throw new Error(s.join(""));
 		    }
 		}

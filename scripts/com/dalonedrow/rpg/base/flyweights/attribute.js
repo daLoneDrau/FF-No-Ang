@@ -16,14 +16,44 @@ define(["com/dalonedrow/utils/hashcode"], function(Hashcode) {
 	    var modifier = 0;
 		if (arguments.length === 1
 		        && arguments[0] instanceof Attribute) {
-			abbreviation = arguments[0].code;
-			displayName = arguments[0].name;
-			description = arguments[0].description;
+			abbreviation = arguments[0].getCode();
+			displayName = arguments[0].getDisplayName();
+			description = arguments[0].getDescription();
 		} else if (arguments.length === 2) {
+	        if (typeof arguments[0] !== "string") {
+	            var s = [];
+	            s.push("ERROR! Attribute(string, string) - ");
+	            s.push("1st argument must be string");
+	            throw new Error(s.join(""));
+	        }
+	        if (typeof arguments[1] !== "string") {
+	            var s = [];
+	            s.push("ERROR! Attribute(string, string) - ");
+	            s.push("2nd argument must be string");
+	            throw new Error(s.join(""));
+	        }
 			abbreviation = arguments[0];
 			displayName = arguments[1];
 			description = "";
 		} else if (arguments.length === 3) {
+	        if (typeof arguments[0] !== "string") {
+	            var s = [];
+	            s.push("ERROR! Attribute(string, string, string) - ");
+	            s.push("1st argument must be string");
+	            throw new Error(s.join(""));
+	        }
+	        if (typeof arguments[1] !== "string") {
+	            var s = [];
+	            s.push("ERROR! Attribute(string, string, string) - ");
+	            s.push("2nd argument must be string");
+	            throw new Error(s.join(""));
+	        }
+	        if (typeof arguments[2] !== "string") {
+	            var s = [];
+	            s.push("ERROR! Attribute(string, string, string) - ");
+	            s.push("3rd argument must be string");
+	            throw new Error(s.join(""));
+	        }
 			abbreviation = arguments[0];
 			displayName = arguments[1];
 			description = arguments[2];
@@ -42,6 +72,17 @@ define(["com/dalonedrow/utils/hashcode"], function(Hashcode) {
 	     * @param val the value to set
 	     */
 	    this.adjustModifier = function(val) {
+		    if (val !== undefined
+		    		&& val !== null
+		    		&& !isNaN(val)
+		    		&& typeof val === "number") {
+		        modifier += val;
+		    } else {
+	            var s = [];
+	            s.push("ERROR! Attribute.adjustModifier() - ");
+	            s.push("argument must be floating-point");
+	            throw new Error(s.join(""));
+		    }
 	        modifier += val;
 	    };
 	    /** Resets the {@link Attribute}'s modifier value to 0. */
@@ -100,6 +141,12 @@ define(["com/dalonedrow/utils/hashcode"], function(Hashcode) {
 	                || val === null) {
 	            throw new Error("abbreviation cannot be null");
 	        }
+	        if (typeof val !== "string") {
+	            var s = [];
+	            s.push("ERROR! Attribute.setAbbreviation() - ");
+	            s.push("argument must be string");
+	            throw new Error(s.join(""));
+	        }
 	        abbreviation = val;
 	    }
 	    /**
@@ -107,11 +154,17 @@ define(["com/dalonedrow/utils/hashcode"], function(Hashcode) {
 	     * @param val the value to set
 	     */
 	    this.setBase = function(val) {
-	        if (val === undefined
-	                || val === null) {
-	            throw new Error("Base cannot be null");
-	        }
-	        base = val;
+		    if (val !== undefined
+		    		&& val !== null
+		    		&& !isNaN(val)
+		    		&& typeof val === "number") {
+		        base = val;
+		    } else {
+	            var s = [];
+	            s.push("ERROR! Attribute.setBase() - ");
+	            s.push("argument must be floating-point");
+	            throw new Error(s.join(""));
+		    }
 	    }
 	    /**
 	     * Sets the {@link Attribute}'s description.
@@ -122,6 +175,12 @@ define(["com/dalonedrow/utils/hashcode"], function(Hashcode) {
 	        if (val === undefined
 	                || val === null) {
 	            throw new Error("Description cannot be null");
+	        }
+	        if (typeof val !== "string") {
+	            var s = [];
+	            s.push("ERROR! Attribute.setDescription() - ");
+	            s.push("argument must be string");
+	            throw new Error(s.join(""));
 	        }
 	        description = val;
 	    }
@@ -134,6 +193,12 @@ define(["com/dalonedrow/utils/hashcode"], function(Hashcode) {
 	        if (val === undefined
 	                || val === null) {
 	            throw new Error("name cannot be null");
+	        }
+	        if (typeof val !== "string") {
+	            var s = [];
+	            s.push("ERROR! Attribute.setDisplayName() - ");
+	            s.push("argument must be string");
+	            throw new Error(s.join(""));
 	        }
 	        displayName = val;
 	    }
