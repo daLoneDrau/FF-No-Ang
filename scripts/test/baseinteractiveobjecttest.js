@@ -16,86 +16,13 @@ define(["com/dalonedrow/engine/systems/base/projectconstants",
 			return [["ST", "STRENGTH"]];
 		};
 		this.test = function() {
-			var io = this.intConstructorTest("BaseInteractiveObject");
-			try {
-				io.addAnimation();
-			} catch (err) {
-				console.log("cannot addAnimation with 2 undefined")
-			}
-			try {
-				io.addAnimation("name");
-			} catch (err) {
-				console.log("cannot addAnimation with 1 undefined")
-			}
-			try {
-				io.addAnimation(null, 1);
-			} catch (err) {
-				console.log("cannot addAnimation with name null")
-			}
-			try {
-				io.addAnimation("name", null);
-			} catch (err) {
-				console.log("cannot addAnimation with id null")
-			}
-			try {
-				io.addAnimation(1, 1);
-			} catch (err) {
-				console.log("cannot addAnimation with name not string")
-			}
-			try {
-				io.addAnimation("1", "test");
-			} catch (err) {
-				console.log("cannot addAnimation with id not string")
-			}
-			try {
-				io.addAnimation("1", 0.5);
-			} catch (err) {
-				console.log("cannot addAnimation with id float")
-			}
-			io.addAnimation("anim_1", 1);
-			try {
-				io.addBehaviorFlag();
-			} catch (err) {
-				console.log("cannot addBehaviorFlag with undefined")
-			}
-			try {
-				io.addBehaviorFlag(null);
-			} catch (err) {
-				console.log("cannot addBehaviorFlag with null")
-			}
-			try {
-				io.addBehaviorFlag("test");
-			} catch (err) {
-				console.log("cannot addBehaviorFlag with string")
-			}
-			try {
-				io.addBehaviorFlag(0.5);
-			} catch (err) {
-				console.log("cannot addBehaviorFlag with float")
-			}
-			try {
-				io.addBehaviorFlag(3);
-			} catch (err) {
-				console.log("cannot addBehaviorFlag with non-power of two")
-			}
-			io.addBehaviorFlag(1);
-			io.addBehaviorFlag(8);
-			try {
-				io.addGroup();
-			} catch (err) {
-				console.log("cannot addGroup with undefined")
-			}
-			try {
-				io.addGroup(null);
-			} catch (err) {
-				console.log("cannot addGroup with null")
-			}
-			try {
-				io.addGroup({});
-			} catch (err) {
-				console.log("cannot addGroup with non-string")
-			}
-			io.addGroup("testgroup");
+			var io = this.intConstructorTest("com/dalonedrow/rpg/base/flyweights/baseinteractiveobject");
+			this.stringIntKeyValueTest(io, "Animation");
+			this.stringListTest(io, "Group");
+			this.flagTest(io, "BehaviorFlag");
+			this.flagTest(io, "GameFlag");
+			this.flagTest(io, "IOFlag");
+			this.flagTest(io, "TypeFlag");
 			try {
 				io.addSpellOn();
 			} catch (err) {
@@ -122,42 +49,6 @@ define(["com/dalonedrow/engine/systems/base/projectconstants",
 				console.log("cannot addSpellOn with float")
 			}
 			io.addSpellOn(5);
-			try {
-				io.addTypeFlag();
-			} catch (err) {
-				console.log("cannot addTypeFlag with undefined")
-			}
-			try {
-				io.addTypeFlag(null);
-			} catch (err) {
-				console.log("cannot addTypeFlag with null")
-			}
-			try {
-				io.addTypeFlag("test");
-			} catch (err) {
-				console.log("cannot addTypeFlag with string")
-			}
-			try {
-				io.addTypeFlag({});
-			} catch (err) {
-				console.log("cannot addTypeFlag with object")
-			}
-			try {
-				io.addTypeFlag(0.5);
-			} catch (err) {
-				console.log("cannot addTypeFlag with float")
-			}
-			try {
-				io.addTypeFlag(3);
-			} catch (err) {
-				console.log("cannot addTypeFlag with non-power of two")
-			}
-			try {
-				io.addTypeFlag(1);
-			} catch (err) {
-				console.log("cannot addTypeFlag OBJECT_TYPE_WEAPON")
-			}
-			io.addTypeFlag(2);
 			if (!io.equals()) {
 				console.log("does not equal undefined");
 			}
@@ -197,20 +88,6 @@ define(["com/dalonedrow/engine/systems/base/projectconstants",
 			}
 			if (io.getAnimation("anim_1") === 1) {
 				console.log("has anim_1");
-			}
-			try {
-				io.hasBehaviorFlag(3);
-			} catch (err) {
-				console.log("cannot hasBehaviorFlag with non-power of two")
-			}
-			if (io.hasBehaviorFlag(1)) {
-				console.log("has BehaviorFlag 1");
-			}
-			if (io.hasBehaviorFlag(8)) {
-				console.log("has BehaviorFlag 8");
-			}
-			if (!io.hasBehaviorFlag(16)) {
-				console.log("does not have BehaviorFlag 16");
 			}
 			try {
 				io.isInGroup();

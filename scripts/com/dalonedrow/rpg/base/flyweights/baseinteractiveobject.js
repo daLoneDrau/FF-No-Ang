@@ -86,7 +86,7 @@ define(["require", "com/dalonedrow/engine/sprite/base/simplevector2",
 	     * @throws RPGException if the name is null
 	     */
 	    this.addAnimation = function(name, id) {
-	    	if (name !== undefined && id !== undefined) {
+	    	if (name !== undefined || id !== undefined) {
 		        if (name === null
 		                || id === null) {
 		            var s = [];
@@ -124,6 +124,7 @@ define(["require", "com/dalonedrow/engine/sprite/base/simplevector2",
 	        if (flag !== undefined
 	        		&& flag !== null
 	        		&& !isNaN(flag)
+		            && parseInt(Number(flag)) === flag
 	        		&& flag && (flag & (flag - 1)) === 0) {
 		        behaviorFlags |= flag;
 	        } else {
@@ -141,6 +142,7 @@ define(["require", "com/dalonedrow/engine/sprite/base/simplevector2",
 	        if (flag !== undefined
 	        		&& flag !== null
 	        		&& !isNaN(flag)
+		            && parseInt(Number(flag)) === flag
 	        		&& flag && (flag & (flag - 1)) === 0) {
 	        	gameFlags |= flag;
 	        } else {
@@ -183,6 +185,7 @@ define(["require", "com/dalonedrow/engine/sprite/base/simplevector2",
 	        if (flag !== undefined
 	        		&& flag !== null
 	        		&& !isNaN(flag)
+		            && parseInt(Number(flag)) === flag
 	        		&& flag && (flag & (flag - 1)) === 0) {
 	        	ioFlags |= flag;
 	        } else {
@@ -221,6 +224,7 @@ define(["require", "com/dalonedrow/engine/sprite/base/simplevector2",
 	        if (flag !== undefined
 	        		&& flag !== null
 	        		&& !isNaN(flag)
+		            && parseInt(Number(flag)) === flag
 	        		&& flag && (flag & (flag - 1)) === 0) {
 	        	switch (flag) {
 		            case EquipmentGlobals.OBJECT_TYPE_DAGGER:
@@ -530,6 +534,7 @@ define(["require", "com/dalonedrow/engine/sprite/base/simplevector2",
 	        if (flag !== undefined
 	        		&& flag !== null
 	        		&& !isNaN(flag)
+		            && parseInt(Number(flag)) === flag
 	        		&& flag && (flag & (flag - 1)) === 0) {
 	        	has = (behaviorFlags & flag) === flag;
 	        } else {
@@ -551,6 +556,7 @@ define(["require", "com/dalonedrow/engine/sprite/base/simplevector2",
 	        if (flag !== undefined
 	        		&& flag !== null
 	        		&& !isNaN(flag)
+		            && parseInt(Number(flag)) === flag
 	        		&& flag && (flag & (flag - 1)) === 0) {
 	        	has = (gameFlags & flag) === flag;
 	        } else {
@@ -572,6 +578,7 @@ define(["require", "com/dalonedrow/engine/sprite/base/simplevector2",
 	        if (flag !== undefined
 	        		&& flag !== null
 	        		&& !isNaN(flag)
+		            && parseInt(Number(flag)) === flag
 	        		&& flag && (flag & (flag - 1)) === 0) {
 	        	has = (ioFlags & flag) === flag;
 	        } else {
@@ -593,6 +600,7 @@ define(["require", "com/dalonedrow/engine/sprite/base/simplevector2",
 	        if (flag !== undefined
 	        		&& flag !== null
 	        		&& !isNaN(flag)
+		            && parseInt(Number(flag)) === flag
 	        		&& flag && (flag & (flag - 1)) === 0) {
 	        	has = (typeFlags & flag) === flag;
 	        } else {
@@ -602,6 +610,9 @@ define(["require", "com/dalonedrow/engine/sprite/base/simplevector2",
 	            throw new Error(s.join(""));
 	        }
 	        return has;
+	    }
+	    this.hasGroup = function(group) {
+	    	return this.isInGroup(group);
 	    }
 	    this.isInGroup = function(group) {
 	    	var is = false;
@@ -641,6 +652,7 @@ define(["require", "com/dalonedrow/engine/sprite/base/simplevector2",
 	        if (flag !== undefined
 	        		&& flag !== null
 	        		&& !isNaN(flag)
+		            && parseInt(Number(flag)) === flag
 	        		&& flag && (flag & (flag - 1)) === 0) {
 		        behaviorFlags &= ~flag;
 	        } else {
@@ -658,6 +670,7 @@ define(["require", "com/dalonedrow/engine/sprite/base/simplevector2",
 	        if (flag !== undefined
 	        		&& flag !== null
 	        		&& !isNaN(flag)
+		            && parseInt(Number(flag)) === flag
 	        		&& flag && (flag & (flag - 1)) === 0) {
 	        	gameFlags &= ~flag;
 	        } else {
@@ -702,6 +715,7 @@ define(["require", "com/dalonedrow/engine/sprite/base/simplevector2",
 	        if (flag !== undefined
 	        		&& flag !== null
 	        		&& !isNaN(flag)
+		            && parseInt(Number(flag)) === flag
 	        		&& flag && (flag & (flag - 1)) === 0) {
 	        	ioFlags &= ~flag;
 	        } else {
@@ -747,6 +761,7 @@ define(["require", "com/dalonedrow/engine/sprite/base/simplevector2",
 	        if (flag !== undefined
 	        		&& flag !== null
 	        		&& !isNaN(flag)
+		            && parseInt(Number(flag)) === flag
 	        		&& flag && (flag & (flag - 1)) === 0) {
 	        	typeFlags &= ~flag;
 	        } else {
