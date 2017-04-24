@@ -4,9 +4,9 @@ define(['jquery', 'app', 'com/dalonedrow/module/ff/constants/ffequipmentelements
 	'com/dalonedrow/module/ff/systems/ffinteractive',
 	'com/dalonedrow/module/ff/systems/webserviceclient',
 	'com/dalonedrow/engine/systems/base/interactive',
-	'test/behaviourparameterstest'],
+	'test/equipmentitemModifiertest'],
 	function($, App, FFEquipmentElements, FFEquipmentSlots, FFInteractive, WebServiceClient,
-			Interactive, BehaviorParametersTest) {
+			Interactive, EquipmentItemModifierTest) {
     var app, game, webserviceclient;
     console.log("main called");
     var initWebServiceClient = function() {
@@ -27,7 +27,7 @@ define(['jquery', 'app', 'com/dalonedrow/module/ff/constants/ffequipmentelements
         }
     };
     var runTests = function() {
-    	var t = new BehaviorParametersTest();
+    	var t = new EquipmentItemModifierTest();
     	t.test();
     };
     var testVector = function() {

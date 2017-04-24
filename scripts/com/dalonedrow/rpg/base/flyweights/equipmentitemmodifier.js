@@ -9,7 +9,7 @@ define(["com/dalonedrow/utils/hashcode"], function(Hashcode) {
 	    /** not used. yet. */
 	    special = 0;
 	    /** the value of modifier to be applied. */
-	    value = 0;
+	    value = 0.0;
 	    /** Clears all data. */
 	    this.clearData = function() {
 	        percent = false;
@@ -43,13 +43,14 @@ define(["com/dalonedrow/utils/hashcode"], function(Hashcode) {
 	     * @param other the values being cloned
 	     */
 	    this.set = function(other) {
-	        if (arguments.length !== 1) {
+	        if (other === undefined) {
 	            var s = [];
 	            s.push("ERROR! EquipmentItemModifier.set() - ");
 	            s.push("requires 1 parameters");
 	            throw new Error(s.join(""));
 	        }
-	        if (!(other instanceof EquipmentItemModifier)) {
+	        if (other === null
+	        		|| !(other instanceof EquipmentItemModifier)) {
 	            var s = [];
 	            s.push("ERROR! EquipmentItemModifier.set() - ");
 	            s.push("requires parameter to be other EquipmentItemModifier");
@@ -63,22 +64,52 @@ define(["com/dalonedrow/utils/hashcode"], function(Hashcode) {
 	     * Sets the flag indicating whether the modifier is a percentage modifier.
 	     * @param flag the flag
 	     */
-	    this.setPercentage = function(flag) {
-	        percent = flag;
+	    this.setIsPercentage = function(val) {
+		    if (val !== undefined
+		    		&& val !== null
+		    		&& typeof val === "boolean") {
+		        percent = val;
+		    } else {
+	            var s = [];
+	            s.push("ERROR! EquipmentItemModifier.setPercentage() - ");
+	            s.push("argument must be boolean");
+	            throw new Error(s.join(""));
+		    }
 	    }
 	    /**
 	     * Sets the special.
 	     * @param val the special to set
 	     */
 	    this.setSpecial = function(val) {
-	        special = val;
+		    if (val !== undefined
+		    		&& val !== null
+		    		&& !isNaN(val)
+		            && parseInt(Number(val)) === val
+		            && !isNaN(parseInt(val, 10))) {
+		        special = val;
+		    } else {
+	            var s = [];
+	            s.push("ERROR! EquipmentItemModifier.setValue() - ");
+	            s.push("argument must be integer");
+	            throw new Error(s.join(""));
+		    }
 	    }
 	    /**
 	     * Sets the value of modifier to be applied.
 	     * @param val the value to set
 	     */
 	    this.setValue = function(val) {
-	        value = val;
+		    if (val !== undefined
+		    		&& val !== null
+		    		&& !isNaN(val)
+		    		&& typeof val === "number") {
+		        value = val;
+		    } else {
+	            var s = [];
+	            s.push("ERROR! EquipmentItemModifier.setValue() - ");
+	            s.push("argument must be floating-point");
+	            throw new Error(s.join(""));
+		    }
 	    }
 	}
     EquipmentItemModifier.prototype = Object.create(Hashcode.prototype);

@@ -213,7 +213,7 @@ define(["require"], function(require) {
 		}
 		this.booleanMemberTest = function(obj, member) {
 			var setter = ["set", member].join("");
-			var getter= member.toLowerCase();
+			var getter = member.toLowerCase();
 			try {
 				obj[setter]();
 				console.error(["can ", setter, " with undefined"].join(""));
