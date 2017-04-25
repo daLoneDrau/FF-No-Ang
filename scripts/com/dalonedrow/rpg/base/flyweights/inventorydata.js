@@ -25,7 +25,29 @@ define(['require', 'com/dalonedrow/rpg/base/flyweights/baseinteractiveobject',
 	     * @throws Error if an error occurs
 	     */
 	    this.ARX_INVENTORY_Declare_InventoryIn = function(invOwnerIO, itemIO) {
+	    	var BaseInteractiveObject =
+	    		require("com/dalonedrow/rpg/base/flyweights/baseInteractiveobject");
+		    if (invOwnerIO === undefined
+		    		|| itemIO === undefined) {
+	            var s = [];
+	            s.push("ERROR! InventoryData.ARX_INVENTORY_Declare_InventoryIn() - ");
+	            s.push("requires 2 parameters");
+	            throw new Error(s.join(""));
+		    }
+		    if (invOwnerIO === null
+		    		|| !(invOwnerIO instanceof BaseInteractiveObject)) {
+	            var s = [];
+	            s.push("ERROR! InventoryData.ARX_INVENTORY_Declare_InventoryIn() - ");
+	            s.push("invOwnerIO must be BaseInteractiveObject");
+	            throw new Error(s.join(""));
+		    }
 	        if (itemIO !== null) {
+	        	if (!(itemIO instanceof BaseInteractiveObject)) {
+		            var s = [];
+		            s.push("ERROR! InventoryData.ARX_INVENTORY_Declare_InventoryIn() - ");
+		            s.push("itemIO must be BaseInteractiveObject");
+		            throw new Error(s.join(""));
+			    }
 	            // TODO - handle ignition
 	            // if (io->ignition > 0) {
 	            // if (ValidDynLight(io->ignit_light))
@@ -33,7 +55,7 @@ define(['require', 'com/dalonedrow/rpg/base/flyweights/baseinteractiveobject',
 	
 	            // io->ignit_light = -1;
 	
-	            // if (io->ignit_sound != ARX_SOUND_INVALID_RESOURCE) {
+	            // if (io->ignit_sound !== ARX_SOUND_INVALID_RESOURCE) {
 	            // ARX_SOUND_Stop(io->ignit_sound);
 	            // io->ignit_sound = ARX_SOUND_INVALID_RESOURCE;
 	            // }
@@ -60,16 +82,40 @@ define(['require', 'com/dalonedrow/rpg/base/flyweights/baseinteractiveobject',
 	     * @throws Error if an error occurs
 	     */
 	    this.ARX_INVENTORY_IdentifyIO = function(playerIO, itemIO) {
-	        if (playerIO != null && playerIO.hasIOFlag(IoGlobals.IO_01_PC)
-	                && playerIO.getPCData() !== null && itemIO !== null
-	                && itemIO.hasIOFlag(IoGlobals.IO_02_ITEM)
-	                && itemIO.getItemData() !== null
-	                && itemIO.getItemData().getEquipitem() !== null) {
-	            if (playerIO.getPCData().canIdentifyEquipment(
-	                    itemIO.getItemData().getEquipitem())) {
-	                Script.getInstance().sendIOScriptEvent(itemIO,
-	                        ScriptGlobals.SM_69_IDENTIFY, null, "");
-	            }
+	    	var BaseInteractiveObject =
+	    		require("com/dalonedrow/rpg/base/flyweights/baseInteractiveobject");
+		    if (playerIO === undefined
+		    		|| itemIO === undefined) {
+	            var s = [];
+	            s.push("ERROR! InventoryData.ARX_INVENTORY_IdentifyIO() - ");
+	            s.push("requires 2 parameters");
+	            throw new Error(s.join(""));
+		    }
+		    if (itemIO !== null
+		    		&& !(itemIO instanceof BaseInteractiveObject)) {
+	            var s = [];
+	            s.push("ERROR! InventoryData.ARX_INVENTORY_IdentifyIO() - ");
+	            s.push("itemIO must be BaseInteractiveObject");
+	            throw new Error(s.join(""));
+		    }
+	        if (playerIO !== null) {
+	        	if (!(playerIO instanceof BaseInteractiveObject)) {
+		            var s = [];
+		            s.push("ERROR! InventoryData.ARX_INVENTORY_IdentifyIO() - ");
+		            s.push("playerIO must be BaseInteractiveObject");
+		            throw new Error(s.join(""));
+			    }
+	        	if (playerIO.hasIOFlag(IoGlobals.IO_01_PC)
+	        			&& playerIO.getPCData() !== null && itemIO !== null
+		                && itemIO.hasIOFlag(IoGlobals.IO_02_ITEM)
+		                && itemIO.getItemData() !== null
+		                && itemIO.getItemData().getEquipitem() !== null) {
+		            if (playerIO.getPCData().canIdentifyEquipment(
+		                    itemIO.getItemData().getEquipitem())) {
+		                Script.getInstance().sendIOScriptEvent(itemIO,
+		                        ScriptGlobals.SM_69_IDENTIFY, null, "");
+		            }
+	        	}
 	        }
 	    }
 	    /**
@@ -80,6 +126,21 @@ define(['require', 'com/dalonedrow/rpg/base/flyweights/baseinteractiveobject',
 	     * @throws Error if an error occurs
 	     */
 	    this.CheckForInventoryReplaceMe = function(itemIO) {
+	    	var BaseInteractiveObject =
+	    		require("com/dalonedrow/rpg/base/flyweights/baseInteractiveobject");
+		    if (itemIO === undefined) {
+	            var s = [];
+	            s.push("ERROR! InventoryData.CheckForInventoryReplaceMe() - ");
+	            s.push("requires 1 parameter");
+	            throw new Error(s.join(""));
+		    }
+		    if (itemIO !== null
+		    		&& !(itemIO instanceof BaseInteractiveObject)) {
+	            var s = [];
+	            s.push("ERROR! InventoryData.CheckForInventoryReplaceMe() - ");
+	            s.push("itemIO must be BaseInteractiveObject");
+	            throw new Error(s.join(""));
+		    }
 	        var can = false;
 	        if (itemIO !== null && !itemIO.hasIOFlag(IoGlobals.IO_15_MOVABLE)) {
 	            if (itemIO.hasIOFlag(IoGlobals.IO_10_GOLD)
@@ -98,7 +159,7 @@ define(['require', 'com/dalonedrow/rpg/base/flyweights/baseinteractiveobject',
 	                // first try to stack
 	                for (var i = slots.length - 1; i >= 0; i--) {
 	                    var slotIO = slots[i].getIo();
-	                    if (slotIO != null
+	                    if (slotIO !== null
 	                            && slotIO.getItemData().getStackSize() > 1
 	                            && Interactive.getInstance().isSameObject(itemIO,
 	                                    slotIO)) {
@@ -219,12 +280,23 @@ define(['require', 'com/dalonedrow/rpg/base/flyweights/baseinteractiveobject',
 	     * Forces all items to be set at a specific level.
 	     * @param level the level
 	     */
-	    this.ForcePlayerInventoryObjectLevel = function(level) {
-	        for (var i = slots.length - 1; i >= 0; i--) {
-	            if (slots[i].getIo() !== null) {
-	                slots[i].getIo().setLevel(level);
-	            }
-	        }
+	    this.ForcePlayerInventoryObjectLevel = function(val) {
+		    if (val !== undefined
+		    		&& val !== null
+		    		&& !isNaN(val)
+		            && parseInt(Number(val)) === val
+		            && !isNaN(parseInt(val, 10))) {
+		        for (var i = slots.length - 1; i >= 0; i--) {
+		            if (slots[i].getIo() !== null) {
+		                slots[i].getIo().setLevel(val);
+		            }
+		        }
+		    } else {
+	            var s = [];
+	            s.push("ERROR! InventoryData.ForcePlayerInventoryObjectLevel() - ");
+	            s.push("argument must be integer");
+	            throw new Error(s.join(""));
+		    }
 	    }
 	    /**
 	     * Gets the IO associated with this {@link InventoryData}.
@@ -245,8 +317,19 @@ define(['require', 'com/dalonedrow/rpg/base/flyweights/baseinteractiveobject',
 	     * @param index the slot index
 	     * @return {@link SLOT}
 	     */
-	    this.getSlot = function(index) {
-	        return slots[index];
+	    this.getSlot = function(val) {
+		    if (val !== undefined
+		    		&& val !== null
+		    		&& !isNaN(val)
+		            && parseInt(Number(val)) === val
+		            && !isNaN(parseInt(val, 10))) {
+		        return slots[val];
+		    } else {
+	            var s = [];
+	            s.push("ERROR! InventoryData.getSlot() - ");
+	            s.push("argument must be integer");
+	            throw new Error(s.join(""));
+		    }
 	    }
 	    /**
 	     * Determines if an item is in inventory.
@@ -255,6 +338,21 @@ define(['require', 'com/dalonedrow/rpg/base/flyweights/baseinteractiveobject',
 	     *         otherwise
 	     */
 	    this.IsInPlayerInventory = function(io) {
+	    	var BaseInteractiveObject =
+	    		require("com/dalonedrow/rpg/base/flyweights/baseInteractiveobject");
+		    if (io === undefined) {
+	            var s = [];
+	            s.push("ERROR! InventoryData.IsInPlayerInventory() - ");
+	            s.push("requires 1 parameter");
+	            throw new Error(s.join(""));
+		    }
+		    if (io === null
+		    		|| !(io instanceof BaseInteractiveObject)) {
+	            var s = [];
+	            s.push("ERROR! InventoryData.IsInPlayerInventory() - ");
+	            s.push("io must be BaseInteractiveObject");
+	            throw new Error(s.join(""));
+		    }
 	        var is = false;
 	        for (var i = slots.length - 1; i >= 0; i--) {
 	            var ioo = slots[i].getIo();
@@ -266,14 +364,46 @@ define(['require', 'com/dalonedrow/rpg/base/flyweights/baseinteractiveobject',
 	        return is;
 	    }
 	    /**
+	     * Gets the flag indicating whether the left ring is the next one that needs
+	     * to be switched.
+	     * @return <tt>true</tt> if the left ring should be switched;
+	     *         <tt>false</tt> otherwise
+	     */
+	    this.isLeftRing = function() {
+	        return leftRing;
+	    }
+	    /**
 	     * Replaces an item in all inventories.
 	     * @param oldItemIO the old item being replaced
 	     * @param newItemIO the new item
 	     * @throws Error if an error occurs
 	     */
 	    this.ReplaceInAllInventories = function(oldItemIO, newItemIO) {
-	        if (oldItemIO != null && !oldItemIO.hasIOFlag(IoGlobals.IO_15_MOVABLE)
-	                && newItemIO != null
+	    	var BaseInteractiveObject =
+	    		require("com/dalonedrow/rpg/base/flyweights/baseInteractiveobject");
+		    if (oldItemIO === undefined
+		    		|| newItemIO === undefined) {
+	            var s = [];
+	            s.push("ERROR! InventoryData.ReplaceInAllInventories() - ");
+	            s.push("requires 2 parameters");
+	            throw new Error(s.join(""));
+		    }
+		    if (oldItemIO !== null
+		    		&& !(oldItemIO instanceof BaseInteractiveObject)) {
+	            var s = [];
+	            s.push("ERROR! InventoryData.ReplaceInAllInventories() - ");
+	            s.push("oldItemIO must be BaseInteractiveObject");
+	            throw new Error(s.join(""));
+		    }
+		    if (newItemIO !== null
+		    		&& !(newItemIO instanceof BaseInteractiveObject)) {
+	            var s = [];
+	            s.push("ERROR! InventoryData.ReplaceInAllInventories() - ");
+	            s.push("newItemIO must be BaseInteractiveObject");
+	            throw new Error(s.join(""));
+		    }
+	        if (oldItemIO !== null && !oldItemIO.hasIOFlag(IoGlobals.IO_15_MOVABLE)
+	                && newItemIO !== null
 	                && !newItemIO.hasIOFlag(IoGlobals.IO_15_MOVABLE)) {
 	            var oldIORefId = Interactive.getInstance().GetInterNum(oldItemIO);
 	            var newIORefId = Interactive.getInstance().GetInterNum(newItemIO);
@@ -304,23 +434,47 @@ define(['require', 'com/dalonedrow/rpg/base/flyweights/baseinteractiveobject',
 	     * @throws Error if an error occurs
 	     */
 	    this.SendInventoryObjectCommand = function(itemName, message) {
+		    if (itemName === undefined
+		    		|| message === undefined) {
+	            var s = [];
+	            s.push("ERROR! InventoryData.SendInventoryObjectCommand() - ");
+	            s.push("requires 2 parameters");
+	            throw new Error(s.join(""));
+		    }
+		    if (itemName !== null
+		    		&& typeof itemName !== "string") {
+	            var s = [];
+	            s.push("ERROR! InventoryData.SendInventoryObjectCommand() - ");
+	            s.push("itemName must be string");
+	            throw new Error(s.join(""));
+		    }
 	        if (itemName !== null && itemName.length() > 0 && slots !== null) {
-	            for (var i = slots.length - 1; i >= 0; i--) {
-	                var slotIO = slots[i].getIo();
-	                if (slotIO != null
-	                        && slotIO.hasGameFlag(IoGlobals.GFLAG_INTERACTIVITY)
-	                        && slotIO.getItemData() != null) {
-	                    var ioName = slotIO.getItemData().getItemName();
-	                    if (itemName === ioName) {
-	                        Script.getInstance().sendIOScriptEvent(slotIO, message,
-	                                null, "");
-	                        slotIO = null;
-	                        break;
-	                    }
-	                    ioName = null;
-	                }
-	                slotIO = null;
-	            }
+			    if (message !== null
+			    		&& !isNaN(message)
+			            && parseInt(Number(message)) === message
+			            && !isNaN(parseInt(message, 10))) {
+		            for (var i = slots.length - 1; i >= 0; i--) {
+		                var slotIO = slots[i].getIo();
+		                if (slotIO !== null
+		                        && slotIO.hasGameFlag(IoGlobals.GFLAG_INTERACTIVITY)
+		                        && slotIO.getItemData() !== null) {
+		                    var ioName = slotIO.getItemData().getItemName();
+		                    if (itemName === ioName) {
+		                        Script.getInstance().sendIOScriptEvent(slotIO, message,
+		                                null, "");
+		                        slotIO = null;
+		                        break;
+		                    }
+		                    ioName = null;
+		                }
+		                slotIO = null;
+		            }
+			    } else {
+		            var s = [];
+		            s.push("ERROR! InventoryData.SendInventoryObjectCommand() - ");
+		            s.push("message must be integer");
+		            throw new Error(s.join(""));
+			    }
 	        }
 	    }
 	    /**
@@ -346,17 +500,17 @@ define(['require', 'com/dalonedrow/rpg/base/flyweights/baseinteractiveobject',
 	     * one that needs to be switched.
 	     * @param flag the new value to set
 	     */
-	    this.setLeftRing = function(flag) {
-	        this.leftRing = flag;
-	    }
-	    /**
-	     * Gets the flag indicating whether the left ring is the next one that needs
-	     * to be switched.
-	     * @return <tt>true</tt> if the left ring should be switched;
-	     *         <tt>false</tt> otherwise
-	     */
-	    this.isLeftRing = function() {
-	        return leftRing;
+	    this.setLeftRing = function(val) {
+		    if (val !== undefined
+		    		&& val !== null
+		    		&& typeof val === "boolean") {
+		        leftRing = val;
+		    } else {
+	            var s = [];
+	            s.push("ERROR! EquipmentItemModifier.setPercentage() - ");
+	            s.push("argument must be boolean");
+	            throw new Error(s.join(""));
+		    }
 	    }
 	}
     InventoryData.prototype = Object.create(Hashcode.prototype);
