@@ -147,6 +147,7 @@ define(["com/dalonedrow/rpg/base/flyweights/baseinteractiveobject",
 	        if (flag !== undefined
 	        		&& flag !== null
 	        		&& !isNaN(flag)
+		            && parseInt(Number(flag)) === flag
 	        		&& flag && (flag & (flag - 1)) === 0) {
 	        	flagValues = flag;
 	        } else {
@@ -187,12 +188,12 @@ define(["com/dalonedrow/rpg/base/flyweights/baseinteractiveobject",
 	        if (val !== undefined) {
 	        	if (val === null) {
 	        		method = val;
-	        	} else if (typeof val === "function") {
+	        	} else if (typeof val === "string") {
 	        		method = val;	        	
 	        	} else {
 		            var s = [];
 		            s.push("ERROR! ScriptTimerInitializationParameters.setMethod() - ");
-		            s.push("argument must be function");
+		            s.push("argument must be string");
 		            throw new Error(s.join(""));
 	        	}
 	        } else {
@@ -262,17 +263,12 @@ define(["com/dalonedrow/rpg/base/flyweights/baseinteractiveobject",
 		 * @param val the new value to set
 		 */
 		this.setRepeatTimes = function(val) {
-	        if (val !== undefined) {
-	        	if (val === null) {
-	        		repeatTimes = val;
-	        	} else if (typeof val === "string") {
-	        		repeatTimes = val;	        	
-	        	} else {
-		            var s = [];
-		            s.push("ERROR! ScriptTimerInitializationParameters.setRepeatTimes() - ");
-		            s.push("argument must be string");
-		            throw new Error(s.join(""));
-	        	}
+		    if (val !== undefined
+		    		&& val !== null
+		    		&& !isNaN(val)
+		            && parseInt(Number(val)) === val
+		            && !isNaN(parseInt(val, 10))) {
+	        	repeatTimes = val;
 	        } else {
 	            var s = [];
 	            s.push("ERROR! ScriptTimerInitializationParameters.setRepeatTimes() - ");
@@ -288,7 +284,7 @@ define(["com/dalonedrow/rpg/base/flyweights/baseinteractiveobject",
 	        if (val !== undefined) {
 	        	if (val === null) {
 	        		script = val;
-	        	} else if (val instanceof SimpleVector3) {
+	        	} else if (val instanceof Scriptable) {
 	        		script = val; 	
 	        	} else {
 		            var s = [];

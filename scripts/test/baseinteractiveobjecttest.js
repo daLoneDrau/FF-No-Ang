@@ -64,6 +64,7 @@ define(["com/dalonedrow/engine/systems/base/projectconstants",
 			this.associationMemberTest(io, new Scriptable(), "getIo", "setScript",
 					"getScript");
 			this.intMemberTest(io, "setPoisonCharges", "getPoisonCharges");
+			console.log("end BaseInteractiveObject tests");
 		}
 	};
 	return BaseInteractiveObjectTest;

@@ -83,7 +83,7 @@ define(["com/dalonedrow/rpg/base/flyweights/baseinteractiveobject",
 		 * Sets the flag indicating whether the event still exists.
 		 * @param val the exist to set
 		 */
-		this.setExist = function(val) {
+		this.setExists = function(val) {
 		    if (val !== undefined
 		    		&& val !== null
 		    		&& typeof val === "boolean") {
@@ -100,9 +100,15 @@ define(["com/dalonedrow/rpg/base/flyweights/baseinteractiveobject",
 		 * @param val the io to set
 		 */
 		this.setIo = function(val) {
-	        if (val !== undefined
-	        		&& val === null
-	        		&& val instanceof BaseInteractiveObject) {
+	        if (val === undefined) {
+	            var s = [];
+	            s.push("ERROR! StackedEvent.setIo() - ");
+	            s.push("requires 1 argument");
+	            throw new Error(s.join(""));
+	        }
+	        if (val === null) {
+				io = val;
+	        } else if (val instanceof BaseInteractiveObject) {
 				io = val;
         	} else {
 	            var s = [];
@@ -150,9 +156,15 @@ define(["com/dalonedrow/rpg/base/flyweights/baseinteractiveobject",
 		 * @param val the sender to set
 		 */
 		this.setSender = function(val) {
-	        if (val !== undefined
-	        		&& val === null
-	        		&& val instanceof BaseInteractiveObject) {
+	        if (val === undefined) {
+	            var s = [];
+	            s.push("ERROR! StackedEvent.setSender() - ");
+	            s.push("requires 1 argument");
+	            throw new Error(s.join(""));
+	        }
+	        if (val === null) {
+	        	sender = val;
+	        } else if (val instanceof BaseInteractiveObject) {
 	        	sender = val;
         	} else {
 	            var s = [];

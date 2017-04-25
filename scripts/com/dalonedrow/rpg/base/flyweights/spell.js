@@ -31,6 +31,7 @@ define(["com/dalonedrow/utils/hashcode"], function(Hashcode) {
 	        if (flag !== undefined
 	        		&& flag !== null
 	        		&& !isNaN(flag)
+		            && parseInt(Number(flag)) === flag
 	        		&& flag && (flag & (flag - 1)) === 0) {
 	        	flags |= flag;
 	        } else {
@@ -158,6 +159,7 @@ define(["com/dalonedrow/utils/hashcode"], function(Hashcode) {
 	        if (flag !== undefined
 	        		&& flag !== null
 	        		&& !isNaN(flag)
+		            && parseInt(Number(flag)) === flag
 	        		&& flag && (flag & (flag - 1)) === 0) {
 				return (flags & flag) == flag;
 	        } else {
@@ -175,6 +177,7 @@ define(["com/dalonedrow/utils/hashcode"], function(Hashcode) {
 	        if (flag !== undefined
 	        		&& flag !== null
 	        		&& !isNaN(flag)
+		            && parseInt(Number(flag)) === flag
 	        		&& flag && (flag & (flag - 1)) === 0) {
 				flags &= ~flag;
 	        } else {
@@ -209,12 +212,29 @@ define(["com/dalonedrow/utils/hashcode"], function(Hashcode) {
 		this.setCasterLevel = function(val) {
 		    if (val !== undefined
 		    		&& val !== null
+		    		&& typeof val === "number"
 		    		&& !isNaN(val)) {
 				casterLevel = val;
 		    } else {
 	            var s = [];
 	            s.push("ERROR! Spell.setCasterLevel() - ");
 	            s.push("argument must be floating-point");
+	            throw new Error(s.join(""));
+		    }
+		}
+		/**
+		 * Sets the exists
+		 * @param exists the exists to set
+		 */
+		this.setExists = function(val) {
+		    if (val !== undefined
+		    		&& val !== null
+		    		&& typeof val === "boolean") {
+		    	exists = val;
+		    } else {
+	            var s = [];
+	            s.push("ERROR! Spell.setExists() - ");
+	            s.push("argument must be boolean");
 	            throw new Error(s.join(""));
 		    }
 		}
@@ -233,22 +253,6 @@ define(["com/dalonedrow/utils/hashcode"], function(Hashcode) {
 	            var s = [];
 	            s.push("ERROR! Spell.setId() - ");
 	            s.push("argument must be integer");
-	            throw new Error(s.join(""));
-		    }
-		}
-		/**
-		 * Sets the exists
-		 * @param exists the exists to set
-		 */
-		this.setExists = function(val) {
-		    if (val !== undefined
-		    		&& val !== null
-		    		&& typeof val === "boolean") {
-		    	exists = val;
-		    } else {
-	            var s = [];
-	            s.push("ERROR! Spell.setExists() - ");
-	            s.push("argument must be boolean");
 	            throw new Error(s.join(""));
 		    }
 		}

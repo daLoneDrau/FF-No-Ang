@@ -80,6 +80,39 @@ define(["require"], function(require) {
 			console.log("end constructor test for " + obj);
 			return inst;
     	}
+		this.booleanMemberTest = function(obj, member) {
+			var setter = ["set", member].join("");
+			var getter = [member.charAt(0).toLowerCase(), member.slice(1)].join("");
+			try {
+				obj[setter]();
+				console.error(["can ", setter, " with undefined"].join(""));
+			} catch (err) { }
+			try {
+				obj[setter](null);
+				console.error(["can ", setter, " with null"].join(""));
+			} catch (err) { }
+			try {
+				obj[setter]({});
+				console.error(["can ", setter, " with object"].join(""));
+			} catch (err) { }
+			try {
+				obj[setter](25);
+				console.error(["can ", setter, " with int"].join(""));
+			} catch (err) { }
+			try {
+				obj[setter](0.5);
+				console.error(["can ", setter, " with float"].join(""));
+			} catch (err) { }
+			try {
+				obj[setter]("test");
+				console.error(["can ", setter, " with string"].join(""));
+			} catch (err) { }
+			obj[setter](true);
+			if (!obj[getter]()) {
+				console.error(["cannot ", setter, " with boolean"].join(""));
+			}
+			console.log("end test for " + setter + ", " + getter);
+		}
 		this.floatMemberTest = function(obj, setter, getter) {
 			try {
 				obj[setter]();
@@ -158,9 +191,71 @@ define(["require"], function(require) {
 			} catch (err) {
 				//console.log(["cannot ", setter, " with float"].join(""));
 			}
-			obj[setter](3);
-			if (obj[getter]() !== 3) {
+			obj[setter](2);
+			if (obj[getter]() !== 2) {
 				console.error(["cannot ", setter, " with int"].join(""));
+			}
+			console.log("end test for " + setter + ", " + getter);
+		}
+		this.objectMemberTest = function(obj, member, setter, getter, nullsAllowed) {
+			try {
+				obj[setter]();
+				console.error(["can ", setter, " with undefined"].join(""));
+			} catch (err) {
+				//console.log(["cannot ", setter, " with undefined"].join(""));
+			}
+			if (nullsAllowed !== undefined
+					&& nullsAllowed) {
+				obj[setter](null);
+				if (obj[getter]() !== null) {
+					console.error(["cannot ", setter, " with null"].join(""));
+				}
+			} else {
+				try {
+					obj[setter](null);
+					console.error(["can ", setter, " with null"].join(""));
+				} catch (err) {
+					//console.log(["cannot ", setter, " with undefined"].join(""));
+				}
+			}
+			try {
+				obj[setter]("test");
+				console.error(["can ", setter, " with string"].join(""));
+			} catch (err) {
+				//console.log(["cannot ", setter, " with string"].join(""));
+			}
+			try {
+				obj[setter](25);
+				console.error(["can ", setter, " with int"].join(""));
+			} catch (err) {
+				//console.log(["cannot ", setter, " with string"].join(""));
+			}
+			try {
+				obj[setter](0.5);
+				console.error(["can ", setter, " with float"].join(""));
+			} catch (err) {
+				//console.log(["cannot ", setter, " with float"].join(""));
+			}
+			try {
+				obj[setter](true);
+				console.error(["can ", setter, " with boolean"].join(""));
+			} catch (err) {
+				//console.log(["cannot ", setter, " with float"].join(""));
+			}
+			var instance = null;
+			if (typeof member === "string") {
+				instance = new (require(member))();
+			} else {
+				instance = member;
+			}
+			try {
+				obj[setter](instance);
+			} catch (err) {
+				console.error(["cannot ", setter, " with ", member].join(""));				
+			}
+			var member2 = obj[getter]();
+			if (typeof member2 !== typeof instance) {
+				console.error(["cannot ", getter, " assigned type"].join(""));
 			}
 			console.log("end test for " + setter + ", " + getter);
 		}
@@ -208,87 +303,6 @@ define(["require"], function(require) {
 			obj[setter]("test");
 			if (obj[getter]() !== "test") {
 				console.error(["cannot ", setter, " with int"].join(""));
-			}
-			console.log("end test for " + setter + ", " + getter);
-		}
-		this.booleanMemberTest = function(obj, member) {
-			var setter = ["set", member].join("");
-			var getter = [member.charAt(0).toLowerCase(), member.slice(1)].join("");
-			try {
-				obj[setter]();
-				console.error(["can ", setter, " with undefined"].join(""));
-			} catch (err) { }
-			try {
-				obj[setter](null);
-				console.error(["can ", setter, " with null"].join(""));
-			} catch (err) { }
-			try {
-				obj[setter]({});
-				console.error(["can ", setter, " with object"].join(""));
-			} catch (err) { }
-			try {
-				obj[setter](25);
-				console.error(["can ", setter, " with int"].join(""));
-			} catch (err) { }
-			try {
-				obj[setter](0.5);
-				console.error(["can ", setter, " with float"].join(""));
-			} catch (err) { }
-			try {
-				obj[setter]("test");
-				console.error(["can ", setter, " with string"].join(""));
-			} catch (err) { }
-			obj[setter](true);
-			if (!obj[getter]()) {
-				console.error(["cannot ", setter, " with boolean"].join(""));
-			}
-			console.log("end test for " + setter + ", " + getter);
-		}
-		this.objectMemberTest = function(obj, memberClass, setter, getter) {
-			try {
-				obj[setter]();
-				console.error(["can ", setter, " with undefined"].join(""));
-			} catch (err) {
-				//console.log(["cannot ", setter, " with undefined"].join(""));
-			}
-			obj[setter](null);
-			if (obj[getter]() !== null) {
-				console.error(["cannot ", setter, " with null"].join(""));
-			}
-			try {
-				obj[setter]("test");
-				console.error(["can ", setter, " with string"].join(""));
-			} catch (err) {
-				//console.log(["cannot ", setter, " with string"].join(""));
-			}
-			try {
-				obj[setter](25);
-				console.error(["can ", setter, " with int"].join(""));
-			} catch (err) {
-				//console.log(["cannot ", setter, " with string"].join(""));
-			}
-			try {
-				obj[setter](0.5);
-				console.error(["can ", setter, " with float"].join(""));
-			} catch (err) {
-				//console.log(["cannot ", setter, " with float"].join(""));
-			}
-			try {
-				obj[setter](true);
-				console.error(["can ", setter, " with boolean"].join(""));
-			} catch (err) {
-				//console.log(["cannot ", setter, " with float"].join(""));
-			}
-			var instance = null;
-			try {
-				instance = new (require(memberClass))();
-				obj[setter](instance);
-			} catch (err) {
-				console.error(["cannot ", setter, " with ", memberClass].join(""));				
-			}
-			var member = obj[getter]();
-			if (typeof member !== typeof instance) {
-				console.error(["cannot ", getter, " assigned type"].join(""));
 			}
 			console.log("end test for " + setter + ", " + getter);
 		}

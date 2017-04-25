@@ -6,7 +6,7 @@ define(["com/dalonedrow/engine/systems/base/interactive",
 		function(Interactive, ScriptGlobals, Hashcode) {
 	function TargetParameters(initParams) {
         if (initParams === undefined
-        		|| initParams=== null
+        		|| initParams === null
         		|| typeof initParams !== "string") {
             var s = [];
             s.push("ERROR! TargetParameters() - ");
@@ -62,6 +62,7 @@ define(["com/dalonedrow/engine/systems/base/interactive",
 	        if (flag !== undefined
 	        		&& flag !== null
 	        		&& !isNaN(flag)
+		            && parseInt(Number(flag)) === flag
 	        		&& flag && (flag & (flag - 1)) === 0) {
 	        	flags |= flag;
 	        } else {
@@ -71,7 +72,7 @@ define(["com/dalonedrow/engine/systems/base/interactive",
 	            throw new Error(s.join(""));
 	        }
 	    }
-	    var clearFlags = function() {
+	    this.clearFlags = function() {
 	        flags = 0;
 	    }
 	    /**
@@ -96,6 +97,7 @@ define(["com/dalonedrow/engine/systems/base/interactive",
 	        if (flag !== undefined
 	        		&& flag !== null
 	        		&& !isNaN(flag)
+		            && parseInt(Number(flag)) === flag
 	        		&& flag && (flag & (flag - 1)) === 0) {
 		        return (flags & flag) == flag;
 	        } else {
@@ -113,6 +115,7 @@ define(["com/dalonedrow/engine/systems/base/interactive",
 	        if (flag !== undefined
 	        		&& flag !== null
 	        		&& !isNaN(flag)
+		            && parseInt(Number(flag)) === flag
 	        		&& flag && (flag & (flag - 1)) === 0) {
 		        flags &= ~flag;
 	        } else {

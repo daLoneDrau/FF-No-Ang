@@ -5,9 +5,9 @@ define(["com/dalonedrow/utils/watchable"], function(Watchable) {
     function InventorySlot() {
 	    Watchable.call(this);
 	    /** the item occupying the inventory slot. */
-	    io = null;
+	    var io = null;
 	    /** a flag indicating the item is showing and should be rendered. */
-	    show = false;
+	    var show = false;
 	    /**
 	     * Gets the item occupying the inventory slot.
 	     * @return {@link IO}

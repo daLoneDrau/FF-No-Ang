@@ -8,6 +8,7 @@ define(['com/dalonedrow/rpg/base/flyweights/attribute', "test/basetester"], func
 			this.stringMemberTest(a, "setDescription", "getDescription");
 			this.stringMemberTest(a, "setDisplayName", "getDisplayName");
 			this.floatMemberTest(a, "setBase", "getBase");
+			console.log("end Attribute tests");
 		}
 	};
 	return AttributeTest;

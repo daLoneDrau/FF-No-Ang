@@ -46,8 +46,10 @@ define(["com/dalonedrow/rpg/base/constants/scriptglobals", "com/dalonedrow/utils
 					text = null;
 				} else if (typeof value === "string") {
 					text = value;
+				} else if (Array.isArray(value)) {
+					throwException = true;
 				} else {
-					text = new String(value);
+					text = String(value);
 				}
 				break;
 			case ScriptGlobals.TYPE_G_01_TEXT_ARR:
@@ -69,9 +71,9 @@ define(["com/dalonedrow/rpg/base/constants/scriptglobals", "com/dalonedrow/utils
 				} else if (typeof value === 'number') {
 					fval = value;
 				} else {
-					try {
+					if (!isNaN(parseFloat(value))) {
 						fval = parseFloat(value);
-					} catch (e) {
+					} else {
 						throwException = true;
 					}
 				}
@@ -82,6 +84,8 @@ define(["com/dalonedrow/rpg/base/constants/scriptglobals", "com/dalonedrow/utils
 					faval = [];
 				} else if (Array.isArray(value)) {
 					faval = value;
+				} else if (typeof value === 'number') {
+					faval = [value];
 				} else {
 					throwException = true;
 				}
@@ -91,12 +95,14 @@ define(["com/dalonedrow/rpg/base/constants/scriptglobals", "com/dalonedrow/utils
 				if (value === null) {
 					ival = 0;
 				} else if (typeof value === 'number'
-					&& (value | 0) === value) {
+		    		&& !isNaN(value)
+		            && parseInt(Number(value)) === value
+		            && !isNaN(parseInt(value, 10))) {
 					ival = value;
 				} else {
-					try {
+					if (!isNaN(parseInt(value, 10))) {
 						ival = parseInt(value, 10);
-					} catch (e) {
+					} else {
 						throwException = true;
 					}
 				}
@@ -107,6 +113,12 @@ define(["com/dalonedrow/rpg/base/constants/scriptglobals", "com/dalonedrow/utils
 					iaval = [];
 				} else if (Array.isArray(value)) {
 					iaval = value;
+				} else if (typeof value === 'number') {
+					if (!isNaN(parseInt(value, 10))) {
+						iaval = [parseInt(value, 10)];
+					} else {
+						throwException = true;
+					}
 				} else {
 					throwException = true;
 				}
@@ -116,12 +128,14 @@ define(["com/dalonedrow/rpg/base/constants/scriptglobals", "com/dalonedrow/utils
 				if (value === null) {
 					lval = 0;
 				} else if (typeof value === 'number'
-					&& (value | 0) === value) {
+		    		&& !isNaN(value)
+		            && parseInt(Number(value)) === value
+		            && !isNaN(parseInt(value, 10))) {
 					lval = value;
 				} else {
-					try {
-						lval = new Number(value);
-					} catch (e) {
+					if (!isNaN(parseInt(value, 10))) {
+						lval = parseInt(value, 10);
+					} else {
 						throwException = true;
 					}
 				}
@@ -133,6 +147,12 @@ define(["com/dalonedrow/rpg/base/constants/scriptglobals", "com/dalonedrow/utils
 					laval = [];
 				} else if (Array.isArray(value)) {
 					laval = value;
+				} else if (typeof value === 'number') {
+					if (!isNaN(parseInt(value, 10))) {
+						laval = [parseInt(value, 10)];
+					} else {
+						throwException = true;
+					}
 				} else {
 					throwException = true;
 				}
@@ -153,10 +173,18 @@ define(["com/dalonedrow/rpg/base/constants/scriptglobals", "com/dalonedrow/utils
 				throw new Error(["Invalid ScriptVariable type - ", type, "."].join(""));
 			}
 		}
-		if (arguments.length === 1
-				&& arguments[0] instanceof ScriptVariable) {
+		if (arguments.length === 1) {
 			if (arguments[0] === null) {
-				throw new Error("Cannot clone from null!");
+	            var s = [];
+	            s.push("ERROR! ScriptVariable() - ");
+	            s.push("cannot clone from null");
+	            throw new Error(s.join(""));
+			}
+			if (!(arguments[0] instanceof ScriptVariable)) {
+	            var s = [];
+	            s.push("ERROR! ScriptVariable() - ");
+	            s.push("can only clone ScriptVariable");
+	            throw new Error(s.join(""));
 			}
 			name = arguments[0].getName();
 			type = arguments[0].getType();
@@ -176,19 +204,43 @@ define(["com/dalonedrow/rpg/base/constants/scriptglobals", "com/dalonedrow/utils
 				textaval = [].concat(arguments[0].getTextArrayVal());
 			}
 			text = arguments[0].getText();
-		} else if (arguments.length === 3
-				&& typeof arguments[0] === "string"
-					&& (typeof arguments[1] === 'number' && (arguments[1] | 0) === arguments[1])) {
+		} else if (arguments.length === 3) {
 			if (arguments[0] === null) {
-				throw new Error("Name field is null.");
+	            var s = [];
+	            s.push("ERROR! ScriptVariable() - ");
+	            s.push("1st argument cannot be null");
+	            throw new Error(s.join(""));
+			}
+			if (typeof arguments[0] !== "string") {
+	            var s = [];
+	            s.push("ERROR! ScriptVariable() - ");
+	            s.push("1st argument must be string");
+	            throw new Error(s.join(""));
 			}
 			if (arguments[0].trim().length === 0) {
-				throw new Error("Name field is empty.");
+	            var s = [];
+	            s.push("ERROR! ScriptVariable() - ");
+	            s.push("1st argument must be not be empty string");
+	            throw new Error(s.join(""));
 			}
+		    if (arguments[1] === null
+		    		|| isNaN(arguments[1])
+		            || parseInt(Number(arguments[1])) !== arguments[1]
+		            || isNaN(parseInt(arguments[1], 10))) {
+	            var s = [];
+	            s.push("ERROR! ScriptVariable() - ");
+	            s.push("2nd argument must be number");
+	            throw new Error(s.join(""));
+		    }
 			name = arguments[0];
 			type = arguments[1];
 			validateType();
-			this.set(arguments[2]);		
+			this.set(arguments[2]);
+		} else {
+            var s = [];
+            s.push("ERROR! ScriptVariable() - ");
+            s.push("requires 1 ScriptVariable argument to clone, or string, int and object to set");
+            throw new Error(s.join(""));			
 		}
 		/** Clears up member fields, releasing their memory. */
 		this.clear = function() {
@@ -216,7 +268,18 @@ define(["com/dalonedrow/rpg/base/constants/scriptglobals", "com/dalonedrow/utils
 			if (arguments.length === 0) {
 				return faval;
 			} else {
-				return faval[arguments[0]];
+			    if (arguments[0] !== undefined
+			    		&& arguments[0] !== null
+			    		&& !isNaN(arguments[0])
+			            && parseInt(Number(arguments[0])) === arguments[0]
+			            && !isNaN(parseInt(arguments[0], 10))) {
+					return faval[arguments[0]];
+			    } else {
+		            var s = [];
+		            s.push("ERROR! ScriptVariable.getFloatArrayVal() - ");
+		            s.push("argument must be integer");
+		            throw new Error(s.join(""));
+			    }
 			}
 		}
 		/**
@@ -227,7 +290,7 @@ define(["com/dalonedrow/rpg/base/constants/scriptglobals", "com/dalonedrow/utils
 		this.getFloatVal = function() {
 			if (type !== ScriptGlobals.TYPE_G_02_FLOAT
 					&& type !== ScriptGlobals.TYPE_L_10_FLOAT) {
-				throw new Error("Not a floating-point value");
+				throw new Error("Not a floating-point variable");
 			}
 			return fval;
 		}
@@ -244,7 +307,18 @@ define(["com/dalonedrow/rpg/base/constants/scriptglobals", "com/dalonedrow/utils
 			if (arguments.length === 0) {
 				return iaval;
 			} else {
-				return iaval[arguments[0]];
+			    if (arguments[0] !== undefined
+			    		&& arguments[0] !== null
+			    		&& !isNaN(arguments[0])
+			            && parseInt(Number(arguments[0])) === arguments[0]
+			            && !isNaN(parseInt(arguments[0], 10))) {
+					return iaval[arguments[0]];
+			    } else {
+		            var s = [];
+		            s.push("ERROR! ScriptVariable.getIntArrayVal() - ");
+		            s.push("argument must be integer");
+		            throw new Error(s.join(""));
+			    }
 			}
 		}
 		/**
@@ -267,12 +341,23 @@ define(["com/dalonedrow/rpg/base/constants/scriptglobals", "com/dalonedrow/utils
 		this.getLongArrayVal = function() {
 			if (type !== ScriptGlobals.TYPE_G_07_LONG_ARR
 					&& type !== ScriptGlobals.TYPE_L_15_LONG_ARR) {
-				throw new Error("Not an long integer array");
+				throw new Error("Not a long integer array");
 			}
 			if (arguments.length === 0) {
 				return laval;
 			} else {
-				return laval[arguments[0]];
+			    if (arguments[0] !== undefined
+			    		&& arguments[0] !== null
+			    		&& !isNaN(arguments[0])
+			            && parseInt(Number(arguments[0])) === arguments[0]
+			            && !isNaN(parseInt(arguments[0], 10))) {
+					return laval[arguments[0]];
+			    } else {
+		            var s = [];
+		            s.push("ERROR! ScriptVariable.getLongArrayVal() - ");
+		            s.push("argument must be integer");
+		            throw new Error(s.join(""));
+			    }
 			}
 		}
 		/**
@@ -283,7 +368,7 @@ define(["com/dalonedrow/rpg/base/constants/scriptglobals", "com/dalonedrow/utils
 		this.getLongVal = function() {
 			if (type !== ScriptGlobals.TYPE_G_06_LONG
 					&& type !== ScriptGlobals.TYPE_L_14_LONG) {
-				throw new Error("Not an long integer variable");
+				throw new Error("Not a long integer variable");
 			}
 			return lval;
 		}
@@ -319,7 +404,18 @@ define(["com/dalonedrow/rpg/base/constants/scriptglobals", "com/dalonedrow/utils
 			if (arguments.length === 0) {
 				return textaval;
 			} else {
-				return textaval[arguments[0]];
+			    if (arguments[0] !== undefined
+			    		&& arguments[0] !== null
+			    		&& !isNaN(arguments[0])
+			            && parseInt(Number(arguments[0])) === arguments[0]
+			            && !isNaN(parseInt(arguments[0], 10))) {
+					return textaval[arguments[0]];
+			    } else {
+		            var s = [];
+		            s.push("ERROR! ScriptVariable.getTextArrayVal() - ");
+		            s.push("argument must be integer");
+		            throw new Error(s.join(""));
+			    }
 			}
 		}
 		/**
@@ -334,14 +430,23 @@ define(["com/dalonedrow/rpg/base/constants/scriptglobals", "com/dalonedrow/utils
 		 * @param value the name to set
 		 * @if the value field is invalid
 		 */
-		this.setName = function(value) {
-			if (value === null) {
-				throw new Error("Name field is null.");
-			}
-			if (value.trim().length() === 0) {
-				throw new Error("Name field is empty.");
-			}
-			name = value;
+		this.setName = function(val) {
+	        if (val !== undefined
+	        		&& val !== null) {
+	        	if (typeof val !== "string") {
+		            var s = [];
+		            s.push("ERROR! ScriptVariable.setName() - ");
+		            s.push("argument must be string");
+		            throw new Error(s.join(""));
+	        	} else {
+	        		name = val;
+	        	}
+	        } else {
+	            var s = [];
+	            s.push("ERROR! ScriptVariable.setName() - ");
+	            s.push("requires 1 argument");
+	            throw new Error(s.join(""));
+	        }
 		}
 		/**
 		 * Sets the {@link ScriptVariable}'s type.
@@ -350,9 +455,20 @@ define(["com/dalonedrow/rpg/base/constants/scriptglobals", "com/dalonedrow/utils
 		 * @if the type is invalid
 		 */
 		this.setType = function(val) {
-			type = val;
-			validateType();
-			this.clear();
+		    if (val !== undefined
+		    		&& val !== null
+		    		&& !isNaN(val)
+		            && parseInt(Number(val)) === val
+		            && !isNaN(parseInt(val, 10))) {
+				type = val;
+				validateType();
+				this.clear();
+		    } else {
+	            var s = [];
+	            s.push("ERROR! ScriptVariable.setType() - ");
+	            s.push("argument must be integer");
+	            throw new Error(s.join(""));
+		    }
 		}
 	}
 	ScriptVariable.prototype = Object.create(Hashcode.prototype);

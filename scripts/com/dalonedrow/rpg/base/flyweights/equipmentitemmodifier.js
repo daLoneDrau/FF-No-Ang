@@ -5,11 +5,11 @@ define(["com/dalonedrow/utils/hashcode"], function(Hashcode) {
     function EquipmentItemModifier() {
 		Hashcode.call(this);
 	    /** the flag indicating whether the modifier is a percentage modifier. */
-	    percent = false;
+	    var percent = false;
 	    /** not used. yet. */
-	    special = 0;
+	    var special = 0;
 	    /** the value of modifier to be applied. */
-	    value = 0.0;
+	    var value = 0.0;
 	    /** Clears all data. */
 	    this.clearData = function() {
 	        percent = false;

@@ -1,5 +1,5 @@
-define(['com/dalonedrow/rpg/base/flyweights/behaviourdata', "test/basetester"], function(BehaviourData,
-		BaseTester) {
+define(['com/dalonedrow/rpg/base/flyweights/behaviourdata', "test/basetester"], function(
+		BehaviourData, BaseTester) {
 	function BehaviourDataTest() {
 		BaseTester.call(this);
 		this.test = function() {
@@ -10,6 +10,7 @@ define(['com/dalonedrow/rpg/base/flyweights/behaviourdata', "test/basetester"], 
 			this.intMemberTest(o, "setTactics", "getTactics");
 			this.intMemberTest(o, "setTarget", "getTarget");
 			this.booleanMemberTest(o, "Exists");
+			console.log("end BehaviourData tests");
 		}
 	};
 	return BehaviourDataTest;

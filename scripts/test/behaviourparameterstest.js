@@ -54,6 +54,7 @@ define(['com/dalonedrow/rpg/base/flyweights/behaviourparameters', "test/basetest
 			this.stringMemberTest(o, "setTargetName", "getTargetName", true);
 			this.intMemberTest(o, "setTactics", "getTactics");
 			this.intMemberTest(o, "setTargetInfo", "getTargetInfo");
+			console.log("end BehaviorParameters tests");
 		}
 	};
 	return BehaviorParametersTest;
