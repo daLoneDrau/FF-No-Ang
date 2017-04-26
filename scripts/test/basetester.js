@@ -251,6 +251,7 @@ define(["require"], function(require) {
 			try {
 				obj[setter](instance);
 			} catch (err) {
+				console.log(err);
 				console.error(["cannot ", setter, " with ", member].join(""));				
 			}
 			var member2 = obj[getter]();

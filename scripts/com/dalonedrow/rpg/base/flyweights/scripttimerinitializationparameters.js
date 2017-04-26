@@ -137,7 +137,6 @@ define(["com/dalonedrow/rpg/base/flyweights/baseinteractiveobject",
 	            s.push("requires 1 argument");
 	            throw new Error(s.join(""));
 	        }
-			args = val;
 		}
 		/**
 		 * Sets the flags to set on the timer.

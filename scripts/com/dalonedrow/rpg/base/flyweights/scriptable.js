@@ -16,7 +16,8 @@ define(["require", "com/dalonedrow/engine/sprite/base/simplevector2",
 	    var eventActions = {};
 	    /** the IO associated with this script. */
 	    var io = null;
-    	var BaseInteractiveObject = require("com/dalonedrow/rpg/base/flyweights/baseinteractiveobject");
+    	var BaseInteractiveObject =
+    		require("com/dalonedrow/rpg/base/flyweights/baseinteractiveobject");
     	if (ioInstance !== undefined
     			&& ioInstance !== null) {
     		if (ioInstance instanceof BaseInteractiveObject) {
@@ -25,7 +26,10 @@ define(["require", "com/dalonedrow/engine/sprite/base/simplevector2",
     			throw new Error(
     					"Scriptable() - constructor argument must be BaseInteractiveObject");
     		}
-    	}
+    	} else {
+			throw new Error(
+					"Scriptable() - constructor argument must be BaseInteractiveObject");
+		}
 	    /** the array of local {@link ScriptVariable}s. */
 	    var lvar = [];
 	    /** the master script. */
@@ -41,7 +45,7 @@ define(["require", "com/dalonedrow/engine/sprite/base/simplevector2",
 	     */
 	    this.addLocalVariable = function(svar) {
 	        if (svar !== undefined
-	        		&& svar === null
+	        		&& svar !== null
 	        		&& svar instanceof ScriptVariable) {
 		    	var index = -1;
 		        for (var i = 0; i < lvar.length; i++) {
@@ -160,14 +164,16 @@ define(["require", "com/dalonedrow/engine/sprite/base/simplevector2",
 	     */
 	    this.clearLocalVariable = function(varName) {
 	        if (varName !== undefined
-	        		&& varName !== null) {
+	        		&& varName !== null
+	        		&& typeof varName === "string") {
 		        for (var i = lvar.length - 1; i >= 0; i--) {
 		            if (lvar[i] !== null
 		                    && lvar[i].getName() !== null
-		                    && lvar[i].getName().toLowerCase() === varName.toLowerCase()) {
+		                    && lvar[i].getName() === varName) {
 		                lvar[i].clear();
+			            lvar[i] = null;
+			            break;
 		            }
-		            lvar[i] = null;
 		        }
 	        } else {
 	            var s = [];
@@ -511,7 +517,7 @@ define(["require", "com/dalonedrow/engine/sprite/base/simplevector2",
 	            for (var i = lvar.length - 1; i >= 0; i--) {
 	                if (lvar[i] !== null
 	                        && lvar[i].getName() !== null
-	                        && lvar[i].getName() === name) {
+	                        && lvar[i].getName() === varid) {
 	                    svar = lvar[i];
 	                    break;
 	                }

@@ -4,8 +4,9 @@
 define([ "com/dalonedrow/rpg/base/flyweights/baseinteractiveobject",
 	"com/dalonedrow/rpg/base/flyweights/scriptable",
 	"com/dalonedrow/rpg/base/flyweights/scripttimeraction",
+	"com/dalonedrow/rpg/base/flyweights/scripttimerinitializationparameters",
 	"com/dalonedrow/utils/hashcode"], function(BaseInteractiveObject, Scriptable, ScriptTimerAction,
-			Hashcode) {
+			ScriptTimerInitializationParameters, Hashcode) {
     function ScriptTimer() {
 		Hashcode.call(this);
 		/** the action taken when the script timer completes. */
@@ -38,6 +39,7 @@ define([ "com/dalonedrow/rpg/base/flyweights/baseinteractiveobject",
 	        if (flag !== undefined
 	        		&& flag !== null
 	        		&& !isNaN(flag)
+		            && parseInt(Number(flag)) === flag
 	        		&& flag && (flag & (flag - 1)) === 0) {
 	        	flags |= flag;
 	        } else {
@@ -123,6 +125,7 @@ define([ "com/dalonedrow/rpg/base/flyweights/baseinteractiveobject",
 	        if (flag !== undefined
 	        		&& flag !== null
 	        		&& !isNaN(flag)
+		            && parseInt(Number(flag)) === flag
 	        		&& flag && (flag & (flag - 1)) === 0) {
 				return (flags & flag) == flag;
 	        } else {
@@ -147,6 +150,7 @@ define([ "com/dalonedrow/rpg/base/flyweights/baseinteractiveobject",
 	        if (flag !== undefined
 	        		&& flag !== null
 	        		&& !isNaN(flag)
+		            && parseInt(Number(flag)) === flag
 	        		&& flag && (flag & (flag - 1)) === 0) {
 				flags &= ~flag;
 	        } else {
@@ -162,7 +166,7 @@ define([ "com/dalonedrow/rpg/base/flyweights/baseinteractiveobject",
 		 */
 		this.set = function(params) {
 	        if (params !== undefined
-	        		&& params === null
+	        		&& params !== null
 	        		&& params instanceof ScriptTimerInitializationParameters) {
 				script = params.getScript();
 				exists = true;
@@ -176,7 +180,7 @@ define([ "com/dalonedrow/rpg/base/flyweights/baseinteractiveobject",
 				tim = params.getStartTime();
 				times = params.getRepeatTimes();
 				this.clearFlags();
-				this.addFlag(params.getFlagValues());
+				flags = params.getFlagValues();
         	} else {
 	            var s = [];
 	            s.push("ERROR! ScriptTimer.set() - ");
@@ -188,11 +192,11 @@ define([ "com/dalonedrow/rpg/base/flyweights/baseinteractiveobject",
 		 * Sets the action taken when the script timer completes.
 		 * @param sta the {@link ScriptTimerAction}
 		 */
-		this.setAction = function(sta) {
-	        if (params !== undefined
-	        		&& params !== null
-	        		&& params instanceof ScriptTimerAction) {
-				action = sta;
+		this.setAction = function(val) {
+	        if (val !== undefined
+	        		&& val !== null
+	        		&& val instanceof ScriptTimerAction) {
+				action = val;
         	} else {
 	            var s = [];
 	            s.push("ERROR! ScriptTimer.setAction() - ");
@@ -239,7 +243,7 @@ define([ "com/dalonedrow/rpg/base/flyweights/baseinteractiveobject",
 		 */
 		this.setIo = function(val) {
 	        if (val !== undefined
-	        		&& val === null
+	        		&& val !== null
 	        		&& val instanceof BaseInteractiveObject) {
 				io = val;
         	} else {
@@ -261,7 +265,7 @@ define([ "com/dalonedrow/rpg/base/flyweights/baseinteractiveobject",
 		    	longinfo = val;
 		    } else {
 	            var s = [];
-	            s.push("ERROR! ScriptTimer.setCycleLength() - ");
+	            s.push("ERROR! ScriptTimer.setLonginfo() - ");
 	            s.push("argument must be long integer");
 	            throw new Error(s.join(""));
 		    }
@@ -288,7 +292,7 @@ define([ "com/dalonedrow/rpg/base/flyweights/baseinteractiveobject",
 		 */
 		this.setScript = function(val) {
 	        if (val !== undefined
-	        		&& val === null
+	        		&& val !== null
 	        		&& val instanceof Scriptable) {
 	        	script = val;
         	} else {
@@ -336,7 +340,7 @@ define([ "com/dalonedrow/rpg/base/flyweights/baseinteractiveobject",
 		 * Sets whether the timer is turn-based, or millisecond based.
 		 * @param isTurnBased the new value to set
 		 */
-		this.setTurnBased = function(val) {
+		this.setIsTurnBased = function(val) {
 		    if (val !== undefined
 		    		&& val !== null
 		    		&& typeof val === "boolean") {

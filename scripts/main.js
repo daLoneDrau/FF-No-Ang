@@ -4,9 +4,9 @@ define(['jquery', 'app', 'com/dalonedrow/module/ff/constants/ffequipmentelements
 	'com/dalonedrow/module/ff/systems/ffinteractive',
 	'com/dalonedrow/module/ff/systems/webserviceclient',
 	'com/dalonedrow/engine/systems/base/interactive',
-	'test/ScriptTimerTest'],
+	'test/ScriptableTest'],
 	function($, App, FFEquipmentElements, FFEquipmentSlots, FFInteractive, WebServiceClient,
-			Interactive, ScriptTimerTest) {
+			Interactive, ScriptableTest) {
     var app, game, webserviceclient;
     console.log("main called");
     var initWebServiceClient = function() {
@@ -27,7 +27,7 @@ define(['jquery', 'app', 'com/dalonedrow/module/ff/constants/ffequipmentelements
         }
     };
     var runTests = function() {
-    	var t = new ScriptTimerTest();
+    	var t = new ScriptableTest();
     	t.test();
     };
     var testVector = function() {
