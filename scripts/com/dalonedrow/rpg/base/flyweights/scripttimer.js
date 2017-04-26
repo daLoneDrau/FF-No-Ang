@@ -190,7 +190,7 @@ define([ "com/dalonedrow/rpg/base/flyweights/baseinteractiveobject",
 		 */
 		this.setAction = function(sta) {
 	        if (params !== undefined
-	        		&& params === null
+	        		&& params !== null
 	        		&& params instanceof ScriptTimerAction) {
 				action = sta;
         	} else {

@@ -67,8 +67,7 @@ define(["com/dalonedrow/utils/hashcode"], function(Hashcode) {
 		 */
 		this.set = function() {
 			if (arguments.length === 1
-					&& arguments[0] !== undefined
-					&& arguments[0] === null
+					&& arguments[0] !== null
 					&& arguments[0] instanceof ScriptTimerAction) {
 				exists = true;
 				object = arguments[0].getObject();
