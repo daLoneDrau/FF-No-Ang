@@ -1,7 +1,7 @@
 define(["com/dalonedrow/rpg/base/flyweights/baseinteractiveobject",
 	"com/dalonedrow/rpg/base/flyweights/scriptable",
 	"com/dalonedrow/rpg/base/flyweights/scriptTimer",
-	"com/dalonedrow/rpg/base/flyweights/scripttimeraction", 
+	"com/dalonedrow/rpg/base/flyweights/scripttimeraction",
 	"com/dalonedrow/rpg/base/flyweights/scripttimerinitializationparameters","test/basetester"],
 	function(BaseInteractiveObject, Scriptable, ScriptTimer, ScriptTimerAction,
 			ScriptTimerInitializationParameters, BaseTester) {

@@ -109,6 +109,7 @@ define(["require", "com/dalonedrow/engine/sprite/base/simplevector2",
 	        if (flag !== undefined
 	        		&& flag !== null
 	        		&& !isNaN(flag)
+		            && parseInt(Number(flag)) === flag
 	        		&& flag && (flag & (flag - 1)) === 0) {
 		        allowedEvent |= flag;
 	        } else {
@@ -124,7 +125,7 @@ define(["require", "com/dalonedrow/engine/sprite/base/simplevector2",
 	     */
 	    this.behavior = function(params) {
 	        if (params !== undefined
-	        		&& params === null
+	        		&& params !== null
 	        		&& params instanceof BehaviourParameters) {
 		        if (io.hasIOFlag(IoGlobals.IO_03_NPC)) {
 		            if ("STACK" === params.getAction().toUpperCase()) {
@@ -709,6 +710,7 @@ define(["require", "com/dalonedrow/engine/sprite/base/simplevector2",
 	        if (flag !== undefined
 	        		&& flag !== null
 	        		&& !isNaN(flag)
+		            && parseInt(Number(flag)) === flag
 	        		&& flag && (flag & (flag - 1)) === 0) {
 		        return (allowedEvent & flag) === flag;
 	        } else {
@@ -1011,6 +1013,7 @@ define(["require", "com/dalonedrow/engine/sprite/base/simplevector2",
 	        if (flag !== undefined
 	        		&& flag !== null
 	        		&& !isNaN(flag)
+		            && parseInt(Number(flag)) === flag
 	        		&& flag && (flag & (flag - 1)) === 0) {
 		        allowedEvent = allowedEvent & ~flag;
 	        } else {
@@ -1027,7 +1030,7 @@ define(["require", "com/dalonedrow/engine/sprite/base/simplevector2",
 	    this.setIO = function(val) {
 	    	var BaseInteractiveObject =
 	    		require("com/dalonedrow/rpg/base/flyweights/baseinteractiveobject");
-		    if (val
+		    if (val !== undefined
 		    		&& val !== null
 		    		&& val instanceof BaseInteractiveObject) {
 		        io = val;
@@ -1046,107 +1049,91 @@ define(["require", "com/dalonedrow/engine/sprite/base/simplevector2",
 	     * @if no such variable was assigned
 	     */
 	    this.setLocalVariable = function() {
+	        if (lvar === null) {
+	            lvar = [];
+	        }
+	    	var svar;
 	    	if (arguments.length === 2) {
-	    		if (parseInt(arguments[0]) === parseInt(arguments[0])) {
-			        // if the index number is valid
-			        if (arguments[0] >= 0) {
-			        	for (var i = 0; i < arguments[0] + 1; i++) {
-			        		if (i >= lvar.length) {
-			        			lvar.push(null);
-			        		}
-			        	}
-			            lvar[arguments[0]] = arguments[1];
-			        } else {
-			            throw new Error(["Invalid array index ", arguments[0], "."].join(""));
-			        }
-	    		} else {
-	    	        if (lvar === null) {
-	    	            lvar = [];
-	    	        }
-	    	        var found = false;
-	    	        for (var i = lvar.length - 1; i >= 0; i--) {
-	    	            var vari = lvar[i];
-	    	            if (vari !== null
-	    	                    && vari.getName() !== null
-	    	                    && vari.getName().toLowerCase() === name.toLowerCase()) {
-	    	                // found the correct script variable
-	    	                vari.set(value);
-	    	                found = true;
-	    	                break;
-	    	            }
-	    	        }
-	    	        if (!found) {
-	    	            // create a new variable and add to the global array
-	    	            var vari = null;
-	    	            if (typeof arguments[1] === 'string') {
-	    	                vari = new ScriptVariable(arguments[0], ScriptGlobals.TYPE_L_08_TEXT, arguments[1]);
-	    	            } else if (typeof arguments[1] === 'number') {
-	    	            	if ((arguments[1] | 0) === arguments[1]) {
-	    	                    vari = new ScriptVariable(arguments[0], ScriptGlobals.TYPE_L_12_INT, arguments[1]);
-	    	            	} else if (arguments[1] % 1 === 0) {
-	    	                    vari = new ScriptVariable(arguments[0], ScriptGlobals.TYPE_L_14_LONG, arguments[1]);
-	    	            	} else {
-	    	                    vari = new ScriptVariable(arguments[0], ScriptGlobals.TYPE_L_10_FLOAT, arguments[1]);
-	    	            	}
-	    	            } else if (Array.isArray(arguments[1])) {
-	    	                if (typeof arguments[1][0] === 'string') {
-	    	                    vari = new ScriptVariable(arguments[0], ScriptGlobals.TYPE_L_09_TEXT_ARR, arguments[1]);
-	    	                } else if (typeof arguments[1][0] === 'number') {
-	    	                	if ((arguments[1][0] | 0) === arguments[1][0]) {
-	    	                        vari = new ScriptVariable(arguments[0], ScriptGlobals.TYPE_L_13_INT_ARR, arguments[1]);
-	    	                	} else if (arguments[1][0] % 1 === 0) {
-	    	                        vari = new ScriptVariable(arguments[0], ScriptGlobals.TYPE_L_15_LONG_ARR, arguments[1]);
-	    	                	} else {
-	    	                        vari = new ScriptVariable(arguments[0], ScriptGlobals.TYPE_L_11_FLOAT_ARR, arguments[1]);
-	    	                	}
-	    	                }
-	    	            } else {
-	    	                var sb = [];
-	    	                sb.push("Local variable ");
-	    	                sb.push(name);
-	    	                sb.push(" was passed unrecognized value. Only String, String[], Float, ");
-	    	                sb.push("float[], Integer, int[], Long, or long[] allowed.");
-	    	                throw new Error(sb.join(""));
-	    	            }
-	    	            lvar.push(vari);
-	    	        }
-	    		}
+		        if (arguments[0] === null
+		        		|| typeof arguments[0] !== "string") {
+		            var s = [];
+		            s.push("ERROR! Scriptable.setLocalVariable(name, value) - ");
+		            s.push("name must be string");
+		            throw new Error(s.join(""));
+	        	}
+		        if (arguments[1] === null) {
+		            var s = [];
+		            s.push("ERROR! Scriptable.setLocalVariable(name, value) - ");
+		            s.push("value cannot be null");
+		            throw new Error(s.join(""));
+	        	}
+    	        if (this.hasLocalVariable(arguments[0])) {
+    	        	svar = this.getLocalVariable(arguments[0]);
+    	        	svar.set(arguments[1]);
+    	        } else {
+    	            if (typeof arguments[1] === 'string') {
+    	            	svar = new ScriptVariable(arguments[0], ScriptGlobals.TYPE_L_08_TEXT, arguments[1]);
+    	            } else if (typeof arguments[1] === 'number') {
+    	            	if ((arguments[1] | 0) === arguments[1]) {
+    	            		svar = new ScriptVariable(arguments[0], ScriptGlobals.TYPE_L_12_INT, arguments[1]);
+    	            	} else if (arguments[1] % 1 === 0) {
+    	            		svar = new ScriptVariable(arguments[0], ScriptGlobals.TYPE_L_14_LONG, arguments[1]);
+    	            	} else {
+    	            		svar = new ScriptVariable(arguments[0], ScriptGlobals.TYPE_L_10_FLOAT, arguments[1]);
+    	            	}
+    	            } else if (Array.isArray(arguments[1])) {
+    	                if (typeof arguments[1][0] === 'string') {
+    	                	svar = new ScriptVariable(arguments[0], ScriptGlobals.TYPE_L_09_TEXT_ARR, arguments[1]);
+    	                } else if (typeof arguments[1][0] === 'number') {
+    	                	if ((arguments[1][0] | 0) === arguments[1][0]) {
+    	                		svar = new ScriptVariable(arguments[0], ScriptGlobals.TYPE_L_13_INT_ARR, arguments[1]);
+    	                	} else if (arguments[1][0] % 1 === 0) {
+    	                		svar = new ScriptVariable(arguments[0], ScriptGlobals.TYPE_L_15_LONG_ARR, arguments[1]);
+    	                	} else {
+    	                		svar = new ScriptVariable(arguments[0], ScriptGlobals.TYPE_L_11_FLOAT_ARR, arguments[1]);
+    	                	}
+    	                }
+    	            } else {
+    	                var sb = [];
+    	                sb.push("Local variable ");
+    	                sb.push(name);
+    	                sb.push(" was passed unrecognized value. Only String, String[], Float, ");
+    	                sb.push("float[], Integer, int[], Long, or long[] allowed.");
+    	                throw new Error(sb.join(""));
+    	            }    	        	
+    	        }
+	    	} else if (arguments.length === 1
+	    			&& arguments[0] instanceof ScriptVariable) {
+	    		svar = arguments[0];
 	    	} else {
-	            if (arguments[0] !== null) {
-	                var found = false;
-	                for (var i = lvar.length - 1; i >= 0; i--) {
-	                    if (lvar[i] !== null
-	                            && lvar[i].getName() !== null
-	                            && lvar[i].getName() === arguments[0].getName()) {
-	                        lvar[i] = arguments[0];
-	                        found = true;
-	                        break;
-	                    }
-	                }
-	                // if the local variable was not found
-	                if (!found) {
-	                    // find an empty index
-	                	var i = lvar.length - 1;
-	                    for (; i >= 0; i--) {
-	                        if (lvar[i] === null) {
-	                            break;
-	                        }
-	                    }
-	                    if (i >= 0) {
-	                        lvar[i] = arguments[0];
-	                    } else {
-	                        lvar.push(svar);
-	                    }
-	                }
-	            }
+	            var s = [];
+	            s.push("ERROR! Scriptable().setLocalVariable - ");
+	            s.push("invalid arguments - requires 1 ScriptVariable to set, or name-value");
+	            throw new Error(s.join(""));
 	    	}
+	        var found = false;
+	        for (var i = lvar.length - 1; i >= 0; i--) {
+	            if (lvar[i] !== null
+	                    && lvar[i].getName() !== null
+	                    && lvar[i].getName() === svar.getName()) {
+	                // found the correct script variable
+	            	lvar[i] = svar;
+	                found = true;
+	                break;
+	            }
+	        }
+	        if (!found) {
+	        	this.addLocalVariable(svar);
+	        }
+	        svar = null;
+	        found = null;
 	    }
 	    /**
 	     * Sets the master script.
 	     * @param script the script to set
 	     */
 	    this.setMaster = function(script) {
-		    if (script
+		    if (script != undefined
 		    		&& script !== null
 		    		&& script instanceof Scriptable) {
 		        master = script;
@@ -1158,7 +1145,7 @@ define(["require", "com/dalonedrow/engine/sprite/base/simplevector2",
 		    }
 	    }
 	    this.setTarget = function(params) {
-		    if (params
+		    if (params != undefined
 		    		&& params !== null
 		    		&& params instanceof TargetParameters) {
 		        if (io.hasIOFlag(IoGlobals.IO_03_NPC)) {
@@ -1271,7 +1258,20 @@ define(["require", "com/dalonedrow/engine/sprite/base/simplevector2",
 	    this.onSpellEnd = function() {
 	        return ScriptGlobals.ACCEPT;
 	    }
+	    this.x = 0;
+	    this.add = function() {
+	    	this.x += 2;
+	    }
+	    this.getX = function() {
+	    	return this.x;
+	    }
 	}
 	Scriptable.prototype = Object.create(Hashcode.prototype);
+	Scriptable.prototype.mult = function() {
+		this.x *= 2;
+	};
+	Scriptable.prototype.showX = function() {
+    	return this.x;
+	};
 	return Scriptable;
 });

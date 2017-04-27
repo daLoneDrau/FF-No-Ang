@@ -2,8 +2,30 @@
  * Script
  * module with no dependencies
  */
-define(function() {
+define(["require", "com/dalonedrow/engine/sprite/base/simplevector2",
+	"com/dalonedrow/engine/systems/base/interactive",
+	"com/dalonedrow/engine/systems/base/projectconstants",
+	"com/dalonedrow/rpg/base/constants/ioglobals",
+	"com/dalonedrow/rpg/base/constants/scriptglobals",
+	"com/dalonedrow/rpg/base/flyweights/baseinteractiveobject",
+	"com/dalonedrow/rpg/base/flyweights/scripttimer",
+	"com/dalonedrow/rpg/base/flyweights/scripttimeraction",
+	"com/dalonedrow/rpg/base/flyweights/scripttimerinitializationparameters",
+	"com/dalonedrow/rpg/base/flyweights/scriptable",
+	"com/dalonedrow/rpg/base/flyweights/scriptvariable",
+	"com/dalonedrow/rpg/base/flyweights/sendparameters",
+	"com/dalonedrow/rpg/base/flyweights/speechparameters",
+	"com/dalonedrow/rpg/base/flyweights/ioitemdata", "com/dalonedrow/rpg/base/flyweights/ionpcdata",
+	"com/dalonedrow/rpg/base/flyweights/iopcdata",
+	"com/dalonedrow/rpg/base/flyweights/iospellcastdata",
+	"com/dalonedrow/rpg/base/flyweights/scriptable", 
+	"com/dalonedrow/rpg/base/flyweights/stackedevent", "com/dalonedrow/utils/hashcode"],
+		function(require, SimpleVector2, Interactive, ProjectConstants, IoGlobals, ScriptGlobals,
+				BaseInteractiveObject, ScriptTimer, ScriptTimerAction,
+				ScriptTimerInitializationParameters, Scriptable, ScriptVariable, SendParameters,
+				SpeechParameters, StackedEvent, Hashcode) {
     function Script() {
+		Hashcode.call(this);
 	    var ARXPausedTime = false;
 	    /** the flag indicating whether debug output is turned on. */
 	    var debug = false;
@@ -2171,6 +2193,7 @@ define(function() {
 	        return Time.getInstance().getGameTime(false);
 	    }
 	}
+    Script.prototype = Object.create(Hashcode.prototype);
 	Script.getInstance = function() {
 		return Script.instance;
 	}

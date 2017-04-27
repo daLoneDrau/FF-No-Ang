@@ -239,7 +239,7 @@ define(["com/dalonedrow/rpg/base/constants/scriptglobals", "com/dalonedrow/utils
 		} else {
             var s = [];
             s.push("ERROR! ScriptVariable() - ");
-            s.push("requires 1 ScriptVariable argument to clone, or string, int and object to set");
+            s.push("requires 1 ScriptVariable argument to clone, or name, type and value to set");
             throw new Error(s.join(""));			
 		}
 		/** Clears up member fields, releasing their memory. */
