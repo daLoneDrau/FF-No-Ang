@@ -205,6 +205,7 @@ define(["require"], function(require) {
 				//console.log(["cannot ", setter, " with undefined"].join(""));
 			}
 			if (nullsAllowed !== undefined
+					&& nullsAllowed !== null
 					&& nullsAllowed) {
 				obj[setter](null);
 				if (obj[getter]() !== null) {

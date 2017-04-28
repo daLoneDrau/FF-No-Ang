@@ -32,9 +32,9 @@ define(["com/dalonedrow/engine/systems/base/projectconstants",
 			this.intListTest(io, "SpellOn");
 			// test equals
 			this.equalsTest(io, new BaseInteractiveObject(25));
-			this.stringMemberTest(io, "setArmormaterial", "getArmormaterial");
-			this.stringMemberTest(io, "setMainevent", "getMainevent");
-			this.stringMemberTest(io, "setWeaponmaterial", "getWeaponmaterial");
+			this.stringMemberTest(io, "setArmormaterial", "getArmormaterial", true);
+			this.stringMemberTest(io, "setMainevent", "getMainevent", true);
+			this.stringMemberTest(io, "setWeaponmaterial", "getWeaponmaterial", true);
 			this.floatMemberTest(io, "setDamageSum", "getDamageSum");
 			this.intMemberTest(io, "setLevel", "getLevel");
 			this.intMemberTest(io, "setPoisonCharges", "getPoisonCharges");
@@ -46,11 +46,11 @@ define(["com/dalonedrow/engine/systems/base/projectconstants",
 			this.intMemberTest(io, "setSummoner", "getSummoner");
 			this.intMemberTest(io, "setTargetinfo", "getTargetinfo");
 			this.objectMemberTest(io, "com/dalonedrow/engine/sprite/base/simplevector2",
-					"setInitPosition", "getInitPosition");
+					"setInitPosition", "getInitPosition", true);
 			this.objectMemberTest(io, "com/dalonedrow/engine/sprite/base/simplevector2",
-					"setPosition", "getPosition");
+					"setPosition", "getPosition", true);
 			this.objectMemberTest(io, "com/dalonedrow/engine/sprite/base/simplevector3",
-					"setTarget", "getTarget");
+					"setTarget", "getTarget", true);
 			this.associationMemberTest(io, new InventoryData(), "getIo", "setInventory",
 					"getInventory");
 			this.associationMemberTest(io, new IOItemData(), "getIo", "setItemData",
@@ -59,9 +59,9 @@ define(["com/dalonedrow/engine/systems/base/projectconstants",
 					"getNPCData");
 			this.associationMemberTest(io, new IoPcData(), "getIo", "setPCData",
 					"getPCData");
-			this.associationMemberTest(io, new Scriptable(), "getIo", "setOverscript",
+			this.associationMemberTest(io, new Scriptable(io), "getIo", "setOverscript",
 					"getOverscript");
-			this.associationMemberTest(io, new Scriptable(), "getIo", "setScript",
+			this.associationMemberTest(io, new Scriptable(io), "getIo", "setScript",
 					"getScript");
 			this.intMemberTest(io, "setPoisonCharges", "getPoisonCharges");
 			console.log("end BaseInteractiveObject tests");
