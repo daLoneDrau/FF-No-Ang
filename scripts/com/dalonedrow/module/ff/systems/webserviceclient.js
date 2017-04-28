@@ -31,6 +31,23 @@ define(function() {
 	        xmlhttp.send();
 	        return JSON.parse(xmlhttp.responseText)[0];
 	    };
+	    this.getCommandEntities = function() {
+		    var u = [ httpBase, 'commands' ].join("");
+	    	var xmlhttp = new XMLHttpRequest();
+	        xmlhttp.onreadystatechange = function() {
+	            if (xmlhttp.readyState == XMLHttpRequest.DONE ) {
+	               if (xmlhttp.status == 200) {
+	               } else if (xmlhttp.status == 400) {
+	            	   console.log('There was an error 400');
+	               } else {
+	            	   console.log('something else other than 200 was returned');
+	               }
+	            }
+	        };
+	        xmlhttp.open("GET", u, false);
+	        xmlhttp.send();
+	        return JSON.parse(xmlhttp.responseText);	    	
+	    };
 	    this.getEquipmentElementEntities = function() {
 		    var u = [ httpBase, 'equipment_element_types' ].join("");
 	    	var xmlhttp = new XMLHttpRequest();
@@ -46,8 +63,7 @@ define(function() {
 	        };
 	        xmlhttp.open("GET", u, false);
 	        xmlhttp.send();
-	        return JSON.parse(xmlhttp.responseText);
-	    	
+	        return JSON.parse(xmlhttp.responseText);	    	
 	    };
 	    this.getEquipmentSlotEntities = function() {
 		    var u = [ httpBase, 'equipment_slots' ].join("");

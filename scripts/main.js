@@ -1,22 +1,32 @@
 
-define(['jquery', 'app', 'com/dalonedrow/module/ff/constants/ffequipmentelements',
+define(['jquery', 'app', "com/dalonedrow/module/ff/constants/ffcommand",
+	'com/dalonedrow/module/ff/constants/ffequipmentelements',
 	'com/dalonedrow/module/ff/constants/ffequipmentslots',
-	'com/dalonedrow/module/ff/systems/ffinteractive',
+	//"com/dalonedrow/module/ff/systems/ffcontroller",
+	//"com/dalonedrow/module/ff/systems/ffinteractive",
 	'com/dalonedrow/module/ff/systems/webserviceclient',
 	'com/dalonedrow/engine/systems/base/interactive',
-	'test/InventoryDataTest'],
-	function($, App, FFEquipmentElements, FFEquipmentSlots, FFInteractive, WebServiceClient,
-			Interactive, InventoryDataTest) {
-    var app, game, webserviceclient;
+	'test/BaseInteractiveObjectTest'],
+	function($, App, FFCommand, FFEquipmentElements, FFEquipmentSlots, 
+			//FFController, FFInteractive,
+			WebServiceClient, Interactive, BaseInteractiveObjectTest) {
+    var app, game;
     console.log("main called");
     var initWebServiceClient = function() {
-        webserviceclient = new WebServiceClient();
-        var list = WebServiceClient.getInstance().getEquipmentElementEntities();
+    	new WebServiceClient();
+        var list = WebServiceClient.getInstance().getCommandEntities();
+        for (var i = 0, len = list.length; i < len; i++) {
+        	if (!list[i].sort_order) {
+        		list[i].sort_order = 0;
+        	}
+        	FFCommand.values.push(new FFCommand(list[i].name, list[i].sort_order));
+        }
+        list = WebServiceClient.getInstance().getEquipmentElementEntities();
         for (var i = 0, len = list.length; i < len; i++) {
         	if (!list[i].value) {
         		list[i].value = 0;
         	}
-        	FFEquipmentElements.values.push(new FFEquipmentElements(list[i].name, list[i].value));
+        	FFEquipmentElements.values.push(new FFEquipmentElements(list[i].code, list[i].value));
         }
         list = WebServiceClient.getInstance().getEquipmentSlotEntities();
         for (var i = 0, len = list.length; i < len; i++) {
@@ -25,9 +35,10 @@ define(['jquery', 'app', 'com/dalonedrow/module/ff/constants/ffequipmentelements
         	}
             FFEquipmentSlots.values.push(new FFEquipmentSlots(list[i].name, list[i].value));
         }
+        //new FFController();
     };
     var runTests = function() {
-    	var t = new InventoryDataTest();
+    	var t = new BaseInteractiveObjectTest();
     	t.test();
     };
     var testVector = function() {

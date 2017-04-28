@@ -1064,6 +1064,7 @@ define(["require", "com/dalonedrow/engine/sprite/base/simplevector2",
      * @param val the this.position to set
      */
 	BaseInteractiveObject.prototype.setPosition = function(val) {
+	    console.log("BaseInteractiveObject.setPosition")
         if (val !== undefined) {
         	if (val === null) {
         		this.position = val;

@@ -2,35 +2,38 @@
  * FFEquipmentElements
  * module with no dependencies
  */
-define(function() {
-	function FFEquipmentElements() {
+define(["com/dalonedrow/utils/hashcode"], function(Hashcode) {
+    function FFEquipmentElements() {
+		Hashcode.call(this);
 	    /** the code. */
-	    var code = "";
+	    this.code = "";
 	    /** the element index. */
-	    var index = 0;
+	    this.index = 0;
 	    if (arguments.length === 1) {
-	    	code = arguments[0];
+	    	this.code = arguments[0];
 	    } else if (arguments.length === 2) {
-	    	code = arguments[0];
-	    	index = arguments[1];
+	    	this.code = arguments[0];
+	    	this.index = arguments[1];
 	    } else {
 	    	throw new Error("Invalid # of arguments");
 	    }
-	    /**
-	     * Gets the element's code.
-	     * @return {@link String}
-	     */
-	    this.getCode = function() {
-	        return code;
-	    }
-	    /**
-	     * Gets the element's index.
-	     * @return {@link int}
-	     */
-	    this.getIndex = function() {
-	        return index;
-	    }
+	    FFEquipmentElements[this.code.toUpperCase()] = this;
 	}
+	FFEquipmentElements.prototype = Object.create(Hashcode.prototype);
+    /**
+     * Gets the element's code.
+     * @return {@link String}
+     */
+	FFEquipmentElements.prototype.getCode = function() {
+        return code;
+    }
+    /**
+     * Gets the element's index.
+     * @return {@link int}
+     */
+	FFEquipmentElements.prototype.getIndex = function() {
+        return index;
+    }
 	/** the list of values. */
 	FFEquipmentElements.values = [];
 	/**

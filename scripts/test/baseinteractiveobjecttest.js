@@ -1,4 +1,6 @@
-define(["com/dalonedrow/engine/systems/base/projectconstants",
+define(["com/dalonedrow/engine/sprite/base/simplevector2",
+	"com/dalonedrow/engine/systems/base/projectconstants",
+	"com/dalonedrow/module/ff/rpg/ffinteractiveobject",
 	"com/dalonedrow/rpg/base/flyweights/baseinteractiveobject",
 	"com/dalonedrow/rpg/base/flyweights/inventorydata",
 	"com/dalonedrow/rpg/base/flyweights/iocharacter",
@@ -7,7 +9,8 @@ define(["com/dalonedrow/engine/systems/base/projectconstants",
 	"com/dalonedrow/rpg/base/flyweights/iopcdata",
 	"com/dalonedrow/rpg/base/flyweights/scriptable",
 	"com/dalonedrow/rpg/base/systems/spellmaster",
-	"test/basetester"], function(ProjectConstants,
+	"test/basetester"], function(SimpleVector2, ProjectConstants,
+			FFInteractiveObject,
 			BaseInteractiveObject, InventoryData, IOCharacter, IOItemData, IoNpcData, IoPcData,
 			Scriptable, SpellMaster, BaseTester) {
 	function BaseInteractiveObjectTest() {
@@ -64,6 +67,15 @@ define(["com/dalonedrow/engine/systems/base/projectconstants",
 			this.associationMemberTest(io, new Scriptable(io), "getIo", "setScript",
 					"getScript");
 			this.intMemberTest(io, "setPoisonCharges", "getPoisonCharges");
+			var ffio = new FFInteractiveObject(2);
+			console.log("call bio setpos----------")
+			io.setPosition(new SimpleVector2(1, 5));
+			console.log("call fio setpos----------")
+			ffio.setPosition(new SimpleVector2(1, 5));
+			console.log("call bio setpos----------")
+			io.setPosition(new SimpleVector2(1, 5));
+			console.log("call fio setpos----------")
+			ffio.setPosition(new SimpleVector2(1, 5));
 			console.log("end BaseInteractiveObject tests");
 		}
 	};

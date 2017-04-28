@@ -1,78 +1,101 @@
-define(['com/dalonedrow/engine/systems/base/interactive',
-	'com/dalonedrow/engine/systems/base/projectconstants',
+
+import com.dalonedrow.module.ff.rpg.FFInteractiveObject;
+import com.dalonedrow.rpg.base.constants.EquipmentGlobals;
+import com.dalonedrow.rpg.base.flyweights.RPGException;
+
+/**
+ * 
+ */
+define(["com/dalonedrow/engine/systems/base/interactive",
+	"com/dalonedrow/engine/systems/base/projectconstants",
 	'com/dalonedrow/module/ff/constants/ffequipmentelements',
-	'com/dalonedrow/rpg/base/constants/equipmentglobals'],
-	function(Interactive, ProjectConstants, FFEquipmentElements, EquipmentGlobals) {
-	function FFController() {
-		ProjectConstants.call(this);
-	    var godMode = false;
-	    /** flag indicating whether menus are on. */
-	    var menusOn = true;
-	    /** the player IO's id. */
-	    var playerId = -1;
-	    this.getConsoleHeight = function() {
-	        return 30;
-	    }
-	    this.getConsoleWidth = function() {
-	        return 100;
-	    }
-	    this.getDamageElementIndex = function() {
-	        return FFEquipmentElements.valueOf("ELEMENT_DAMAGE").getIndex();
-	    }
-	    this.getMaxEquipped = function() {
-	        return EquipmentGlobals.MAX_EQUIPPED;
-	    }
-	    this.getMaxSpells = function() {
-	        // TODO Auto-generated method stub
-	        return 0;
-	    }
-	    this.getNumberEquipmentElements = function() {
-	        return FFEquipmentElements.getNumberOfValues();
-	    }
-	    this.getNumberInventorySlots = function() {
-	        return 16;
-	    }
-	    this.getPlayer = function() {
-	        return playerId;
-	    }
-	    this.getPlayerIO = function() {
-	        return Interactive.getInstance().getIO(playerId);
-	    }
-	    this.godMode = function() {
-	        return godMode;
-	    }
-	    this.isGameOver = function() {
-	        return false;
-	    }
-	    /**
-	     * @return the menusOn
-	     */
-	    this.isMenusOn = function() {
-	        return menusOn;
-	    }
-	    /**
-	     * @param godMode the godMode to set
-	     */
-	    this.setGodMode = function(flag) {
-	        godMode = flag;
-	    }
-	    /**
-	     * @param menusOn the menusOn to set
-	     */
-	    this.setMenusOn = function(flag) {
-	        menusOn = flag;
-	    }
-	    /**
-	     * @param val the value to set
-	     */
-	    this.setPlayer = function(val) {
-	        playerId = val;
-	    }
-	    this.update = function() {
-	        // TODO Auto-generated method stub
-	
-	    }
-	}
-	FFController.prototype = Object.create(ProjectConstants.prototype);
-	return FFController;
+	"com/dalonedrow/utils/hashcode"], function(Interactive, ProjectConstants, FFEquipmentElements) {
+    FFController extends ProjectConstants<FFInteractiveObject> {
+    private boolean godMode;
+    /**
+     * @param godMode the godMode to set
+     */
+    public void setGodMode(boolean godMode) {
+        this.godMode = godMode;
+    }
+    public boolean godMode() {
+        return godMode;
+    }
+    /** flag indicating whether menus are on. */
+    private boolean menusOn;
+    /** the player IO's id. */
+    private int playerId = -1;
+    /**
+     *
+     */
+    public FFController() {
+        super.setInstance(this);
+        menusOn = true;
+    }
+    @Override
+    public int getConsoleHeight() {
+        return 30;
+    }
+    @Override
+    public int getConsoleWidth() {
+        return 100;
+    }
+    @Override
+    public int getDamageElementIndex() {
+        return FFEquipmentElements.valueOf("ELEMENT_DAMAGE").getIndex();
+    }
+    @Override
+    public int getMaxEquipped() {
+        // TODO Auto-generated method stub
+        return EquipmentGlobals.MAX_EQUIPPED;
+    }
+    @Override
+    public int getMaxSpells() {
+        // TODO Auto-generated method stub
+        return 0;
+    }
+    @Override
+    public int getNumberEquipmentElements() {
+        return FFEquipmentElements.getNumberOfValues();
+    }
+    @Override
+    public int getPlayer() throws RPGException {
+        return playerId;
+    }
+    public FFInteractiveObject getPlayerIO() throws RPGException {
+        return (FFInteractiveObject) Interactive.getInstance().getIO(
+                playerId);
+    }
+    /*
+     * (non-Javadoc)
+     * @see com.dalonedrow.engine.systems.base.ProjectConstants#isGameOver()
+     */
+    @Override
+    public boolean isGameOver() {
+        return false;
+    }
+    /**
+     * @return the menusOn
+     */
+    public boolean isMenusOn() {
+        return menusOn;
+    }
+    /**
+     * @param menusOn the menusOn to set
+     */
+    public void setMenusOn(boolean menusOn) {
+        this.menusOn = menusOn;
+    }
+    /**
+     * @param val the value to set
+     */
+    void setPlayer(int val) {
+        playerId = val;
+    }
+    @Override
+    public void update() {
+        // TODO Auto-generated method stub
+
+    }
+}
 });

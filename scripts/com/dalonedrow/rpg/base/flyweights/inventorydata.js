@@ -496,16 +496,15 @@ define(["require", "com/dalonedrow/engine/systems/base/interactive",
 	InventoryData.prototype.setIo = function(val) {
     	var BaseInteractiveObject =
     		require("com/dalonedrow/rpg/base/flyweights/baseinteractiveobject");
-	    if (val !== undefined
-	    		&& val !== null
-	    		&& val instanceof BaseInteractiveObject) {
-	        this.io = val;
-	    } else {
+	    if (val === undefined
+	    		|| val === null
+	    		|| !(val instanceof BaseInteractiveObject)) {
             var s = [];
             s.push("ERROR! InventoryData.setIo() - ");
             s.push("argument must be BaseInteractiveObject");
             throw new Error(s.join(""));
 	    }
+        this.io = val;
 	}
 	/**
 	 * Sets the value of the flag indicating whether the left ring is the next
