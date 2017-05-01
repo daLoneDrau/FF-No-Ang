@@ -42,9 +42,6 @@ define(['require', 'com/dalonedrow/rpg/base/flyweights/baseinteractiveobject',
 	        }
 	        count += val;
 	    }
-	    var applyCriticalModifier = function() {
-	    	return 0;
-	    }
 	    this.ARX_EQUIPMENT_ComputeDamages = function(io_source, io_target, dmgModifier) {
 	    	var damages = 0;
 	        // send event to target. someone attacked you!
@@ -362,9 +359,6 @@ define(['require', 'com/dalonedrow/rpg/base/flyweights/baseinteractiveobject',
 	            }
 	        }
 	    }
-	    this.calculateArmorDeflection = function() {
-	    	return 0;
-	    }
 	    /**
 	     * Equips a ring on a character.
 	     * @param charData the character data
@@ -494,9 +488,6 @@ define(['require', 'com/dalonedrow/rpg/base/flyweights/baseinteractiveobject',
 	            // for bows or 2-handed swords, unequip old shield
 	            unequipItemInSlot(charData, EquipmentGlobals.EQUIP_SLOT_SHIELD);
 	        }
-	    }
-	    this.getBackstabModifier = function() {
-	    	return 0;
 	    }
 	    /**
 	     * Gets the current number in an inventory slot.
