@@ -22,6 +22,16 @@ define(["com/dalonedrow/engine/systems/base/projectconstants",
 	 * @return {@link EquipmentItemModifier}
 	 */
     IOEquipItem.prototype.getElement = function(element) {
+	    if (element === undefined
+	    		|| element === null
+	    		|| isNaN(element)
+	            || parseInt(Number(element)) !== element
+	            || isNaN(parseInt(element, 10))) {
+            var s = [];
+            s.push("ERROR! IOEquipItem.getElement() - ");
+            s.push("element must be integer");
+            throw new Error(s.join(""));
+	    }
 		return this.elements[element];
 	}
 	/** Resets all modifiers. */

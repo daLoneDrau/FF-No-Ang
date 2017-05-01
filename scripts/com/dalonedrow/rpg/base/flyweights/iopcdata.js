@@ -3,14 +3,14 @@
  */
 define(['require', "com/dalonedrow/engine/systems/base/interactive",
 	'com/dalonedrow/rpg/base/constants/equipmentglobals',
+	'com/dalonedrow/rpg/base/constants/gender',
 	'com/dalonedrow/rpg/base/constants/ioglobals',
 	'com/dalonedrow/rpg/base/constants/scriptglobals',
 	'com/dalonedrow/rpg/base/flyweights/baseinteractiveobject',
-	'com/dalonedrow/rpg/base/flyweights/gender',
 	'com/dalonedrow/rpg/base/flyweights/iocharacter',
 	'com/dalonedrow/rpg/base/systems/script'],
-		function(require, Interactive, EquipmentGlobals, IoGlobals, ScriptGlobals,
-				BaseInteractiveObject, Gender, IOCharacter, Script) {
+		function(require, Interactive, EquipmentGlobals, Gender, IoGlobals, ScriptGlobals,
+				BaseInteractiveObject, IOCharacter, Script) {
 	function IoPcData() {
 		IOCharacter.call(this);
 		/** the number of bags the player has. */

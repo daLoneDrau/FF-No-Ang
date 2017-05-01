@@ -6,7 +6,8 @@ define(["require", "com/dalonedrow/engine/sprite/base/simplevector2",
 	"com/dalonedrow/rpg/base/constants/equipmentglobals",
 	"com/dalonedrow/rpg/base/constants/ioglobals",
 	"com/dalonedrow/rpg/base/flyweights/inventorydata",
-	"com/dalonedrow/rpg/base/flyweights/ioitemdata", "com/dalonedrow/rpg/base/flyweights/ionpcdata",
+	"com/dalonedrow/rpg/base/flyweights/ioitemdata",
+	"com/dalonedrow/rpg/base/flyweights/ionpcdata",
 	"com/dalonedrow/rpg/base/flyweights/iopcdata",
 	"com/dalonedrow/rpg/base/flyweights/iospellcastdata",
 	"com/dalonedrow/rpg/base/flyweights/scriptable", 
@@ -818,17 +819,15 @@ define(["require", "com/dalonedrow/engine/sprite/base/simplevector2",
      * @param val the new value to set
      */
 	BaseInteractiveObject.prototype.setDamageSum = function(val) {
-	    if (val !== undefined
-	    		&& val !== null
-	    		&& !isNaN(val)
-	    		&& typeof val === "number") {
-	        this.damageSum = val;
-	    } else {
+    	try {
+    		this.checkFloat(val);
+    	} catch (err) {
             var s = [];
-            s.push("ERROR! BaseInteractiveObject.setDamageSum() - ");
-            s.push("argument must be floating-point");
+            s.push("ERROR! BaseInteractiveObject.setDamageSum() - val ");
+            s.push(err.message);
             throw new Error(s.join(""));
-	    }
+    	}
+        this.damageSum = val;
     }
     /**
      * Sets the initial this.position.
@@ -1064,7 +1063,6 @@ define(["require", "com/dalonedrow/engine/sprite/base/simplevector2",
      * @param val the this.position to set
      */
 	BaseInteractiveObject.prototype.setPosition = function(val) {
-	    console.log("BaseInteractiveObject.setPosition")
         if (val !== undefined) {
         	if (val === null) {
         		this.position = val;
@@ -1190,82 +1188,60 @@ define(["require", "com/dalonedrow/engine/sprite/base/simplevector2",
      * @param val the new value to set
      */
 	BaseInteractiveObject.prototype.setSummoner = function(val) {
-	    if (val !== undefined
-	    		&& val !== null
-	    		&& !isNaN(val)
-	            && parseInt(Number(val)) === val
-	            && !isNaN(parseInt(val, 10))) {
-	    	this.summoner = val;
-	    } else {
+    	try {
+    		this.checkInteger(val);
+    	} catch (err) {
             var s = [];
-            s.push("ERROR! BaseInteractiveObject.setSummoner() - ");
-            s.push("argument must be integer");
+            s.push("ERROR! BaseInteractiveObject.setSummoner() - val ");
+            s.push(err.message);
             throw new Error(s.join(""));
-	    }
+    	}
+    	this.summoner = val;
     }
     /**
      * Sets the this.target.
      * @param val the this.target to set
      */
 	BaseInteractiveObject.prototype.setTarget = function(val) {
-        if (val !== undefined) {
-        	if (val === null) {
-        		this.target = val;
-        	} else if (val instanceof SimpleVector3) {
-    	        this.target = val; 	
-        	} else {
-	            var s = [];
-	            s.push("ERROR! BaseInteractiveObject.setTarget() - ");
-	            s.push("argument must be SimpleVector3");
-	            throw new Error(s.join(""));
-        	}
-        } else {
+    	try {
+    		this.checkInstanceOfNullsAllowed(val, SimpleVector3);
+    	} catch (err) {
             var s = [];
-            s.push("ERROR! BaseInteractiveObject.setTarget() - ");
-            s.push("requires 1 argument");
+            s.push("ERROR! BaseInteractiveObject.setTarget() - val ");
+            s.push(err.message);
             throw new Error(s.join(""));
-        }
+    	}
+        this.target = val;
     }
     /**
      * Sets the this.targetinfo.
      * @param val the this.targetinfo to set
      */
 	BaseInteractiveObject.prototype.setTargetinfo = function(val) {
-	    if (val !== undefined
-	    		&& val !== null
-	    		&& !isNaN(val)
-	            && parseInt(Number(val)) === val
-	            && !isNaN(parseInt(val, 10))) {
-	    	this.targetinfo = val;
-	    } else {
+    	try {
+    		this.checkInteger(val);
+    	} catch (err) {
             var s = [];
-            s.push("ERROR! BaseInteractiveObject.setTargetinfo() - ");
-            s.push("argument must be integer");
+            s.push("ERROR! BaseInteractiveObject.setTargetinfo() - val ");
+            s.push(err.message);
             throw new Error(s.join(""));
-	    }
+    	}
+    	this.targetinfo = val;
     }
     /**
      * Sets the {@link BaseInteractiveObject}'s weapon material.
      * @param val the new value
      */
 	BaseInteractiveObject.prototype.setWeaponmaterial = function(val) {
-        if (val !== undefined) {
-        	if (val === null) {
-        		this.weaponmaterial = val;
-        	} else if (typeof val === "string") {
-        		this.weaponmaterial = val;	        	
-        	} else {
-	            var s = [];
-	            s.push("ERROR! BaseInteractiveObject.setWeaponmaterial() - ");
-	            s.push("argument must be string");
-	            throw new Error(s.join(""));
-        	}
-        } else {
+    	try {
+    		this.checkStringNullsAllowed(val);
+    	} catch (err) {
             var s = [];
-            s.push("ERROR! BaseInteractiveObject.setWeaponmaterial() - ");
-            s.push("requires 1 argument");
+            s.push("ERROR! BaseInteractiveObject.setWeaponmaterial() - val ");
+            s.push(err.message);
             throw new Error(s.join(""));
-        }
+    	}
+		this.weaponmaterial = val;
     }
 	return BaseInteractiveObject;
 });

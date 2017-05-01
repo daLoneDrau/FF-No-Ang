@@ -48,7 +48,7 @@ define(['jquery', 'app', "com/dalonedrow/module/ff/constants/ffcommand",
         	console.log(v.toString());
         });
         console.log(FFEquipmentSlots.valueOf("EQUIP_SLOT_WEAPON"));
-        Interactive.setInstance(new FFInteractive());
+        Interactive.setInstance(new Interactive());
         console.log(Interactive.getInstance());
     };
     /**
