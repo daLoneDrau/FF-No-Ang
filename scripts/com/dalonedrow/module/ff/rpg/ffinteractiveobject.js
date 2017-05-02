@@ -1,19 +1,14 @@
 define(["com/dalonedrow/engine/sprite/base/simplevector2",
 	//"com/dalonedrow/module/ff/graph/ffroomnode",
 	//"com/dalonedrow/module/ff/graph/ffworldmap",
+	"com/dalonedrow/module/ff/rpg/ffinventory",
+	"com/dalonedrow/module/ff/rpg/ffitem",
 	"com/dalonedrow/rpg/base/constants/ioglobals",
 	"com/dalonedrow/rpg/base/flyweights/baseinteractiveobject",
-	"com/dalonedrow/rpg/base/systems/script",
-	"com/dalonedrow/module/ff/rpg/ffitem",
-	"com/dalonedrow/module/ff/rpg/ffinventory",
-	"com/dalonedrow/module/ff/rpg/ffcharacter",
-	"com/dalonedrow/module/ff/rpg/ffnpc",
-	"com/dalonedrow/module/ff/rpg/ffscriptable"
-	], function(SimpleVector2, 
+	"com/dalonedrow/rpg/base/systems/script"
+	], function(SimpleVector2,
 			//FFRoomNode, FFWorldMap,
-			IoGlobals, BaseInteractiveObject, Script,
-			FFItem, FFInventory, FFCharacter, FFNpc, FFScriptable
-			) {
+			FFInventory, FFItem, IoGlobals, BaseInteractiveObject, Script) {
 	function FFInteractiveObject(ioid) {
 		BaseInteractiveObject.call(this, ioid);
 	    /** door data. */
@@ -60,14 +55,14 @@ define(["com/dalonedrow/engine/sprite/base/simplevector2",
      * @throws RPGException
      */
 	FFInteractiveObject.prototype.setPosition = function(val) {
-	    if (val === undefined
-	    		|| val === null
-	    		|| !(val instanceof SimpleVector2)) {
+    	try {
+    		this.checkInstanceOf(val, SimpleVector2);
+    	} catch (err) {
             var s = [];
-            s.push("ERROR! FFInteractiveObject.setPosition() - ");
-            s.push("argument must be SimpleVector2");
+            s.push("ERROR! FFInteractiveObject.setPosition() - val ");
+            s.push(err.message);
             throw new Error(s.join(""));
-	    }
+    	}
         if (this.hasIOFlag(IoGlobals.IO_01_PC)) {
             // this is the player
             var room = FFWorldMap.getInstance().getRoomByCellCoordinates(val);

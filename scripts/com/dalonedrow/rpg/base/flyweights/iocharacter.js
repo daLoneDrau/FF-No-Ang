@@ -3,8 +3,9 @@ define(["com/dalonedrow/engine/systems/base/interactive",
 	"com/dalonedrow/rpg/base/constants/ioglobals",
 	"com/dalonedrow/rpg/base/constants/mathglobals",
 	"com/dalonedrow/utils/watchable",
+	"com/dalonedrow/rpg/base/flyweights/attribute",
 	"com/dalonedrow/rpg/base/flyweights/baseinteractiveobject"],
-		function(Interactive, ProjectConstants, IoGlobals, MathGlobals, Watchable,
+		function(Interactive, ProjectConstants, IoGlobals, MathGlobals, Watchable, Attribute,
 				BaseInteractiveObject) {
 	function IOCharacter() {
 		Watchable.call(this);
@@ -16,17 +17,15 @@ define(["com/dalonedrow/engine/systems/base/interactive",
 	     */
 	    this.equippedItems = null;
 	    var self = this;
-	    defineAttributes();
-	    initEquippedItems(ProjectConstants.getInstance().getMaxEquipped());
 	    /**
 	     * Defines the PC's attributes.
 	     * @if an error occurs
 	     */
 	    var defineAttributes = function() {
-	        this.attributes = {};
-	        var map = this.getAttributeMap();
+	    	self.attributes = {};
+	        var map = self.getAttributeMap();
 	        for (var i = map.length - 1; i >= 0; i--) {
-	        	this.attributes[map[i][0]] = new Attribute(map[i][0], map[i][1]);
+	        	self.attributes[map[i][0]] = new Attribute(map[i][0], map[i][1]);
 	        }
 	        map = null;
 	    }
@@ -43,11 +42,13 @@ define(["com/dalonedrow/engine/systems/base/interactive",
 	            s.push(err.message);
 	            throw new Error(s.join(""));
 	    	}
-	        this.equippedItems = [];
+	    	self.equippedItems = [];
 	        for (var i = total; i >= 0; i--) {
-	            this.equippedItems.push(-1);
+	        	self.equippedItems.push(-1);
 	        }
 	    }
+	    defineAttributes();
+	    initEquippedItems(ProjectConstants.getInstance().getMaxEquipped());
 	}
 	IOCharacter.prototype = Object.create(Watchable.prototype);
     /**

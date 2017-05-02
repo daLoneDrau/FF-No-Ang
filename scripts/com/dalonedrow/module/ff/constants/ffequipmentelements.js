@@ -25,14 +25,14 @@ define(["com/dalonedrow/utils/hashcode"], function(Hashcode) {
      * @return {@link String}
      */
 	FFEquipmentElements.prototype.getCode = function() {
-        return code;
+        return this.code;
     }
     /**
      * Gets the element's index.
      * @return {@link int}
      */
 	FFEquipmentElements.prototype.getIndex = function() {
-        return index;
+        return this.index;
     }
 	/** the list of values. */
 	FFEquipmentElements.values = [];

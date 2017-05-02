@@ -101,7 +101,7 @@ define(function() {
 		if (parseInt(Number(flag)) !== flag) {
 	        throw new Error("is not an integer type");
 		}
-		if (flag && (flag & (flag - 1)) === 0) {
+		if (flag && (flag & (flag - 1)) !== 0) {
 	        throw new Error("is a not a power of two");
 		}
 	};

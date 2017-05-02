@@ -9,9 +9,10 @@ define(["require", "com/dalonedrow/engine/systems/base/interactive",
 	"com/dalonedrow/rpg/base/flyweights/baseinteractiveobject",
 	"com/dalonedrow/rpg/base/flyweights/behaviourdata",
 	"com/dalonedrow/rpg/base/flyweights/iocharacter",
+	"com/dalonedrow/rpg/base/flyweights/iopathfind",
 	"com/dalonedrow/rpg/base/systems/script"],
 		function(require, Interactive, BehaviourGlobals, EquipmentGlobals, IoGlobals, ScriptGlobals,
-				BaseInteractiveObject, BehaviourData, IOCharacter, Script) {
+				BaseInteractiveObject, BehaviourData, IOCharacter, IOPathfind, Script) {
 	function IoNpcData() {
 		IOCharacter.call(this);
 	    this.absorb = 0;
@@ -93,9 +94,9 @@ define(["require", "com/dalonedrow/engine/systems/base/interactive",
 	    this.xpvalue = 0;
         this.stacked = [];
         for (var i = 0; i < IoNpcData.MAX_STACKED_BEHAVIOR; i++) {
-        	this.push(new BehaviourData());
+        	this.stacked.push(new BehaviourData());
         }
-        pathfinder = new IOPathfind();
+        this.pathfinder = new IOPathfind();
 	}
 	IoNpcData.prototype = Object.create(IOCharacter.prototype);
 	IoNpcData.MAX_STACKED_BEHAVIOR = 5;
@@ -1243,4 +1244,5 @@ define(["require", "com/dalonedrow/engine/systems/base/interactive",
         }
         return isPlayer;
     }
+    return IoNpcData;
 });

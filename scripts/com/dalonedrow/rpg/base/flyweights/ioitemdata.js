@@ -729,7 +729,7 @@ define(["require", "com/dalonedrow/engine/systems/base/interactive",
      */
     IOItemData.prototype.setEquipitem = function(val) {
     	try {
-    		this.checkInstanceOf(val);
+    		this.checkInstanceOf(val, IOEquipItem);
     	} catch (err) {
             var s = [];
             s.push("ERROR! IOItemData.setEquipitem() - val ");

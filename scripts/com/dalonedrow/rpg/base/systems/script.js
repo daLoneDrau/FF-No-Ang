@@ -15,15 +15,12 @@ define(["require", "com/dalonedrow/engine/sprite/base/simplevector2",
 	"com/dalonedrow/rpg/base/flyweights/scriptvariable",
 	"com/dalonedrow/rpg/base/flyweights/sendparameters",
 	"com/dalonedrow/rpg/base/flyweights/speechparameters",
-	"com/dalonedrow/rpg/base/flyweights/ioitemdata", "com/dalonedrow/rpg/base/flyweights/ionpcdata",
-	"com/dalonedrow/rpg/base/flyweights/iopcdata",
-	"com/dalonedrow/rpg/base/flyweights/iospellcastdata",
 	"com/dalonedrow/rpg/base/flyweights/scriptable", 
 	"com/dalonedrow/rpg/base/flyweights/stackedevent", "com/dalonedrow/utils/hashcode"],
 		function(require, SimpleVector2, Interactive, ProjectConstants, IoGlobals, ScriptGlobals,
 				BaseInteractiveObject, ScriptTimer, ScriptTimerAction,
 				ScriptTimerInitializationParameters, Scriptable, ScriptVariable, SendParameters,
-				SpeechParameters, StackedEvent, Hashcode) {
+				SpeechParameters, Scriptable, StackedEvent, Hashcode) {
     function Script() {
 		Hashcode.call(this);
 	    var ARXPausedTime = false;
