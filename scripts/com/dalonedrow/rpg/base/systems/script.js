@@ -80,12 +80,6 @@ define(["require", "com/dalonedrow/engine/sprite/base/simplevector2",
 	            }
 	        }
 	    }
-	    this.clearAdditionalEventStacks = function() {
-	    	
-	    }
-	    this.clearAdditionalEventStacksForIO = function(io) {
-	    	
-	    }
 	    /**
 	     * Clones all local variables from the source {@link IO} to the destination
 	     * {@link IO}.

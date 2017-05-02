@@ -778,41 +778,30 @@ define(["require", "com/dalonedrow/engine/sprite/base/simplevector2",
      * @param flag the flag
      */
 	BaseInteractiveObject.prototype.removeTypeFlag = function(flag) {
-        if (flag !== undefined
-        		&& flag !== null
-        		&& !isNaN(flag)
-	            && parseInt(Number(flag)) === flag
-        		&& flag && (flag & (flag - 1)) === 0) {
-        	this.typeFlags &= ~flag;
-        } else {
+    	try {
+    		this.checkPowerOfTwo(flag);
+    	} catch (err) {
             var s = [];
-            s.push("ERROR! BaseInteractiveObject.removeTypeFlag() - ");
-            s.push("flag must be power of 2");
+            s.push("ERROR! BaseInteractiveObject.removeTypeFlag() - flag ");
+            s.push(err.message);
             throw new Error(s.join(""));
-        }
+    	}
+    	this.typeFlags &= ~flag;
     }
     /**
      * Sets the {@link BaseInteractiveObject}'s armor material.
      * @param val the new value
      */
 	BaseInteractiveObject.prototype.setArmormaterial = function(val) {
-        if (val !== undefined) {
-        	if (val === null) {
-    	        this.armormaterial = val;
-        	} else if (typeof val === "string") {
-        		this.armormaterial = val;	        	
-        	} else {
-	            var s = [];
-	            s.push("ERROR! BaseInteractiveObject.setArmormaterial() - ");
-	            s.push("argument must be string");
-	            throw new Error(s.join(""));
-        	}
-        } else {
+    	try {
+    		this.checkStringNullsAllowed(val);
+    	} catch (err) {
             var s = [];
-            s.push("ERROR! BaseInteractiveObject.setArmormaterial() - ");
-            s.push("requires 1 argument");
+            s.push("ERROR! BaseInteractiveObject.setArmormaterial() - val ");
+            s.push(err.message);
             throw new Error(s.join(""));
-        }
+    	}
+		this.armormaterial = val;
     }
     /**
      * Sets the value of the this.damageSum.

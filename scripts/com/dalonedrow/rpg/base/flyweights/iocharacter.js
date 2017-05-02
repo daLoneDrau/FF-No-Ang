@@ -15,6 +15,7 @@ define(["com/dalonedrow/engine/systems/base/interactive",
 	     * indexed by equipment slot.
 	     */
 	    this.equippedItems = null;
+	    var self = this;
 	    defineAttributes();
 	    initEquippedItems(ProjectConstants.getInstance().getMaxEquipped());
 	    /**
@@ -34,17 +35,15 @@ define(["com/dalonedrow/engine/systems/base/interactive",
 	     * @param total the total number of equipment slots
 	     */
 	    var initEquippedItems = function(total) {
-		    if (total === undefined
-		    		|| total === null
-		    		|| isNaN(total)
-		            || parseInt(Number(total)) !== total
-		            || isNaN(parseInt(total, 10))) {
+	    	try {
+	    		self.checkInteger(total);
+	    	} catch (err) {
 	            var s = [];
-	            s.push("ERROR! IOCharacter.initEquippedItems() - ");
-	            s.push("argument must be integer");
+	            s.push("ERROR! IOCharacter.initEquippedItems() - total ");
+	            s.push(err.message);
 	            throw new Error(s.join(""));
-		    }
-	        equippedItems = [];
+	    	}
+	        this.equippedItems = [];
 	        for (var i = total; i >= 0; i--) {
 	            this.equippedItems.push(-1);
 	        }

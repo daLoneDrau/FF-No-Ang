@@ -22,21 +22,21 @@ define(function() {
      */
 	Hashcode.prototype.getHashcode = function() {
         return this.text;
-    }
+    };
 	Hashcode.prototype.findHashcode = function(hashcode) {
     	var ret = false;
     	if (hashcode instanceof Hashcode) {
     		ret = hashcode.getHashcode() === this.text;
     	}
         return ret;
-    }
+    };
 	Hashcode.prototype.checkBoolean = function(val) {
 	    if (val === undefined
 	    		|| val === null
 	    		|| typeof val !== "boolean") {
 	        throw new Error("is not a boolean");
 	    }
-	}
+	};
 	Hashcode.prototype.checkFloat = function(val) {
 		if (val === undefined) {
 	        throw new Error("is undefined");
@@ -50,7 +50,7 @@ define(function() {
 		if (typeof val !== "number") {
 	        throw new Error("is not a number type");
 		}
-	}
+	};
 	Hashcode.prototype.checkInstanceOf = function(val, type) {
 		if (val === undefined) {
 	        throw new Error("is undefined");
@@ -61,7 +61,7 @@ define(function() {
 		if (!(val instanceof type)) {
 	        throw new Error("is not an instance of " + type);
 		}
-	}
+	};
 	Hashcode.prototype.checkInstanceOfNullsAllowed = function(val, type) {
 		if (val === undefined) {
 	        throw new Error("is undefined");
@@ -70,7 +70,7 @@ define(function() {
 				&& !(val instanceof type)) {
 	        throw new Error("is not an instance of " + type);
 		}
-	}
+	};
 	Hashcode.prototype.checkInteger = function(val) {
 		if (val === undefined) {
 	        throw new Error("is undefined");
@@ -87,14 +87,31 @@ define(function() {
 		if (isNaN(parseInt(val, 10))) {
 	        throw new Error("is a long integer type");
 		}
-	}
+	};
+	Hashcode.prototype.checkPowerOfTwo = function(flag) {
+		if (flag === undefined) {
+	        throw new Error("is undefined");
+		}
+		if (flag === null) {
+	        throw new Error("is null");
+		}
+		if (isNaN(flag)) {
+	        throw new Error("is not a number");
+		}
+		if (parseInt(Number(flag)) !== flag) {
+	        throw new Error("is not an integer type");
+		}
+		if (flag && (flag & (flag - 1)) === 0) {
+	        throw new Error("is a not a power of two");
+		}
+	};
 	Hashcode.prototype.checkString = function(val) {
 		if (val === undefined
 				|| val === null
 				|| typeof val !== "string") {
 	        throw new Error("is not a string");
 		}
-	}
+	};
 	Hashcode.prototype.checkStringNullsAllowed = function(val) {
 		if (val === undefined) {
 	        throw new Error("is undefined");
@@ -103,6 +120,6 @@ define(function() {
 				&& typeof val !== "string") {
 	        throw new Error("is not a string");
 		}
-	}
+	};
 	return Hashcode;
 });

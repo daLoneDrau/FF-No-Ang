@@ -26,164 +26,171 @@ define(["require", "com/dalonedrow/engine/systems/base/interactive",
 	    this.collid_state = 0;
 	    this.collid_time = 0;
 	    this.critical = 0;
-	    long cut = 0;
-	    short cuts = 0;
-	    float damages = 0;
-	    long detect = 0;
-	    float fDetect = 0;
-	    long fightdecision = 0;
+	    this.cut = 0;
+	    this.cuts = 0;
+	    this.damages = 0;
+	    this.detect = 0;
+	    this.fDetect = 0;
+	    this.fightdecision = 0;
 	    /** the {@link IoNpcData}'s gender. */
-	    private int gender = null;
+	    this.gender = null;
 	    /** the IO associated with this {@link IoNpcData}. */
-	    private IO io = null;
-	    float lastmouth = 0;
-	    float life = 0;
-	    float look_around_inc = 0;
-	    long ltemp = 0;
-	    float mana = 0;
-	    float maxlife = 0;
-	    float maxmana = 0;
-	    private int movemode = 0;
-	    float moveproblem = 0;
+	    this.io = null;
+	    this.lastmouth = 0;
+	    this.life = 0;
+	    this.look_around_inc = 0;
+	    this.ltemp = 0;
+	    this.mana = 0;
+	    this.maxlife = 0;
+	    this.maxmana = 0;
+	    this.movemode = 0;
+	    this.moveproblem = 0;
 	    /** the {@link IoNpcData}'s name. */
-	    private char[] name = "";
+	    this.name = "";
 	    /** all NPC flags. */
-	    private long npcFlags = 0;
+	    this.npcFlags = 0;
 	    // IO_PATHFIND pathfind;
 	    // EERIE_EXTRA_ROTATE * ex_rotate;
 	    // D3DCOLOR blood_color;
-	    char padd = '';
-	    private IOPathfind pathfinder = null;
+	    this.padd = '';
+	    this.pathfinder = null;
 	    // IO_BEHAVIOR_DATA stacked[MAX_STACKED_BEHAVIOR];
-	    float poisonned = 0;
-	    float reach = 0;
-	    private boolean reachedtarget = false; // Is
+	    this.poisonned = 0;
+	    this.reach = 0;
+	    this.reachedtarget = false; // Is
 	    // target
 	    // in
 	    // REACHZONE ?
-	    long reachedtime = 0;
-	    char resist_fire = '';
-	    char resist_magic;
-	    char resist_poison;
-	    float speakpitch = 0;
-	    private int splatDamages = 0;
-	    private int splatTotNb = 0;
+	    this.reachedtime = 0;
+	    this.resist_fire = '';
+	    this.resist_magic;
+	    this.resist_poison;
+	    this.speakpitch = 0;
+	    this.splatDamages = 0;
+	    this.splatTotNb = 0;
 	    /** the stack of behaviors. */
-	    private final BehaviourData[] stacked = null;
-	    float stare_factor = 0;
-	    short strike_time = 0;
-	    private int tactics = 0; // 0=none
-	    private int targetInfo = 0;
+	    this.stacked = null;
+	    this.stare_factor = 0;
+	    this.strike_time = 0;
+	    this.tactics = 0; // 0=none
+	    this.targetInfo = 0;
 	    // ;
 	    /** the {@link IoNpcData}'s title. */
-	    private char[] title = null;
+	    this.title = null;
 	    // 1=side ;
 	    // 2=side+back
-	    float tohit = 0;
-	    short unused = 0;
+	    this.tohit = 0;
+	    this.unused = 0;
 	    // EERIE_3D last_splat_pos;
-	    float vvpos = 0;
+	    this.vvpos = 0;
 	
-	    short walk_start_time = 0;
+	    this.walk_start_time = 0;
 	    /** the NPC's weapon. */
-	    private IO weapon = null;
-	    private int weaponInHand = 0;
-	    char[] weaponname = "";
-	    long weapontype = 0;
-	    private int xpvalue = 0;
+	    this.weapon = null;
+	    this.weaponInHand = 0;
+	    this.weaponname = "";
+	    this.weapontype = 0;
+	    this.xpvalue = 0;
         this.stacked = [];
         for (var i = 0; i < IoNpcData.MAX_STACKED_BEHAVIOR; i++) {
         	this.push(new BehaviourData());
         }
         pathfinder = new IOPathfind();
 	}
+	IoNpcData.prototype = Object.create(IOCharacter.prototype);
 	IoNpcData.MAX_STACKED_BEHAVIOR = 5;
     /**
      * Adds a behavior flag.
      * @param flag the flag
      */
-    public void addBehavior(final Behaviour behaviorEnum) {
-        behavior |= behaviorEnum.getFlag();
-    }
-    /**
-     * Adds a behavior flag.
-     * @param flag the flag
-     */
-    public void addBehavior(final long flag) {
-        behavior |= flag;
+    IoNpcData.prototype.addBehavior = function(flag) {
+    	try {
+    		this.checkPowerOfTwo(flag);
+    	} catch (err) {
+            var s = [];
+            s.push("ERROR! IoNpcData.addBehavior() - flag ");
+            s.push(err.message);
+            throw new Error(s.join(""));
+    	}
+    	this.behavior |= behaviorEnum.getFlag();
     }
     /**
      * Adds an NPC flag.
      * @param flag the flag
      */
-    public final void addNPCFlag(final long flag) {
-        npcFlags |= flag;
+    IoNpcData.prototype.addNPCFlag = function(flag) {
+    	try {
+    		this.checkPowerOfTwo(flag);
+    	} catch (err) {
+            var s = [];
+            s.push("ERROR! IoNpcData.addNPCFlag() - flag ");
+            s.push(err.message);
+            throw new Error(s.join(""));
+    	}
+    	this.npcFlags |= flag;
     }
-    /**
-     * Adjusts the NPC's life by a specific amount.
-     * @param dmg the amount
-     */
-    protected abstract void adjustLife(float dmg);
-    /**
-     * Adjusts the NPC's mana by a specific amount.
-     * @param dmg the amount
-     */
-    protected abstract void adjustMana(float dmg);
     /**
      * Applies extra damage from a poisoned attack.
      * @param srcIoid the source of the damage
      * @param isSpellDamage flag indicating whether the damage is from a spell
-     * @throws RPGException if an error occurs
+     * @if an error occurs
      */
-    private void applyPoisonDamage(final int srcIoid,
-            final boolean isSpellDamage) throws RPGException {
+    IoNpcData.prototype.applyPoisonDamage = function(srcIoid, isSpellDamage) {
+    	try {
+    		this.checkInteger(srcIoid);
+    	} catch (err) {
+            var s = [];
+            s.push("ERROR! IoNpcData.applyPoisonDamage() - srcIoid ");
+            s.push(err.message);
+            throw new Error(s.join(""));
+    	}
+    	try {
+    		this.checkBoolean(isSpellDamage);
+    	} catch (err) {
+            var s = [];
+            s.push("ERROR! IoNpcData.applyPoisonDamage() - isSpellDamage ");
+            s.push(err.message);
+            throw new Error(s.join(""));
+    	}
         if (Interactive.getInstance().hasIO(srcIoid)) {
-            IO poisonWeaponIO = null;
-            IO sourceIO = (IO) Interactive.getInstance().getIO(
-                    srcIoid);
+            var poisonWeaponIO = null;
+            var sourceIO = Interactive.getInstance().getIO(srcIoid);
             if (sourceIO.hasIOFlag(IoGlobals.IO_01_PC)) {
-                IoPcData player = sourceIO.getPCData();
-                if (player.getEquippedItem(
-                        EquipmentGlobals.EQUIP_SLOT_WEAPON) > 0
-                        && Interactive.getInstance().hasIO(
-                                player.getEquippedItem(
-                                        EquipmentGlobals.EQUIP_SLOT_WEAPON))) {
-                    poisonWeaponIO = (IO) Interactive.getInstance()
-                            .getIO(player.getEquippedItem(
-                                    EquipmentGlobals.EQUIP_SLOT_WEAPON));
+            	var player = sourceIO.getPCData();
+                if (player.getEquippedItem(EquipmentGlobals.EQUIP_SLOT_WEAPON) > 0
+                        && Interactive.getInstance().hasIO(player.getEquippedItem(
+                        		EquipmentGlobals.EQUIP_SLOT_WEAPON))) {
+                    poisonWeaponIO = Interactive.getInstance().getIO(player.getEquippedItem(
+                    		EquipmentGlobals.EQUIP_SLOT_WEAPON));
 
-                    if (poisonWeaponIO != null
-                            && (poisonWeaponIO.getPoisonLevel() == 0
-                                    || poisonWeaponIO
-                                            .getPoisonCharges() == 0)
+                    if (poisonWeaponIO !== null
+                            && (poisonWeaponIO.getPoisonLevel() === 0
+                            		|| poisonWeaponIO.getPoisonCharges() === 0)
                             || isSpellDamage) {
                         poisonWeaponIO = null;
                     }
                 }
             } else {
                 if (sourceIO.hasIOFlag(IoGlobals.IO_03_NPC)) {
-                    poisonWeaponIO =
-                            (IO) sourceIO.getNPCData().getWeapon();
-                    if (poisonWeaponIO != null
-                            && (poisonWeaponIO.getPoisonLevel() == 0
-                                    || poisonWeaponIO
-                                            .getPoisonCharges() == 0)) {
+                    poisonWeaponIO = sourceIO.getNPCData().getWeapon();
+                    if (poisonWeaponIO !== null
+                            && (poisonWeaponIO.getPoisonLevel() === 0
+                                    || poisonWeaponIO.getPoisonCharges() === 0)) {
                         poisonWeaponIO = null;
                     }
                 }
             }
-            if (poisonWeaponIO == null) {
+            if (poisonWeaponIO === null) {
                 poisonWeaponIO = sourceIO;
             }
-            if (poisonWeaponIO != null
+            if (poisonWeaponIO !== null
                     && poisonWeaponIO.getPoisonLevel() > 0
                     && poisonWeaponIO.getPoisonCharges() > 0) {
                 // TODO - apply poison damage
 
                 // reduce poison level on attacking weapon
                 if (poisonWeaponIO.getPoisonCharges() > 0) {
-                    poisonWeaponIO.setPoisonCharges(
-                            poisonWeaponIO.getPoisonCharges() - 1);
+                    poisonWeaponIO.setPoisonCharges(poisonWeaponIO.getPoisonCharges() - 1);
                 }
             }
             sourceIO = null;
@@ -195,14 +202,22 @@ define(["require", "com/dalonedrow/engine/systems/base/interactive",
      * @param dmg the attempted amount of mana to be drained
      * @return {@link float}
      */
-    public final float ARX_DAMAGES_DrainMana(final float dmg) {
-        float manaDrained = 0;
-        if (getBaseMana() >= dmg) {
-            adjustMana(-dmg);
+    IoNpcData.prototype.ARX_DAMAGES_DrainMana = function(dmg) {
+    	try {
+    		this.checkFloat(dmg);
+    	} catch (err) {
+            var s = [];
+            s.push("ERROR! IoNpcData.ARX_DAMAGES_DrainMana() - dmg ");
+            s.push(err.message);
+            throw new Error(s.join(""));
+    	}
+        var manaDrained = 0;
+        if (this.getBaseMana() >= dmg) {
+        	this.adjustMana(-dmg);
             manaDrained = dmg;
         } else {
             manaDrained = getBaseMana();
-            adjustMana(-manaDrained);
+            this.adjustMana(-manaDrained);
         }
         return manaDrained;
     }
@@ -210,29 +225,52 @@ define(["require", "com/dalonedrow/engine/systems/base/interactive",
      * Heals the NPC's mana.
      * @param dmg the amount of healing
      */
-    public final void ARX_DAMAGES_HealManaInter(final float dmg) {
-        if (getBaseLife() > 0.f) {
-            if (dmg > 0.f) {
-                adjustMana(dmg);
+    IoNpcData.prototype.ARX_DAMAGES_HealManaInter = function(dmg) {
+    	try {
+    		this.checkFloat(dmg);
+    	} catch (err) {
+            var s = [];
+            s.push("ERROR! IoNpcData.ARX_DAMAGES_HealManaInter() - dmg ");
+            s.push(err.message);
+            throw new Error(s.join(""));
+    	}
+        if (this.getBaseLife() > 0) {
+            if (dmg > 0) {
+            	this.adjustMana(dmg);
             }
         }
     }
-    public final void ARX_NPC_Behaviour_Change(final int newBehavior,
-            final long params) {
-        if (hasBehavior(Behaviour.BEHAVIOUR_FIGHT)
-                && (newBehavior & Behaviour.BEHAVIOUR_FIGHT
-                        .getFlag()) == Behaviour.BEHAVIOUR_FIGHT.getFlag()) {
-            stopActiveAnimation();
+    IoNpcData.prototype.ARX_NPC_Behaviour_Change = function(newBehavior, params) {
+    	try {
+    		this.checkPowerOfTwo(newBehavior);
+    	} catch (err) {
+            var s = [];
+            s.push("ERROR! IoNpcData.ARX_NPC_Behaviour_Change() - newBehavior ");
+            s.push(err.message);
+            throw new Error(s.join(""));
+    	}
+    	try {
+    		this.checkInteger(params);
+    	} catch (err) {
+            var s = [];
+            s.push("ERROR! IoNpcData.ARX_NPC_Behaviour_Change() - params ");
+            s.push(err.message);
+            throw new Error(s.join(""));
+    	}
+        if (this.hasBehavior(BehaviourGlobals.BEHAVIOUR_FIGHT)
+                && (newBehavior & BehaviourGlobals.BEHAVIOUR_FIGHT)
+                		=== BehaviourGlobals.BEHAVIOUR_FIGHT) {
+        	this.stopActiveAnimation();
             // ANIM_USE * ause1 = &io->animlayer[1];
             // AcquireLastAnim(io);
             // FinishAnim(io, ause1->cur_anim);
             // ause1->cur_anim = NULL;
         }
 
-        if (hasBehavior(Behaviour.BEHAVIOUR_NONE)
-                && (newBehavior & Behaviour.BEHAVIOUR_NONE
-                        .getFlag()) == Behaviour.BEHAVIOUR_NONE.getFlag()) {
-            stopIdleAnimation();
+        if (this.hasBehavior(BehaviourGlobals.BEHAVIOUR_NONE)
+                && (newBehavior & BehaviourGlobals.BEHAVIOUR_NONE)
+                	=== BehaviourGlobals.BEHAVIOUR_NONE) {
+        	this.stopIdleAnimation();
             // ANIM_USE * ause0 = &io->animlayer[0];
             // AcquireLastAnim(io);
             // FinishAnim(io, ause0->cur_anim);
@@ -240,7 +278,7 @@ define(["require", "com/dalonedrow/engine/systems/base/interactive",
             // ANIM_Set(ause0, io->anims[ANIM_DEFAULT]);
             // ause0->flags &= ~EA_LOOP;
 
-            stopActiveAnimation();
+        	this.stopActiveAnimation();
             // ANIM_USE * ause1 = &io->animlayer[1];
             // AcquireLastAnim(io);
             // FinishAnim(io, ause1->cur_anim);
@@ -255,22 +293,22 @@ define(["require", "com/dalonedrow/engine/systems/base/interactive",
             // ause2->flags &= ~EA_LOOP;
         }
 
-        if ((newBehavior & Behaviour.BEHAVIOUR_FRIENDLY
-                .getFlag()) == Behaviour.BEHAVIOUR_FRIENDLY.getFlag()) {
-            stopIdleAnimation();
+        if ((newBehavior & BehaviourGlobals.BEHAVIOUR_FRIENDLY)
+        		=== BehaviourGlobals.BEHAVIOUR_FRIENDLY) {
+        	this.stopIdleAnimation();
             // ANIM_USE * ause0 = &io->animlayer[0];
             // AcquireLastAnim(io);
             // FinishAnim(io, ause0->cur_anim);
             // ANIM_Set(ause0, io->anims[ANIM_DEFAULT]);
             // ause0->altidx_cur = 0;
         }
-        clearBehavior();
-        behavior = newBehavior;
-        behavior_param = params;
+        this.clearBehavior();
+        this.behavior = newBehavior;
+        this.behavior_param = params;
     }
-    public void ARX_NPC_Behaviour_Stack() {
-        for (var i = 0; i < MAX_STACKED_BEHAVIOR; i++) {
-            BehaviourData bd = stacked[i];
+    IoNpcData.prototype.ARX_NPC_Behaviour_Stack = function() {
+        for (var i = 0; i < IoNpcData.MAX_STACKED_BEHAVIOR; i++) {
+            var bd = this.stacked[i];
             if (!bd.exists()) {
                 bd.setBehaviour(behavior);
                 bd.setBehaviorParam(behavior_param);
@@ -287,49 +325,55 @@ define(["require", "com/dalonedrow/engine/systems/base/interactive",
             }
         }
     }
-    public void ARX_NPC_Behaviour_UnStack() {
-        for (var i = 0; i < MAX_STACKED_BEHAVIOR; i++) {
-            BehaviourData bd = stacked[i];
+    IoNpcData.prototype.ARX_NPC_Behaviour_UnStack = function() {
+        for (var i = 0; i < IoNpcData.MAX_STACKED_BEHAVIOR; i++) {
+            var bd = this.stacked[i];
             if (bd.exists()) {
                 // AcquireLastAnim(io);
-                behavior = bd.getBehaviour();
-                behavior_param = bd.getBehaviorParam();
+            	this.behavior = bd.getBehaviour();
+            	this.behavior_param = bd.getBehaviorParam();
                 this.tactics = bd.getTactics();
                 this.targetInfo = bd.getTarget();
                 this.movemode = bd.getMoveMode();
                 bd.setExists(false);
                 // ARX_NPC_LaunchPathfind(io, bd->target);
 
-                if (this.hasBehavior(Behaviour.BEHAVIOUR_NONE)) {
+                if (this.hasBehavior(BehaviourGlobals.BEHAVIOUR_NONE)) {
                     // memcpy(io->animlayer, bd->animlayer,
                     // sizeof(ANIM_USE)*MAX_ANIM_LAYERS);
                 }
             }
         }
     }
-    public abstract void ARX_NPC_ManagePoison();
     /**
      * Revives the NPC.
      * @param reposition if <tt>true</tt> NPC is moved to their initial position
-     * @throws RPGException if an error occurs
+     * @if an error occurs
      */
-    public final void ARX_NPC_Revive(final boolean reposition)
-            throws RPGException {
+    IoNpcData.prototype.ARX_NPC_Revive = function(reposition) {
+    	try {
+    		this.checkBoolean(reposition);
+    	} catch (err) {
+            var s = [];
+            s.push("ERROR! IoNpcData.ARX_NPC_Revive() - reposition ");
+            s.push(err.message);
+            throw new Error(s.join(""));
+    	}
         // TODO - check if secondary inventory belongs to the NPC
         // and kill it
-        // if ((TSecondaryInventory) && (TSecondaryInventory->io == io)) {
+        // if ((TSecondaryInventory) && (TSecondaryInventory->io === io)) {
         // TSecondaryInventory = NULL;
         // }
 
-        Script.getInstance().setMainEvent(getIo(), "MAIN");
+        Script.getInstance().setMainEvent(this.getIo(), "MAIN");
 
-        getIo().removeIOFlag(IoGlobals.IO_07_NO_COLLISIONS);
-        restoreLifeToMax();
-        Script.getInstance().resetObject(io, true);
-        restoreLifeToMax();
+        this.getIo().removeIOFlag(IoGlobals.IO_07_NO_COLLISIONS);
+        this.restoreLifeToMax();
+        Script.getInstance().resetObject(this.io, true);
+        this.restoreLifeToMax();
 
         if (reposition) {
-            moveToInitialPosition();
+            this.moveToInitialPosition();
         }
         // reset texture - later
         // long goretex = -1;
@@ -344,67 +388,76 @@ define(["require", "com/dalonedrow/engine/systems/base/interactive",
         // }
 
         // for (long ll = 0; ll < io->obj->nbfaces; ll++) {
-        // if (io->obj->facelist[ll].texid != goretex) {
+        // if (io->obj->facelist[ll].texid !== goretex) {
         // io->obj->facelist[ll].facetype &= ~POLY_HIDE;
         // } else {
         // io->obj->facelist[ll].facetype |= POLY_HIDE;
         // }
         // }
 
-        cuts = 0;
+        this.cuts = 0;
     }
-    /**
-     * @param xp
-     * @param killerIO
-     */
-    protected abstract void awardXpForNpcDeath(final int xp, final IO killerIO);
     /** Clears all behavior flags that were set. */
-    public void clearBehavior() {
-        behavior = 0;
+    IoNpcData.prototype.clearBehavior = function() {
+    	this.behavior = 0;
     }
     /** Clears all NPC flags that were set. */
-    public final void clearNPCFlags() {
-        npcFlags = 0;
+    IoNpcData.prototype.clearNPCFlags = function() {
+    	this.npcFlags = 0;
     }
-    /**
-     * Handles a non-living NPC being damaged.
-     * @param dmg the amount of damage
-     * @param srcIoid the source of the damage
-     * @param isSpellDamage flag indicating whether the damage is from a spell
-     * @throws RPGException if an error occurs
-     */
-    protected abstract void damageNonLivingNPC(float dmg, int srcIoid,
-            boolean isSpellDamage) throws RPGException;
     /**
      * Damages an NPC.
      * @param dmg the amount of damage
      * @param srcIoid the source of the damage
      * @param isSpellDamage flag indicating whether the damage is from a spell
      * @return {@link float}
-     * @throws RPGException if an error occurs
+     * @if an error occurs
      */
-    public final float damageNPC(final float dmg, final int srcIoid,
-            final boolean isSpellDamage) throws RPGException {
-        float damagesdone = 0.f;
-        if (io.getShow() > 0
-                && !io.hasIOFlag(IoGlobals.IO_08_INVULNERABILITY)) {
-            if (getBaseLife() <= 0f) {
-                damageNonLivingNPC(dmg, srcIoid, isSpellDamage);
+    IoNpcData.prototype.damageNPC = function(dmg, srcIoid, isSpellDamage) {
+    	try {
+    		this.checkFloat(dmg);
+    	} catch (err) {
+            var s = [];
+            s.push("ERROR! IoNpcData.damageNPC() - dmg ");
+            s.push(err.message);
+            throw new Error(s.join(""));
+    	}
+    	try {
+    		this.checkInteger(srcIoid);
+    	} catch (err) {
+            var s = [];
+            s.push("ERROR! IoNpcData.damageNPC() - srcIoid ");
+            s.push(err.message);
+            throw new Error(s.join(""));
+    	}
+    	try {
+    		this.checkBoolean(isSpellDamage);
+    	} catch (err) {
+            var s = [];
+            s.push("ERROR! IoNpcData.damageNPC() - isSpellDamage ");
+            s.push(err.message);
+            throw new Error(s.join(""));
+    	}
+        var damagesdone = 0;
+        if (this.io.getShow() > 0
+                && !this.io.hasIOFlag(IoGlobals.IO_08_INVULNERABILITY)) {
+            if (this.getBaseLife() <= 0) {
+            	this.damageNonLivingNPC(dmg, srcIoid, isSpellDamage);
             } else {
                 // send OUCH event
-                sendOuchEvent(dmg, srcIoid);
+            	this.sendOuchEvent(dmg, srcIoid);
                 // TODO - remove Confusion spell when hit
 
-                if (dmg >= 0.f) {
+                if (dmg >= 0) {
                     this.applyPoisonDamage(srcIoid, isSpellDamage);
-                    int accepted = ScriptConstants.ACCEPT;
+                    var accepted = ScriptGlobals.ACCEPT;
                     // if IO has a script, send HIT event
-                    if (io.getScript() != null) {
-                        accepted = sendHitEvent(dmg, srcIoid, isSpellDamage);
+                    if (this.io.getScript() !== null) {
+                        accepted = this.sendHitEvent(dmg, srcIoid, isSpellDamage);
                     }
                     // if HIT event doesn't handle damage, handle it here
-                    if (accepted == ScriptConstants.ACCEPT) {
-                        damagesdone = processDamage(dmg, srcIoid);
+                    if (accepted === ScriptGlobals.ACCEPT) {
+                        damagesdone = this.processDamage(dmg, srcIoid);
                     }
                 }
             }
@@ -414,29 +467,39 @@ define(["require", "com/dalonedrow/engine/systems/base/interactive",
     /**
      * Forces the NPC to die.
      * @param killerIO the IO that killed the NPC
-     * @throws RPGException if an error occurs
+     * @if an error occurs
      */
-    public final void forceDeath(final IO killerIO) throws RPGException {
-        if (io.getMainevent() == null
-                || (io.getMainevent() != null
-                        && !io.getMainevent().equalsIgnoreCase("DEAD"))) {
-            IO oldSender = (IO) Script.getInstance().getEventSender();
+    IoNpcData.prototype.forceDeath = function(killerIO) {
+    	var BaseInteractiveObject =
+    		require("com/dalonedrow/rpg/base/flyweights/baseinteractiveobject");
+    	try {
+    		this.checkInstanceOfNullsAllowed(killerIO, BaseInteractiveObject);
+    	} catch (err) {
+            var s = [];
+            s.push("ERROR! IoNpcData.forceDeath() - val ");
+            s.push(err.message);
+            throw new Error(s.join(""));
+    	}
+        if (this.io.getMainevent() === null
+                || (this.io.getMainevent() !== null
+                        && !this.io.getMainevent().equalsIgnoreCase("DEAD"))) {
+            var oldSender = Script.getInstance().getEventSender();
             Script.getInstance().setEventSender(killerIO);
 
             // TODO - reset drag IO
-            // if (io == DRAGINTER)
+            // if (io === DRAGINTER)
             // Set_DragInter(NULL);
 
             // TODO - reset flying over (with mouse) IO
-            // if (io == FlyingOverIO)
+            // if (io === FlyingOverIO)
             // FlyingOverIO = NULL;
 
             // TODO - reset camera 1 when pointing to IO
-            // if ((MasterCamera.exist & 1) && (MasterCamera.io == io))
+            // if ((MasterCamera.exist & 1) && (MasterCamera.io === io))
             // MasterCamera.exist = 0;
 
             // TODO - reset camera 2 when pointing to IO
-            // if ((MasterCamera.exist & 2) && (MasterCamera.want_io == io))
+            // if ((MasterCamera.exist & 2) && (MasterCamera.want_io === io))
             // MasterCamera.exist = 0;
 
             // TODO - kill dynamic lighting for IO
@@ -451,23 +514,22 @@ define(["require", "com/dalonedrow/engine/systems/base/interactive",
             // io->halo.dynlight = -1;
 
             // reset all behaviors
-            resetBehavior();
+            this.resetBehavior();
 
             // TODO - kill speeches
             // ARX_SPEECH_ReleaseIOSpeech(io);
 
             // Kill all Timers...
-            Script.getInstance().timerClearByIO(io);
+            Script.getInstance().timerClearByIO(this.io);
 
-            if (io.getMainevent() == null
-                    || (io.getMainevent() != null
-                            && !io.getMainevent().equalsIgnoreCase("DEAD"))) {
-                Script.getInstance().notifyIOEvent(
-                        io, ScriptConsts.SM_017_DIE, "");
+            if (this.io.getMainevent() === null
+                    || (this.io.getMainevent() !== null
+                            && !this.io.getMainevent().equalsIgnoreCase("DEAD"))) {
+                Script.getInstance().notifyIOEvent(this.io, ScriptConsts.SM_017_DIE, "");
             }
 
-            if (Interactive.getInstance().hasIO(io)) {
-                io.setMainevent("DEAD");
+            if (Interactive.getInstance().hasIO(this.io)) {
+            	this.io.setMainevent("DEAD");
 
                 // TODO - kill animations
                 // if (EEDistance3D(&io_dead->pos, &ACTIVECAM->pos) > 3200) {
@@ -476,18 +538,17 @@ define(["require", "com/dalonedrow/engine/systems/base/interactive",
                 // }
 
                 // set killer
-                String killer = "";
+                var killer = "";
 
-                setWeaponInHand(-1);
+                this.setWeaponInHand(-1);
 
-                Interactive.getInstance().ARX_INTERACTIVE_DestroyDynamicInfo(
-                        io);
+                Interactive.getInstance().ARX_INTERACTIVE_DestroyDynamicInfo(this.io);
 
                 // set killer name
-                if (killerIO != null
+                if (killerIO !== null
                         && killerIO.hasIOFlag(IoGlobals.IO_01_PC)) {
                     killer = "PLAYER";
-                } else if (killerIO != null
+                } else if (killerIO !== null
                         && killerIO.hasIOFlag(IoGlobals.IO_03_NPC)) {
                     killer = new String(killerIO.getNPCData().getName());
                 }
@@ -496,22 +557,20 @@ define(["require", "com/dalonedrow/engine/systems/base/interactive",
                     if (!Interactive.getInstance().hasIO(i)) {
                         continue;
                     }
-                    IO ioo = (IO) Interactive.getInstance().getIO(i);
-                    if (ioo == null) {
+                    var ioo = Interactive.getInstance().getIO(i);
+                    if (ioo === null) {
                         continue;
                     }
-                    if (ioo.equals(io)) {
+                    if (ioo.equals(this.io)) {
                         continue;
                     }
                     if (ioo.hasIOFlag(IoGlobals.IO_03_NPC)) {
-                        if (Interactive.getInstance().hasIO(
-                                ioo.getTargetinfo())) {
-                            if (Interactive.getInstance().getIO(
-                                    ioo.getTargetinfo()).equals(io)) {
-                                Script.getInstance().setEventSender(io);
+                        if (Interactive.getInstance().hasIO(ioo.getTargetinfo())) {
+                            if (Interactive.getInstance().getIO(ioo.getTargetinfo()).equals(io)) {
+                                Script.getInstance().setEventSender(this.io);
                                 Script.getInstance().stackSendIOScriptEvent(ioo,
                                         0,
-                                        new Object[] { "killer", killer },
+                                        ["killer", killer],
                                         "onTargetDeath");
                                 ioo.setTargetinfo(IoGlobals.TARGET_NONE);
                                 ioo.getNPCData().setReachedtarget(false);
@@ -538,10 +597,10 @@ define(["require", "com/dalonedrow/engine/systems/base/interactive",
                 // io_dead->animlayer[3].cur_anim = NULL;
 
                 // reduce life to 0
-                adjustLife(-99999);
+                this.adjustLife(-99999);
 
-                if (getWeapon() != null) {
-                    IO wpnIO = getWeapon();
+                if (this.getWeapon() !== null) {
+                    var wpnIO = getWeapon();
                     if (Interactive.getInstance().hasIO(wpnIO)) {
                         wpnIO.setShow(IoGlobals.SHOW_FLAG_IN_SCENE);
                         wpnIO.addIOFlag(IoGlobals.IO_07_NO_COLLISIONS);
@@ -566,102 +625,87 @@ define(["require", "com/dalonedrow/engine/systems/base/interactive",
      * Gets the armorClass
      * @return {@link float}
      */
-    public float getArmorClass() {
-        return armorClass;
+    IoNpcData.prototype.getArmorClass = function() {
+        return this.armorClass;
     }
-    /**
-     * Gets the NPC's base life value from the correct attribute.
-     * @return {@link float}
-     */
-    public abstract float getBaseLife();
-    /**
-     * Gets the NPC's base mana value from the correct attribute.
-     * @return {@link float}
-     */
-    public abstract float getBaseMana();
     /**
      * Gets the {@link IoNpcData}'s gender.
      * @return int
      */
-    public final int getGender() {
-        return gender;
+    IoNpcData.prototype.getGender = function() {
+        return this.gender;
     }
     /**
      * Gets the IO associated with this {@link IoNpcData}.
      * @return {@link IO}
      */
-    @Override
-    public final IO getIo() {
-        return io;
+    IoNpcData.prototype.getIo = function() {
+        return this.io;
     }
     /**
      * Gets the value for the movemode.
      * @return {@link int}
      */
-    public int getMovemode() {
-        return movemode;
+    IoNpcData.prototype.getMovemode = function() {
+        return this.movemode;
     }
     /**
      * Gets the {@link IoNpcData}'s name.
      * @return char[]
      */
-    public final char[] getName() {
-        return name;
+    IoNpcData.prototype.getName = function() {
+        return this.name;
     }
-    public IOPathfind getPathfinding() {
-        return pathfinder;
+    IoNpcData.prototype.getPathfinding = function() {
+        return this.pathfinder;
     }
-    public abstract int getPoisonned();
     /**
      * Gets the splatDamages
      * @return {@link int}
      */
-    public int getSplatDamages() {
-        return splatDamages;
+    IoNpcData.prototype.getSplatDamages = function() {
+        return this.splatDamages;
     }
     /**
      * Gets the splatTotNb
      * @return {@link int}
      */
-    public int getSplatTotNb() {
-        return splatTotNb;
+    IoNpcData.prototype.getSplatTotNb = function() {
+        return this.splatTotNb;
     }
     /**
      * Gets the value for the tactics.
      * @return {@link int}
      */
-    public int getTactics() {
-        return tactics;
+    IoNpcData.prototype.getTactics = function() {
+        return this.tactics;
     }
     /**
      * Gets the {@link IoNpcData}'s title.
      * @return char[]
      */
-    public final char[] getTitle() {
-        return title;
+    IoNpcData.prototype.getTitle = function() {
+        return this.title;
     }
     /**
      * Gets the NPC's weapon.
      * @return {@link IO}
      */
-    public final IO getWeapon() {
-        return weapon;
+    IoNpcData.prototype.getWeapon = function() {
+        return this.weapon;
     }
     /**
      * Gets the value for the weaponInHand.
      * @return {@link int}
      */
-    public int getWeaponInHand() {
-        return weaponInHand;
+    IoNpcData.prototype.getWeaponInHand = function() {
+        return this.weaponInHand;
     }
     /**
      * Gets the value for the xpvalue.
      * @return {@link int}
      */
-    public int getXpvalue() {
-        return xpvalue;
-    }
-    public long getXPValue() {
+    IoNpcData.prototype.getXpvalue = function() {
         return this.xpvalue;
     }
     /**
@@ -671,48 +715,56 @@ define(["require", "com/dalonedrow/engine/systems/base/interactive",
      * @return true if the {@link BaseInteractiveObject} has the flag; false
      *         otherwise
      */
-    public final boolean hasBehavior(final Behaviour behaviorEnum) {
-        return hasBehavior(behaviorEnum.getFlag());
+    IoNpcData.prototype.hasBehavior = function(flag) {
+    	try {
+    		this.checkPowerOfTwo(flag);
+    	} catch (err) {
+            var s = [];
+            s.push("ERROR! IoNpcData.hasBehavior() - flag ");
+            s.push(err.message);
+            throw new Error(s.join(""));
+    	}
+        return (this.behavior & flag) === flag;
     }
-    /**
-     * Determines if the {@link BaseInteractiveObject} has a specific behavior
-     * flag.
-     * @param flag the flag
-     * @return true if the {@link BaseInteractiveObject} has the flag; false
-     *         otherwise
-     */
-    public final boolean hasBehavior(final long flag) {
-        return (behavior & flag) == flag;
-    }
-    /**
-     * Determines if the NPC has life remaining.
-     * @return <tt>true</tt> if the NPC still have some LP/HP remaining;
-     *         <tt>false</tt> otherwise
-     */
-    protected abstract boolean hasLifeRemaining();
     /**
      * Determines if the {@link IoNpcData} has a specific flag.
      * @param flag the flag
      * @return true if the {@link IoNpcData} has the flag; false otherwise
      */
-    public final boolean hasNPCFlag(final long flag) {
-        return (npcFlags & flag) == flag;
+    IoNpcData.prototype.hasNPCFlag = function(flag) {
+    	try {
+    		this.checkPowerOfTwo(flag);
+    	} catch (err) {
+            var s = [];
+            s.push("ERROR! IoNpcData.hasNPCFlag() - flag ");
+            s.push(err.message);
+            throw new Error(s.join(""));
+    	}
+        return (this.npcFlags & flag) === flag;
     }
     /**
      * Gets the value for the reachedtarget.
      * @return {@link long}
      */
-    public boolean hasReachedtarget() {
-        return reachedtarget;
+    IoNpcData.prototype.hasReachedtarget = function() {
+        return this.reachedtarget;
     }
     /**
      * Heals an NPC for a specific amount.
      * @param healAmt the healing amount
      */
-    public final void healNPC(final float healAmt) {
-        if (getBaseLife() > 0.f) {
-            if (healAmt > 0.f) {
-                adjustLife(healAmt);
+    IoNpcData.prototype.healNPC = function(healAmt) {
+    	try {
+    		this.checkFloat(healAmt);
+    	} catch (err) {
+            var s = [];
+            s.push("ERROR! IoNpcData.healNPC() - healAmt ");
+            s.push(err.message);
+            throw new Error(s.join(""));
+    	}
+        if (this.getBaseLife() > 0) {
+            if (healAmt > 0) {
+            	this.adjustLife(healAmt);
             }
         }
     }
@@ -720,41 +772,54 @@ define(["require", "com/dalonedrow/engine/systems/base/interactive",
      * Determines if an NPC is dead.
      * @return <tt>true</tt> if the NPC is dead; <tt>false</tt> otherwise
      */
-    public boolean IsDeadNPC() {
-        boolean dead = false;
-        if (!hasLifeRemaining()) {
+    IoNpcData.prototype.IsDeadNPC = function() {
+        var dead = false;
+        if (!this.hasLifeRemaining()) {
             dead = true;
         }
         if (!dead
-                && io.getMainevent() != null
-                && io.getMainevent().equalsIgnoreCase("DEAD")) {
+                && this.io.getMainevent() !== null
+                && this.io.getMainevent().equalsIgnoreCase("DEAD")) {
             dead = true;
         }
         return dead;
     }
-    /** Moves the NPC to their initial position. */
-    protected abstract void moveToInitialPosition();
     /**
      * @param dmg
      * @param srcIoid
      * @return
      * @throws RPGException
      */
-    private float processDamage(final float dmg, final int srcIoid)
-            throws RPGException {
-        float damagesdone = Math.min(dmg, getBaseLife());
-        adjustLife(-dmg);
-        if (getBaseLife() <= 0.f) { // NPC is dead
+    IoNpcData.prototype.processDamage = function(dmg, srcIoid) {
+    	try {
+    		this.checkFloat(dmg);
+    	} catch (err) {
+            var s = [];
+            s.push("ERROR! IoNpcData.processDamage() - dmg ");
+            s.push(err.message);
+            throw new Error(s.join(""));
+    	}
+    	try {
+    		this.checkInteger(srcIoid);
+    	} catch (err) {
+            var s = [];
+            s.push("ERROR! IoNpcData.processDamage() - srcIoid ");
+            s.push(err.message);
+            throw new Error(s.join(""));
+    	}
+        var damagesdone = Math.min(dmg, this.getBaseLife());
+        this.adjustLife(-dmg);
+        if (this.getBaseLife() <= 0) { // NPC is dead
             // base life should be 0
             if (Interactive.getInstance().hasIO(srcIoid)) {
-                int xp = xpvalue;
-                IO srcIO = (IO) Interactive.getInstance().getIO(srcIoid);
-                forceDeath(srcIO);
+                var xp = this.xpvalue;
+                var srcIO = Interactive.getInstance().getIO(srcIoid);
+                this.forceDeath(srcIO);
                 if (srcIO.hasIOFlag(IoGlobals.IO_01_PC)) {
-                    awardXpForNpcDeath(xp, srcIO);
+                	this.awardXpForNpcDeath(xp, srcIO);
                 }
             } else {
-                forceDeath(null);
+            	this.forceDeath(null);
             }
         }
         return damagesdone;
@@ -763,277 +828,413 @@ define(["require", "com/dalonedrow/engine/systems/base/interactive",
      * Removes a behavior flag.
      * @param flag the flag
      */
-    public final void removeBehavior(final Behaviour behaviorEnum) {
-        behavior &= ~behaviorEnum.getFlag();
-    }
-    /**
-     * Removes a behavior flag.
-     * @param flag the flag
-     */
-    public final void removeBehavior(final long flag) {
-        behavior &= ~flag;
+    IoNpcData.prototype.removeBehavior = function(flag) {
+    	try {
+    		this.checkPowerOfTwo(flag);
+    	} catch (err) {
+            var s = [];
+            s.push("ERROR! IoNpcData.removeBehavior() - flag ");
+            s.push(err.message);
+            throw new Error(s.join(""));
+    	}
+        this.behavior &= ~flag;
     }
     /**
      * Removes an NPC flag.
      * @param flag the flag
      */
-    public final void removeNPCFlag(final long flag) {
-        npcFlags &= ~flag;
+    IoNpcData.prototype.removeNPCFlag = function(flag) {
+    	try {
+    		this.checkPowerOfTwo(flag);
+    	} catch (err) {
+            var s = [];
+            s.push("ERROR! IoNpcData.removeNPCFlag() - flag ");
+            s.push(err.message);
+            throw new Error(s.join(""));
+    	}
+        this.npcFlags &= ~flag;
     }
     /** Resets the behavior. */
-    public void resetBehavior() {
-        behavior = Behaviour.BEHAVIOUR_NONE.getFlag();
-        for (var i = 0; i < MAX_STACKED_BEHAVIOR; i++) {
-            if (stacked[i] == null) {
-                stacked[i] = new BehaviourData();
+    IoNpcData.prototype.resetBehavior = function() {
+    	this.behavior = BehaviourGlobals.BEHAVIOUR_NONE;
+        for (var i = 0; i < IoNpcData.MAX_STACKED_BEHAVIOR; i++) {
+            if (this.stacked[i] === null) {
+            	this.stacked[i] = new BehaviourData();
             }
-            stacked[i].setExists(false);
+            this.stacked[i].setExists(false);
         }
     }
-    /** Restores the NPC to their maximum life. */
-    protected abstract void restoreLifeToMax();
     /**
      * Sends the NPC IO a 'Hit' event.
      * @param dmg the amount of damage
      * @param srcIoid the source of the damage
      * @param isSpellDamage flag indicating whether the damage is from a spell
-     * @throws RPGException if an error occurs
+     * @if an error occurs
      */
-    private int sendHitEvent(final float dmg, final int srcIoid,
-            final boolean isSpellDamage) throws RPGException {
+    IoNpcData.prototype.sendHitEvent = function(dmg, srcIoid, isSpellDamage) {
+    	try {
+    		this.checkFloat(dmg);
+    	} catch (err) {
+            var s = [];
+            s.push("ERROR! IoNpcData.sendHitEvent() - dmg ");
+            s.push(err.message);
+            throw new Error(s.join(""));
+    	}
+    	try {
+    		this.checkInteger(srcIoid);
+    	} catch (err) {
+            var s = [];
+            s.push("ERROR! IoNpcData.sendHitEvent() - srcIoid ");
+            s.push(err.message);
+            throw new Error(s.join(""));
+    	}
+    	try {
+    		this.checkBoolean(isSpellDamage);
+    	} catch (err) {
+            var s = [];
+            s.push("ERROR! IoNpcData.sendHitEvent() - isSpellDamage ");
+            s.push(err.message);
+            throw new Error(s.join(""));
+    	}
         if (Interactive.getInstance().hasIO(srcIoid)) {
-            Script.getInstance().setEventSender(
-                    Interactive.getInstance().getIO(srcIoid));
+            Script.getInstance().setEventSender(Interactive.getInstance().getIO(srcIoid));
         } else {
             Script.getInstance().setEventSender(null);
         }
 
-        Object[] params;
-        if (Script.getInstance().getEventSender() != null
-                && Script.getInstance().getEventSender().hasIOFlag(
-                        IoGlobals.IO_01_PC)) {
-            IO plrIO = (IO) Script.getInstance().getEventSender();
+        var params;
+        if (Script.getInstance().getEventSender() !== null
+                && Script.getInstance().getEventSender().hasIOFlag(IoGlobals.IO_01_PC)) {
+        	var plrIO = Script.getInstance().getEventSender();
             if (isSpellDamage) {
-                params = new Object[] { "SPELL_DMG", dmg };
+                params = ["SPELL_DMG", dmg ];
             } else {
-                int wpnId = plrIO.getPCData().getEquippedItem(
-                        EquipmentGlobals.EQUIP_SLOT_WEAPON);
-                IO wpnIO = (IO) Interactive.getInstance().getIO(wpnId);
-                int wpnType = EquipmentGlobals.WEAPON_BARE;
-                if (wpnIO != null) {
+            	var wpnId = plrIO.getPCData().getEquippedItem(EquipmentGlobals.EQUIP_SLOT_WEAPON);
+            	var wpnIO = Interactive.getInstance().getIO(wpnId);
+            	var wpnType = EquipmentGlobals.WEAPON_BARE;
+                if (wpnIO !== null) {
                     wpnType = wpnIO.getItemData().getWeaponType();
                 }
                 switch (wpnType) {
                 case EquipmentGlobals.WEAPON_BARE:
-                    params = new Object[] { "BARE_DMG", dmg };
+                    params = [ "BARE_DMG", dmg ];
                     break;
                 case EquipmentGlobals.WEAPON_DAGGER:
-                    params = new Object[] { "DAGGER_DMG", dmg };
+                    params = [ "DAGGER_DMG", dmg ];
                     break;
                 case EquipmentGlobals.WEAPON_1H:
-                    params = new Object[] { "1H_DMG", dmg };
+                    params = [ "1H_DMG", dmg ];
                     break;
                 case EquipmentGlobals.WEAPON_2H:
-                    params = new Object[] { "2H_DMG", dmg };
+                    params = [ "2H_DMG", dmg ];
                     break;
                 case EquipmentGlobals.WEAPON_BOW:
-                    params = new Object[] { "ARROW_DMG", dmg };
+                    params = [ "ARROW_DMG", dmg ];
                     break;
                 default:
-                    params = new Object[] { "DMG", dmg };
+                    params = [ "DMG", dmg ];
                     break;
                 }
                 wpnIO = null;
             }
             plrIO = null;
         } else {
-            params = new Object[] { "DMG", dmg };
+            params = new [ "DMG", dmg ];
         }
         // if player summoned object causing damage,
         // change event sender to player
-        if (summonerIsPlayer((IO) Script.getInstance().getEventSender())) {
-            IO summonerIO = (IO) Interactive.getInstance().getIO(
-                    Script.getInstance().getEventSender().getSummoner());
+        if (summonerIsPlayer(Script.getInstance().getEventSender())) {
+            var summonerIO = Interactive.getInstance().getIO(
+            		Script.getInstance().getEventSender().getSummoner());
             Script.getInstance().setEventSender(summonerIO);
             summonerIO = null;
-            params = new Object[] { "SUMMONED_DMG", dmg };
+            params = [ "SUMMONED_DMG", dmg ];
         } else {
-            params = new Object[] {
-                    "SUMMONED_OUCH", 0f,
-                    "OUCH", io.getDamageSum() };
+            params = ["SUMMONED_OUCH", 0,
+                    "OUCH", io.getDamageSum() ];
         }
         return Script.getInstance().sendIOScriptEvent(
-                io, ScriptConsts.SM_016_HIT, params, null);
+        		this.io, ScriptConsts.SM_016_HIT, params, null);
     }
     /**
      * Sends the NPC IO an 'Ouch' event.
      * @param dmg the amount of damage
      * @param srcIoid the source of the damage
-     * @throws RPGException if an error occurs
+     * @if an error occurs
      */
-    private void sendOuchEvent(final float dmg, final int srcIoid)
-            throws RPGException {
-        io.setDamageSum(io.getDamageSum() + dmg);
+    IoNpcData.prototype.sendOuchEvent = function(dmg, srcIoid) {
+    	try {
+    		this.checkFloat(dmg);
+    	} catch (err) {
+            var s = [];
+            s.push("ERROR! IoNpcData.sendOuchEvent() - dmg ");
+            s.push(err.message);
+            throw new Error(s.join(""));
+    	}
+    	try {
+    		this.checkInteger(srcIoid);
+    	} catch (err) {
+            var s = [];
+            s.push("ERROR! IoNpcData.sendOuchEvent() - srcIoid ");
+            s.push(err.message);
+            throw new Error(s.join(""));
+    	}
+    	this.io.setDamageSum(io.getDamageSum() + dmg);
         // set the event sender
         if (Interactive.getInstance().hasIO(srcIoid)) {
-            Script.getInstance().setEventSender(
-                    Interactive.getInstance().getIO(srcIoid));
+            Script.getInstance().setEventSender(Interactive.getInstance().getIO(srcIoid));
         } else {
             Script.getInstance().setEventSender(null);
         }
         // check to see if the damage is coming from a summoned object
-        Object[] params;
-        if (summonerIsPlayer((IO) Script.getInstance().getEventSender())) {
-            params = new Object[] {
-                    "SUMMONED_OUCH", io.getDamageSum(),
-                    "OUCH", 0f };
+        var params;
+        if (summonerIsPlayer(Script.getInstance().getEventSender())) {
+            params = [ "SUMMONED_OUCH", this.io.getDamageSum(),
+                    "OUCH", 0 ];
         } else {
-            params = new Object[] {
-                    "SUMMONED_OUCH", 0f,
-                    "OUCH", io.getDamageSum() };
+            params = [ "SUMMONED_OUCH", 0,
+                    "OUCH", this.io.getDamageSum() ];
         }
         Script.getInstance().sendIOScriptEvent(io,
                 ScriptConsts.SM_045_OUCH, params, null);
-        io.setDamageSum(0f);
+        this.io.setDamageSum(0);
     }
     /**
      * Sets the armorClass
      * @param val the armorClass to set
      */
-    public void setArmorClass(final float val) {
+    IoNpcData.prototype.setArmorClass = function(val) {
+    	try {
+    		this.checkFloat(val);
+    	} catch (err) {
+            var s = [];
+            s.push("ERROR! IoNpcData.setArmorClass() - val ");
+            s.push(err.message);
+            throw new Error(s.join(""));
+    	}
         this.armorClass = val;
     }
     /**
      * Sets the {@link IoNpcData}'s gender.
      * @param val the gender to set
      */
-    public final void setGender(final int val) {
-        gender = val;
-        notifyWatchers();
+    IoNpcData.prototype.setGender = function(val) {
+    	try {
+    		this.checkInstanceOfNullsAllowed(val, Gender);
+    	} catch (err) {
+            var s = [];
+            s.push("ERROR! IoNpcData.setGender() - val ");
+            s.push(err.message);
+            throw new Error(s.join(""));
+    	}
+    	this.gender = val;
+    	this.notifyWatchers();
     }
     /**
      * Sets the IO associated with this {@link IoNpcData}.
      * @param newIO the IO to set
      */
-    public final void setIo(final IO newIO) {
+    IoNpcData.prototype.setIo = function(newIO) {
+    	var BaseInteractiveObject =
+    		require("com/dalonedrow/rpg/base/flyweights/baseinteractiveobject");
+    	try {
+    		this.checkInstanceOfNullsAllowed(newIO, BaseInteractiveObject);
+    	} catch (err) {
+            var s = [];
+            s.push("ERROR! IoNpcData.setIo() - newIO ");
+            s.push(err.message);
+            throw new Error(s.join(""));
+    	}
         this.io = newIO;
     }
     /**
      * Sets the value of the movemode.
      * @param val the new value to set
      */
-    public void setMovemode(final int val) {
+    IoNpcData.prototype.setMovemode = function(val) {
+    	try {
+    		this.checkInteger(val);
+    	} catch (err) {
+            var s = [];
+            s.push("ERROR! IoNpcData.setMovemode() - val ");
+            s.push(err.message);
+            throw new Error(s.join(""));
+    	}
         this.movemode = val;
     }
     /**
-     * Sets the {@link IoPcData}'s name.
+     * Sets the {@link IoNpcData}'s name.
      * @param val the name to set
      */
-    public final void setName(final char[] val) {
-        name = val;
-        notifyWatchers();
-    }
-    /**
-     * Sets the {@link IoPcData}'s name.
-     * @param val the name to set
-     */
-    public final void setName(final String val) {
-        name = val.toCharArray();
-        notifyWatchers();
+    IoNpcData.prototype.setName = function(val) {
+    	try {
+    		this.checkStringNullsAllowed(val);
+    	} catch (err) {
+            var s = [];
+            s.push("ERROR! IoNpcData.setName() - val ");
+            s.push(err.message);
+            throw new Error(s.join(""));
+    	}
+    	this.name = val;
+    	this.notifyWatchers();
     }
     /**
      * Sets the value of the reachedtarget.
      * @param val the new value to set
      */
-    public void setReachedtarget(final boolean val) {
+    IoNpcData.prototype.setReachedtarget = function(val) {
+    	try {
+    		this.checkBoolean(val);
+    	} catch (err) {
+            var s = [];
+            s.push("ERROR! IoNpcData.setReachedtarget() - val ");
+            s.push(err.message);
+            throw new Error(s.join(""));
+    	}
         this.reachedtarget = val;
     }
     /**
      * Sets the splatDamages
      * @param splatDamages the splatDamages to set
      */
-    public void setSplatDamages(final int val) {
+    IoNpcData.prototype.setSplatDamages = function(val) {
+    	try {
+    		this.checkInteger(val);
+    	} catch (err) {
+            var s = [];
+            s.push("ERROR! IoNpcData.setSplatDamages() - val ");
+            s.push(err.message);
+            throw new Error(s.join(""));
+    	}
         this.splatDamages = val;
     }
     /**
      * Sets the splatTotNb
      * @param splatTotNb the splatTotNb to set
      */
-    public void setSplatTotNb(final int val) {
+    IoNpcData.prototype.setSplatTotNb = function(val) {
+    	try {
+    		this.checkInteger(val);
+    	} catch (err) {
+            var s = [];
+            s.push("ERROR! IoNpcData.setSplatTotNb() - val ");
+            s.push(err.message);
+            throw new Error(s.join(""));
+    	}
         this.splatTotNb = val;
     }
     /**
      * Sets the value of the tactics.
      * @param val the new value to set
      */
-    public void setTactics(final int val) {
+    IoNpcData.prototype.setTactics = function(val) {
+    	try {
+    		this.checkInteger(val);
+    	} catch (err) {
+            var s = [];
+            s.push("ERROR! IoNpcData.setTactics() - val ");
+            s.push(err.message);
+            throw new Error(s.join(""));
+    	}
         this.tactics = val;
     }
     /**
      * Sets the {@link IoPcData}'s title.
      * @param val the title to set
      */
-    public final void setTitle(final char[] val) {
-        title = val;
-        notifyWatchers();
-    }
-    /**
-     * Sets the {@link IoPcData}'s title.
-     * @param val the title to set
-     */
-    public final void setTitle(final String val) {
-        title = val.toCharArray();
-        notifyWatchers();
+    IoNpcData.prototype.setTitle = function(val) {
+    	try {
+    		this.checkStringNullsAllowed(val);
+    	} catch (err) {
+            var s = [];
+            s.push("ERROR! IoNpcData.setTitle() - val ");
+            s.push(err.message);
+            throw new Error(s.join(""));
+    	}
+    	this.title = val;
+    	this.notifyWatchers();
     }
     /**
      * Sets the NPC's weapon.
      * @param wpnIO the weapon to set
      */
-    public final void setWeapon(final IO wpnIO) {
-        weapon = wpnIO;
-        if (weapon != null) {
-            weaponInHand = weapon.getRefId();
+    IoNpcData.prototype.setWeapon = function(wpnIO) {
+    	var BaseInteractiveObject =
+    		require("com/dalonedrow/rpg/base/flyweights/baseinteractiveobject");
+    	try {
+    		this.checkInstanceOfNullsAllowed(wpnIO, BaseInteractiveObject);
+    	} catch (err) {
+            var s = [];
+            s.push("ERROR! IoNpcData.setWeapon() - wpnIO ");
+            s.push(err.message);
+            throw new Error(s.join(""));
+    	}
+    	this.weapon = wpnIO;
+        if (weapon !== null) {
+        	this.weaponInHand = weapon.getRefId();
         } else {
-            weaponInHand = -1;
+        	this.weaponInHand = -1;
         }
     }
     /**
      * Sets the value of the weaponInHand.
      * @param ioid the new value to set
-     * @throws RPGException if an error occurs
+     * @if an error occurs
      */
-    public final void setWeaponInHand(final int ioid) throws RPGException {
+    IoNpcData.prototype.setWeaponInHand = function(ioid) {
+    	try {
+    		this.checkInteger(ioid);
+    	} catch (err) {
+            var s = [];
+            s.push("ERROR! IoNpcData.setWeaponInHand() - ioid ");
+            s.push(err.message);
+            throw new Error(s.join(""));
+    	}
         this.weaponInHand = ioid;
         if (Interactive.getInstance().hasIO(weaponInHand)) {
-            weapon = (IO) Interactive.getInstance().getIO(weaponInHand);
+        	this.weapon = Interactive.getInstance().getIO(weaponInHand);
         } else {
-            weapon = null;
+        	this.weapon = null;
         }
     }
     /**
      * Sets the value of the xpvalue.
      * @param val the new value to set
      */
-    public void setXpvalue(final int val) {
+    IoNpcData.prototype.setXpvalue = function(val) {
+    	try {
+    		this.checkInteger(val);
+    	} catch (err) {
+            var s = [];
+            s.push("ERROR! IoNpcData.setXpvalue() - val ");
+            s.push(err.message);
+            throw new Error(s.join(""));
+    	}
         this.xpvalue = val;
     }
-    /** Restores the NPC to their maximum life. */
-    protected abstract void stopActiveAnimation();
-    /** Restores the NPC to their maximum life. */
-    protected abstract void stopIdleAnimation();
     /**
      * Determines if a summoned IO's summoner is a PC.
      * @param io the IO
      * @return <tt>true</tt> if the summoner is a player; <tt>false</tt>
      *         otherwise
-     * @throws RPGException if an error occurs
+     * @if an error occurs
      */
-    private boolean summonerIsPlayer(IO io) throws RPGException {
-        boolean isPlayer = false;
-        if (io != null) {
-            int summonerId = io.getSummoner();
+    IoNpcData.prototype.summonerIsPlayer = function(io) {
+    	var BaseInteractiveObject =
+    		require("com/dalonedrow/rpg/base/flyweights/baseinteractiveobject");
+    	try {
+    		this.checkInstanceOf(io, BaseInteractiveObject);
+    	} catch (err) {
+            var s = [];
+            s.push("ERROR! IoNpcData.summonerIsPlayer() - io ");
+            s.push(err.message);
+            throw new Error(s.join(""));
+    	}
+        var isPlayer = false;
+        if (this.io !== null) {
+            var summonerId = io.getSummoner();
             if (Interactive.getInstance().hasIO(summonerId)) {
-                IO summoner = (IO) Interactive.getInstance().getIO(summonerId);
+                var summoner = Interactive.getInstance().getIO(summonerId);
                 if (summoner.hasIOFlag(IoGlobals.IO_01_PC)) {
                     isPlayer = true;
                 }
