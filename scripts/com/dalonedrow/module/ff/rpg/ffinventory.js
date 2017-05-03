@@ -1,12 +1,16 @@
 define(["com/dalonedrow/module/ff/constants/ffequipmentslots",
+	"com/dalonedrow/module/ff/systems/webserviceclient",
 	"com/dalonedrow/rpg/base/flyweights/inventorydata",
-	"com/dalonedrow/rpg/base/flyweights/inventoryslot"], function(FFEquipmentSlots, InventoryData,
-			InventorySlot) {
+	"com/dalonedrow/rpg/base/flyweights/inventoryslot"], function(FFEquipmentSlots,
+			WebServiceClient, InventoryData, InventorySlot) {
 	function FFInventory() {
 		InventoryData.call(this);
 	    var slots = [];
-	    for (var i = FFEquipmentSlots.getNumberOfValues() - 1; i >= 0; i--) {
-	        slots[i] = new InventorySlot();
+		if (FFEquipmentSlots.values.length === 0) {
+			WebServiceClient.getInstance().loadEquipmentSlots();
+		}
+	    for (var i = FFEquipmentSlots.values.length - 1; i >= 0; i--) {
+	        slots.push(new InventorySlot());
 	    }
 	    this.setSlots(slots);
 	}

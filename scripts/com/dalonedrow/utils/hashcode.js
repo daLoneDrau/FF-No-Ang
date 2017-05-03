@@ -30,6 +30,22 @@ define(function() {
     	}
         return ret;
     };
+	Hashcode.prototype.checkArray = function(val) {
+	    if (val === undefined
+	    		|| val === null
+	    		|| !Array.isArray(val)) {
+	        throw new Error("is not an Array");
+	    }
+	};
+	Hashcode.prototype.checkArrayNullsAllowed = function(val) {
+	    if (val === undefined) {
+	        throw new Error("is undefined");
+	    }
+	    if (val !== null
+	    		&& !Array.isArray(val)) {
+	        throw new Error("is not an Array");
+	    }
+	};
 	Hashcode.prototype.checkBoolean = function(val) {
 	    if (val === undefined
 	    		|| val === null

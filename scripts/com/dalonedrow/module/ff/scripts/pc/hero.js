@@ -1,35 +1,155 @@
-package com.dalonedrow.module.ff.scripts.pc;
-
-import com.dalonedrow.engine.sprite.base.SimpleVector2;
-import com.dalonedrow.engine.systems.base.Interactive;
-import com.dalonedrow.module.ff.graph.FFRoomNode;
-import com.dalonedrow.module.ff.graph.FFWorldMap;
-import com.dalonedrow.module.ff.net.FFWebServiceClient;
-import com.dalonedrow.module.ff.rpg.FFCommand;
-import com.dalonedrow.module.ff.rpg.FFInteractiveObject;
-import com.dalonedrow.module.ff.rpg.FFScriptable;
-import com.dalonedrow.module.ff.systems.Combat;
-import com.dalonedrow.module.ff.systems.FFInteractive;
-import com.dalonedrow.module.ff.ui.GameScreen;
-import com.dalonedrow.pooled.PooledException;
-import com.dalonedrow.pooled.PooledStringBuilder;
-import com.dalonedrow.pooled.StringBuilderPool;
-import com.dalonedrow.rpg.base.consoleui.TextProcessor;
-import com.dalonedrow.rpg.base.constants.IoGlobals;
-import com.dalonedrow.rpg.base.constants.ScriptConsts;
-import com.dalonedrow.rpg.base.flyweights.ErrorMessage;
-import com.dalonedrow.rpg.base.flyweights.RPGException;
-import com.dalonedrow.rpg.base.flyweights.ScriptConstants;
-import com.dalonedrow.rpg.base.flyweights.SpeechParameters;
-import com.dalonedrow.rpg.base.systems.Script;
-import com.dalonedrow.rpg.graph.PhysicalGraphNode;
-import com.dalonedrow.utils.ArrayUtilities;
-
-@SuppressWarnings("unchecked")
-public final class Hero extends FFScriptable {
-    public Hero(FFInteractiveObject io) {
-        super(io);
-        // TODO Auto-generated constructor stub
+/**
+ * 
+ */
+define(["com/dalonedrow/module/ff/rpg/ffscriptable", "com/dalonedrow/rpg/base/constants/ioglobals",
+	"com/dalonedrow/rpg/base/flyweights/speechparameters"],
+		function(FFScriptable, ScriptGlobals, SpeechParameters) {
+	function Hero(io) {
+		FFScriptable.call(this, io);
+        this.oldOnInit = FFScriptable.prototype.onInit;
+        if (!String.format) {
+        	String.format = function(format) {
+        		var args = Array.prototype.slice.call(arguments, 1);
+        		return format.replace(/{(\d+)}/g, function(match, number) { 
+        			return typeof args[number] != 'undefined' ? args[number] : match;
+        		});
+        	};
+        }
+	}
+	Hero.prototype = Object.create(FFScriptable.prototype);
+    /**
+     * Gets the value of the local variable "blocked_message".
+     * @return {@link String}
+     * @if an error occurs
+     */
+	Hero.prototype.getLocalVarBlockedMessage = function() {
+        return this.getLocalStringVariableValue("blocked_message");
+    }
+    /**
+     * Gets the value of the local variable "combat_message".
+     * @return {@link String}
+     * @if an error occurs
+     */
+	Hero.prototype.getLocalVarCombatMessage = function() {
+        return this.getLocalStringVariableValue("combat_message");
+    }
+    /**
+     * Gets the amount of 'OUCH' damage that occurred.
+     * @return {@link float}
+     * @if an error occurs
+     */
+	Hero.prototype.getLocalVarOuch = function() {
+        return this.getLocalFloatVariableValue("OUCH");
+    }
+    /**
+     * Gets the amount of 'SUMMONED OUCH' damage that occurred.
+     * @return {@link float}
+     * @if an error occurs
+     */
+    Hero.prototype.getLocalVarSummonedOuch = function() {
+        return this.getLocalFloatVariableValue("SUMMONED_OUCH");
+    }
+    Hero.prototype.getLocalVarTmpInt1 = function() {
+        return this.getLocalIntVariableValue("tmp_int1");
+    }
+    /**
+     * Gets the value of the local variable "travel_direction".
+     * @return {@link String}
+     * @if an error occurs
+     */
+    Hero.prototype.getLocalVarTravelDirection = function() {
+        return this.getLocalStringVariableValue("travel_direction");
+    }
+    /**
+     * Initializes all local variables.
+     */
+	Hero.prototype.initLocalVars = function() {
+        this.setLocalVarBlockedMessage("");
+        this.setLocalVarCombatMessage("");
+        this.setLocalVarTravelDirection("");
+        this.setLocalVarTmpInt1(0);
+    }
+    /**
+     * {@inheritDoc}
+     */
+    Hero.prototype.onInit = function() {
+        this.initLocalVars();
+        return this.oldOnInit();
+    }
+    /**
+     * {@inheritDoc}
+     */
+    Hero.prototype.onOuch = function() {
+    	this.ouchStart();
+        return ScriptGlobals.ACCEPT;
+    }
+    /**
+     * Starts the ouch event.
+     * @throws PooledException if an error occurs
+     */
+    Hero.prototype.ouchStart = function() {
+        var ouchDmg = this.getLocalVarSummonedOuch() + this.getLocalVarOuch();
+        // speak combat message first
+        if (this.getLocalVarCombatMessage().length() > 0) {
+            Script.getInstance().speak(this.getIO(),
+                    new SpeechParameters("", String.format(getLocalVarCombatMessage(), ouchDmg)));
+        }
+    }
+    /**
+     * Sets the local variable "blocked_message".
+     * @param val the variable value
+     */
+    Hero.prototype.setLocalVarBlockedMessage = function(val) {
+    	try {
+    		this.checkString(val);
+    	} catch (err) {
+            var s = [];
+            s.push("ERROR! Hero.setLocalVarBlockedMessage() - val ");
+            s.push(err.message);
+            throw new Error(s.join(""));
+    	}
+        this.setLocalVariable("blocked_message", val);
+    }
+    /**
+     * Sets the local variable "combat_message".
+     * @param val the variable value
+     */
+    Hero.prototype.setLocalVarCombatMessage = function(val) {
+    	try {
+    		this.checkString(val);
+    	} catch (err) {
+            var s = [];
+            s.push("ERROR! Hero.setLocalVarCombatMessage() - val ");
+            s.push(err.message);
+            throw new Error(s.join(""));
+    	}
+        this.setLocalVariable("combat_message", val);
+    }
+    Hero.prototype.setLocalVarTmpInt1 = function(val) {
+    	try {
+    		this.checkInteger(val);
+    	} catch (err) {
+            var s = [];
+            s.push("ERROR! Hero.setLocalVarTmpInt1() - val ");
+            s.push(err.message);
+            throw new Error(s.join(""));
+    	}
+        this.setLocalVariable("tmp_int1", val);
+    }
+    /**
+     * Sets the local variable "travel_direction".
+     * @param val the variable value
+     */
+    Hero.prototype.setLocalVarTravelDirection = function(val) {
+    	try {
+    		this.checkString(val);
+    	} catch (err) {
+            var s = [];
+            s.push("ERROR! Hero.setLocalVarTravelDirection() - val ");
+            s.push(err.message);
+            throw new Error(s.join(""));
+    	}
+        this.setLocalVariable("travel_direction", val);
     }
     /**
      * Checks that there is a traversable path between two rooms. If a path
@@ -38,10 +158,9 @@ public final class Hero extends FFScriptable {
      * @param room2 the id of the second room
      * @return <tt>true</tt> if a traversable path exists; <tt>false</tt>
      *         otherwise
-     * @throws RPGException if an error occurs
-     */
+     *//*
     private boolean checkPath(final int room1, final PhysicalGraphNode node2)
-            throws RPGException {
+            {
         setLocalVarBlockedMessage("");
         boolean pass = false;
         PhysicalGraphNode node1 =
@@ -49,7 +168,7 @@ public final class Hero extends FFScriptable {
         pass = checkPath(node1, node2);
         node1 = null;
         return pass;
-    }
+    }*/
     /**
      * Checks that there is a traversable path between two rooms. If a path
      * exists but is blocked, then local variable "blocked_message" is set.
@@ -57,11 +176,11 @@ public final class Hero extends FFScriptable {
      * @param room2 the id of the second room
      * @return <tt>true</tt> if a traversable path exists; <tt>false</tt>
      *         otherwise
-     * @throws RPGException if an error occurs
-     */
+     * @if an error occurs
+     *//*
     private boolean checkPath(final PhysicalGraphNode node1,
             final PhysicalGraphNode node2)
-            throws RPGException {
+            {
         setLocalVarBlockedMessage("");
         boolean pass = false;
         if (FFWorldMap.getInstance().hasPath(node1, node2)) {
@@ -70,7 +189,7 @@ public final class Hero extends FFScriptable {
             boolean blocked = false;
             if (ios != null) {
                 for (int i = ios.length - 1; i >= 0; i--) {
-                    if (ios[i].equals(super.getIO())) {
+                    if (ios[i].equals(this.getIO())) {
                         continue;
                     }
                     setLocalVarBlockedMessage(
@@ -89,16 +208,16 @@ public final class Hero extends FFScriptable {
             }
         }
         return pass;
-    }
+    }*/
     /**
      * Gets the eastern destination when traveling from the source room. If
      * there is no valid destination, 0 is returned.
      * @param source the id of the source room
      * @return {@link PhysicalGraphNode}
-     * @throws RPGException if an error occurs
-     */
+     * @if an error occurs
+     *//*
     private PhysicalGraphNode getDestinationEast(final int source)
-            throws RPGException {
+            {
         PhysicalGraphNode destination = null;
         switch (source) {
         case 1:
@@ -124,16 +243,16 @@ public final class Hero extends FFScriptable {
             break;
         }
         return destination;
-    }
+    }*/
     /**
      * Gets the northern destination when traveling from the source room. If
      * there is no valid destination, 0 is returned.
      * @param source the id of the source room
      * @return {@link PhysicalGraphNode}
-     * @throws RPGException if an error occurs
-     */
+     * @if an error occurs
+     *//*
     private PhysicalGraphNode getDestinationNorth(final int source)
-            throws RPGException {
+            {
         PhysicalGraphNode destination = null;
         switch (source) {
         case 71:
@@ -143,16 +262,16 @@ public final class Hero extends FFScriptable {
             break;
         }
         return destination;
-    }
+    }*/
     /**
      * Gets the southern destination when traveling from the source room. If
      * there is no valid destination, 0 is returned.
      * @param source the id of the source room
      * @return {@link PhysicalGraphNode}
-     * @throws RPGException if an error occurs
-     */
+     * @if an error occurs
+     *//*
     private PhysicalGraphNode getDestinationSouth(final int source)
-            throws RPGException {
+            {
         PhysicalGraphNode destination = null;
         switch (source) {
         case 1:
@@ -166,16 +285,16 @@ public final class Hero extends FFScriptable {
             break;
         }
         return destination;
-    }
+    }*/
     /**
      * Gets the eastern destination when traveling from the source room. If
      * there is no valid destination, 0 is returned.
      * @param source the id of the source room
      * @return {@link PhysicalGraphNode}
-     * @throws RPGException if an error occurs
-     */
+     * @if an error occurs
+     *//*
     private PhysicalGraphNode getDestinationWest(final int source)
-            throws RPGException {
+            {
         PhysicalGraphNode destination = null;
         switch (source) {
         case 1:
@@ -208,7 +327,7 @@ public final class Hero extends FFScriptable {
             break;
         case 139:
             final int x2 = 650, y = 1337;
-            if (super.getIO().getPosition().equals(x2, y)) {
+            if (this.getIO().getPosition().equals(x2, y)) {
                 destination =
                         FFWorldMap.getInstance().getRoom(12).getMainNode();
             }
@@ -217,54 +336,11 @@ public final class Hero extends FFScriptable {
             break;
         }
         return destination;
-    }
-    /**
-     * Gets the value of the local variable "blocked_message".
-     * @return {@link String}
-     * @throws RPGException if an error occurs
-     */
-    private String getLocalVarBlockedMessage() throws RPGException {
-        return super.getLocalStringVariableValue("blocked_message");
-    }
-    /**
-     * Gets the value of the local variable "combat_message".
-     * @return {@link String}
-     * @throws RPGException if an error occurs
-     */
-    private String getLocalVarCombatMessage() throws RPGException {
-        return super.getLocalStringVariableValue("combat_message");
-    }
-    /**
-     * Gets the amount of 'OUCH' damage that occurred.
-     * @return {@link float}
-     * @throws RPGException if an error occurs
-     */
-    private float getLocalVarOuch() throws RPGException {
-        return super.getLocalFloatVariableValue("OUCH");
-    }
-    /**
-     * Gets the amount of 'SUMMONED OUCH' damage that occurred.
-     * @return {@link float}
-     * @throws RPGException if an error occurs
-     */
-    private float getLocalVarSummonedOuch() throws RPGException {
-        return super.getLocalFloatVariableValue("SUMMONED_OUCH");
-    }
-    private int getLocalVarTmpInt1() throws RPGException {
-        return super.getLocalIntVariableValue("tmp_int1");
-    }
-    /**
-     * Gets the value of the local variable "travel_direction".
-     * @return {@link String}
-     * @throws RPGException if an error occurs
-     */
-    private String getLocalVarTravelDirection() throws RPGException {
-        return super.getLocalStringVariableValue("travel_direction");
-    }
+    }*//*
     private void goToRoom(final FFCommand direction, final int source,
-            final PhysicalGraphNode destination) throws RPGException {
+            final PhysicalGraphNode destination) {
         // put hero in destination room
-        super.getIO().setPosition(destination.getLocation());
+        this.getIO().setPosition(destination.getLocation());
         // add action text
         PooledStringBuilder sb =
                 StringBuilderPool.getInstance().getStringBuilder();
@@ -279,23 +355,13 @@ public final class Hero extends FFScriptable {
                 FFWebServiceClient.getInstance().loadText(sb.toString()));
         sb.returnToPool();
         sb = null;
-    }
-    /**
-     * Initializes all local variables.
-     * @throws RPGException if an error occurs
-     */
-    private void initLocalVars() throws RPGException {
-        setLocalVarBlockedMessage("");
-        setLocalVarCombatMessage("");
-        setLocalVarTravelDirection("");
-        setLocalVarTmpInt1(0);
-    }
+    }*/
     /**
      * Loads a door by its id.
      * @param id the door's id
-     * @throws RPGException if there is an error
-     */
-    private void loadDoor(final int id) throws RPGException {
+     * @if there is an error
+     *//*
+    private void loadDoor(final int id) {
         PooledStringBuilder sb =
                 StringBuilderPool.getInstance().getStringBuilder();
         try {
@@ -308,21 +374,21 @@ public final class Hero extends FFScriptable {
                 sb.toString()).setScriptLoaded(true);
         sb.returnToPool();
         sb = null;
-    }
+    }*/
     /**
      * Loads a door by its id.
      * @param id the door's id
-     * @throws RPGException if there is an error
-     */
-    private void loadDoor(final String name) throws RPGException {
+     * @if there is an error
+     *//*
+    private void loadDoor(final String name) {
         FFWebServiceClient.getInstance().loadNPC(name).setScriptLoaded(true);
-    }
+    }*/
     /**
      * On IO Climb.
      * @return {@link int}
-     * @throws RPGException if an error occurs
-     */
-    public int onClimb() throws RPGException {
+     * @if an error occurs
+     *//*
+    public int onClimb() {
         // get room occupied
         FFRoomNode room = FFWorldMap.getInstance().getPlayerRoom();
         int source = room.getId();
@@ -330,11 +396,11 @@ public final class Hero extends FFScriptable {
         switch (source) {
         case 139:
             final int x1 = 652, x2 = 650, y = 1337;
-            if (super.getIO().getPosition().equals(x1, y)) {
+            if (this.getIO().getPosition().equals(x1, y)) {
                 room.setMainNode(room.getNode(x2, y));
                 room.addCommand(FFCommand.WEST);
                 room.removeCommand(FFCommand.CLIMB);
-                super.getIO().setPosition(new SimpleVector2(x2, y));
+                this.getIO().setPosition(new SimpleVector2(x2, y));
                 msg = "climb_139_out";
             } else {
                 msg = "climb_139_in";
@@ -346,14 +412,14 @@ public final class Hero extends FFScriptable {
         GameScreen.getInstance().addMessage(
                 FFWebServiceClient.getInstance().loadText(msg));
         return ScriptConstants.ACCEPT;
-    }
+    }*/
     /**
      * On IO entering room 43.
      * @return {@link int}
-     * @throws RPGException if an error occurs
-     */
+     * @if an error occurs
+     *//*
     @Override
-    public int onEnterRoom() throws RPGException {
+    public int onEnterRoom() {
         int roomId = getLocalVarTmpInt1();
         FFRoomNode room = FFWorldMap.getInstance().getRoom(roomId);
         switch (roomId) {
@@ -392,8 +458,9 @@ public final class Hero extends FFScriptable {
         setLocalVarTmpInt1(0);
         room = null;
         return ScriptConstants.ACCEPT;
-    }
-    public int onEscape() throws RPGException {
+    }*/
+    /*
+    public int onEscape() {
         System.out.println("escape!");
         // combat is by room. if combat is escaped in one room,
         // travel to the escape room
@@ -417,30 +484,14 @@ public final class Hero extends FFScriptable {
         default:
         }
         room = null;
-        return ScriptConsts.ACCEPT;
-    }
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public int onInit() throws RPGException {
-        initLocalVars();
-        return super.onInit();
-    }
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public int onOuch() throws RPGException {
-        ouchStart();
-        return ScriptConsts.ACCEPT;
-    }
+        return ScriptGlobals.ACCEPT;
+    }*/
     /**
      * On IO travelling.
      * @return {@link int}
-     * @throws RPGException if an error occurs
-     */
-    public int onTravel() throws RPGException {
+     * @if an error occurs
+     *//*
+    public int onTravel() {
         setLocalVarBlockedMessage("");
         // get room occupied
         FFRoomNode room = FFWorldMap.getInstance().getPlayerRoom();
@@ -484,61 +535,16 @@ public final class Hero extends FFScriptable {
             }
         }
         return ScriptConstants.ACCEPT;
-    }
-    /**
-     * Starts the ouch event.
-     * @throws PooledException if an error occurs
-     * @throws RPGException if an error occurs
-     */
-    private void ouchStart() throws RPGException {
-        float ouchDmg = getLocalVarSummonedOuch() + getLocalVarOuch();
-        // speak combat message first
-        if (getLocalVarCombatMessage().length() > 0) {
-            Script.getInstance().speak(super.getIO(),
-                    new SpeechParameters("",
-                            String.format(getLocalVarCombatMessage(),
-                                    (int) ouchDmg)));
-        }
-    }
-    /**
-     * Sets the local variable "blocked_message".
-     * @param val the variable value
-     * @throws RPGException if an error occurs
-     */
-    private void setLocalVarBlockedMessage(final String val)
-            throws RPGException {
-        super.setLocalVariable("blocked_message", val);
-    }
-    /**
-     * Sets the local variable "combat_message".
-     * @param val the variable value
-     * @throws RPGException if an error occurs
-     */
-    public void setLocalVarCombatMessage(final String val)
-            throws RPGException {
-        super.setLocalVariable("combat_message", val);
-    }
-    private void setLocalVarTmpInt1(final int val) throws RPGException {
-        super.setLocalVariable("tmp_int1", val);
-    }
-    /**
-     * Sets the local variable "travel_direction".
-     * @param val the variable value
-     * @throws RPGException if an error occurs
-     */
-    private void setLocalVarTravelDirection(final String val)
-            throws RPGException {
-        super.setLocalVariable("travel_direction", val);
-    }
+    }*/
     /**
      * Travels in a specific direction.
      * @param direction the direction
      * @param source the source room id
      * @param destination the destination room id
-     * @throws RPGException if an error occurs
-     */
+     * @if an error occurs
+     *//*
     private void travel(final FFCommand direction, final int source,
-            final PhysicalGraphNode destination) throws RPGException {
+            final PhysicalGraphNode destination) {
         // are there any IOs in the room besides the PC?
         FFInteractiveObject[] ios =
                 FFWorldMap.getInstance().getIosInRoom(
@@ -568,5 +574,6 @@ public final class Hero extends FFScriptable {
         } else {
             goToRoom(direction, source, destination);
         }
-    }
-}
+    }*/
+    return Hero;
+});

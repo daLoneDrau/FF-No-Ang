@@ -1,7 +1,7 @@
 /**
  * 
  */
-define(["com/dalonedrow/rpg/base/flyweights/baseinteractiveobject",
+define(["require", "com/dalonedrow/rpg/base/flyweights/baseinteractiveobject",
 	"com/dalonedrow/rpg/base/systems/script", 
 	"com/dalonedrow/rpg/base/systems/spellmaster",
 	"com/dalonedrow/utils/hashcode"], function(BaseInteractiveObject, Script, SpellMaster,
@@ -59,7 +59,7 @@ define(["com/dalonedrow/rpg/base/flyweights/baseinteractiveobject",
                     }
                 }
             }
-
+        	var Script = require("com/dalonedrow/rpg/base/systems/script");
             Script.getInstance().eventStackClearForIo(io);
 
             if (Interactive.getInstance().hasIO(n)) {
@@ -119,6 +119,7 @@ define(["com/dalonedrow/rpg/base/flyweights/baseinteractiveobject",
                 }
 
                 // Need To Kill timers
+            	var Script = require("com/dalonedrow/rpg/base/systems/script");
                 Script.getInstance().timerClearByIO(io);
                 io.setShow(IoGlobals.SHOW_FLAG_DESTROYED);
                 io.removeGameFlag(IoGlobals.GFLAG_ISINTREATZONE);
@@ -425,11 +426,11 @@ define(["com/dalonedrow/rpg/base/flyweights/baseinteractiveobject",
                     }
                 }
             }
+        	var Script = require("com/dalonedrow/rpg/base/systems/script");
             // release script timers and spells
             // release from groups
             //
             Script.getInstance().timerClearByIO(io);
-            // MagicRealmSpells.getInstance().removeAllSpellsOn(io);
             Script.getInstance().releaseScript(io.getScript());
             Script.getInstance().releaseScript(io.getOverscript());
             Script.getInstance().releaseAllGroups(io);
@@ -608,7 +609,7 @@ define(["com/dalonedrow/rpg/base/flyweights/baseinteractiveobject",
         }
         return instance;
 	}
-	Interactive.setInstance = function(i) {
+	Interactive.setInstance = function(val) {
 		if (val === undefined) {
 	        throw new Error("Error!  Interactive.setInstance() - val is undefined");
 		}

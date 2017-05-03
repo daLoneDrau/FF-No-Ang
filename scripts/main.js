@@ -4,17 +4,18 @@ define(['jquery', 'app',
 	"com/dalonedrow/module/ff/constants/ffcommand",
 	'com/dalonedrow/module/ff/constants/ffequipmentelements',
 	"com/dalonedrow/module/ff/constants/ffequipmentslots",
-	//"com/dalonedrow/module/ff/systems/ffcontroller",
-	//"com/dalonedrow/module/ff/systems/ffinteractive",
 	"com/dalonedrow/module/ff/systems/ffcontroller",
+	"com/dalonedrow/module/ff/systems/ffinteractive",
+	"com/dalonedrow/module/ff/systems/ffscript",
 	"com/dalonedrow/module/ff/systems/webserviceclient",
 	'com/dalonedrow/engine/systems/base/interactive',
 	"com/dalonedrow/rpg/base/constants/die",
 	"com/dalonedrow/rpg/base/constants/dice",
+	"com/dalonedrow/rpg/base/systems/script", 
 	'test/FFInteractiveObjectTest'],
 	function($, App, ProjectConstants, FFCommand, FFEquipmentElements, FFEquipmentSlots, 
-			//FFController, FFInteractive,
-			FFController, WebServiceClient, Interactive, Die, Dice, FFInteractiveObjectTest) {
+			FFController, FFInteractive, FFScript, WebServiceClient, Interactive, Die, Dice, Script,
+			FFInteractiveObjectTest) {
     var app, game;
     console.log("main called");
     var initWebServiceClient = function() {
@@ -47,13 +48,16 @@ define(['jquery', 'app',
             	FFEquipmentElements.values.push(new FFEquipmentElements(list[i].code, list[i].value));
             }
     	}
-        list = WebServiceClient.getInstance().getEquipmentSlotEntities();
-        for (var i = 0, len = list.length; i < len; i++) {
-        	if (!list[i].value) {
-        		list[i].value = 0;
-        	}
-            FFEquipmentSlots.values.push(new FFEquipmentSlots(list[i].name, list[i].value));
-        }
+    	if (FFEquipmentSlots.values.length === 0) {
+    		console.log("need to load FFEquipmentSlots2")
+	        list = WebServiceClient.getInstance().getEquipmentSlotEntities();
+	        for (var i = 0, len = list.length; i < len; i++) {
+	        	if (!list[i].value) {
+	        		list[i].value = 0;
+	        	}
+	            FFEquipmentSlots.values.push(new FFEquipmentSlots(list[i].name, list[i].value));
+	        }
+    	}
         //new FFController();
     };
     var runTests = function() {
@@ -258,6 +262,7 @@ define(['jquery', 'app',
     var initGame = function() {
 		ProjectConstants.setInstance(new FFController());
 		Interactive.setInstance(new FFInteractive());
+		Script.setInstance(new FFScript());
     	/*
         require(['game'], function(Game) {            
             var canvas = document.getElementById("entities"),

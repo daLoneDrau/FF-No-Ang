@@ -1,7 +1,5 @@
 define(["com/dalonedrow/rpg/base/flyweights/scriptable",
-	"com/dalonedrow/module/ff/rpg/ffinteractiveobject",
-	"com/dalonedrow/rpg/base/constants/scriptglobals"],
-		function(Scriptable, FFInteractiveObject, ScriptGlobals) {
+	"com/dalonedrow/rpg/base/constants/scriptglobals"], function(Scriptable, ScriptGlobals) {
 	function FFScriptable(io) {
 		Scriptable.call(this, io);
 	}
