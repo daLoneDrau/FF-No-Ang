@@ -87,6 +87,13 @@ define(['jquery', 'app',
     		$('#parchment .startgame').click(function(event) {
     			console.log("start")
             });
+    		$('.play div').click(function(event) {
+                var nameFromInput = $('#nameinput').attr('value'),
+                    nameFromStorage = $('#playername').html(),
+                    name = nameFromInput || nameFromStorage;
+                
+                app.tryStartingGame(name);
+            });
             /* don't use yet
             if(Detect.isWindows()) {
                 // Workaround for graphical glitches on text
