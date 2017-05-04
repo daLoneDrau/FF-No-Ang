@@ -31,9 +31,13 @@ define(function() {
         return ret;
     };
 	Hashcode.prototype.checkArray = function(val) {
-	    if (val === undefined
-	    		|| val === null
-	    		|| !Array.isArray(val)) {
+		if (val === undefined) {
+	        throw new Error("is undefined");
+		}
+		if (val === null) {
+	        throw new Error("is null");
+		}
+	    if (!Array.isArray(val)) {
 	        throw new Error("is not an Array");
 	    }
 	};
@@ -47,9 +51,13 @@ define(function() {
 	    }
 	};
 	Hashcode.prototype.checkBoolean = function(val) {
-	    if (val === undefined
-	    		|| val === null
-	    		|| typeof val !== "boolean") {
+		if (val === undefined) {
+	        throw new Error("is undefined");
+		}
+		if (val === null) {
+	        throw new Error("is null");
+		}
+	    if (typeof val !== "boolean") {
 	        throw new Error("is not a boolean");
 	    }
 	};
@@ -122,9 +130,13 @@ define(function() {
 		}
 	};
 	Hashcode.prototype.checkString = function(val) {
-		if (val === undefined
-				|| val === null
-				|| typeof val !== "string") {
+		if (val === undefined) {
+	        throw new Error("is undefined");
+		}
+		if (val === null) {
+	        throw new Error("is null");
+		}
+		if (typeof val !== "string") {
 	        throw new Error("is not a string");
 		}
 	};

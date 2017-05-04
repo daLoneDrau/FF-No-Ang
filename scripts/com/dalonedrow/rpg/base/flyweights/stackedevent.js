@@ -3,176 +3,150 @@ define(["com/dalonedrow/rpg/base/flyweights/baseinteractiveobject",
     function StackedEvent() {
 		Hashcode.call(this);
 		/** the event name. */
-		var eventname = null;
+		this.eventname = null;
 		/** flag indicating whether the event still exists. */
-		var exist = false;
+		this.exist = false;
 		/** the IO associated with the event. */
-		var io = null;
+		this.io = null;
 		/** the event message. */
-		var msg = 0;
+		this.msg = 0;
 		/** the event parameters. */
-		var params = null;
+		this.params = null;
 		/** the event sender. */
-		var sender = null;
-		/**
-		 * Gets the flag indicating whether the event still exists.
-		 * @return <code>boolean</code>
-		 */
-		this.exists = function() {
-			return exist;
-		}
-		/**
-		 * Gets the event name.
-		 * @return {@link String}
-		 */
-		this.getEventname = function() {
-			return eventname;
-		}
-		/**
-		 * Gets the IO associated with the event.
-		 * @return {@link IO}
-		 */
-		this.getIo = function() {
-			return io;
-		}
-		/**
-		 * Gets the event message.
-		 * @return {@link int}
-		 */
-		this.getMsg = function() {
-			return msg;
-		}
-		/**
-		 * Gets the event parameters.
-		 * @return {@link Object}[]
-		 */
-		this.getParams = function() {
-			return params;
-		}
-		/**
-		 * Gets the event sender.
-		 * @return {@link IO}
-		 */
-		this.getSender = function() {
-			return sender;
-		}
-		/**
-		 * Sets the event name.
-		 * @param val the eventname to set
-		 */
-		this.setEventname = function(val) {
-	        if (val !== undefined) {
-	        	if (val === null) {
-	        		eventname = val;
-	        	} else if (typeof val === "string") {
-	        		eventname = val;	        	
-	        	} else {
-		            var s = [];
-		            s.push("ERROR! StackedEvent.setEventname() - ");
-		            s.push("argument must be string");
-		            throw new Error(s.join(""));
-	        	}
-	        } else {
-	            var s = [];
-	            s.push("ERROR! StackedEvent.setEventname() - ");
-	            s.push("requires 1 argument");
-	            throw new Error(s.join(""));
-	        }
-		}
-		/**
-		 * Sets the flag indicating whether the event still exists.
-		 * @param val the exist to set
-		 */
-		this.setExists = function(val) {
-		    if (val !== undefined
-		    		&& val !== null
-		    		&& typeof val === "boolean") {
-		    	exist = val;
-		    } else {
-	            var s = [];
-	            s.push("ERROR! StackedEvent.setExist() - ");
-	            s.push("argument must be boolean");
-	            throw new Error(s.join(""));
-		    }
-		}
-		/**
-		 * Sets the IO associated with the event.
-		 * @param val the io to set
-		 */
-		this.setIo = function(val) {
-	        if (val === undefined) {
-	            var s = [];
-	            s.push("ERROR! StackedEvent.setIo() - ");
-	            s.push("requires 1 argument");
-	            throw new Error(s.join(""));
-	        }
-	        if (val === null) {
-				io = val;
-	        } else if (val instanceof BaseInteractiveObject) {
-				io = val;
-        	} else {
-	            var s = [];
-	            s.push("ERROR! StackedEvent.setIo() - ");
-	            s.push("argument must be BaseInteractiveObject");
-	            throw new Error(s.join(""));
-        	}
-		}
-		/**
-		 * Sets the event message.
-		 * @param val the msg to set
-		 */
-		this.setMsg = function(val) {
-		    if (val !== undefined
-		    		&& val !== null
-		    		&& !isNaN(val)
-		            && parseInt(Number(val)) === val
-		            && !isNaN(parseInt(val, 10))) {
-		    	msg = val;
-		    } else {
-	            var s = [];
-	            s.push("ERROR! StackedEvent.setMsg() - ");
-	            s.push("argument must be integer");
-	            throw new Error(s.join(""));
-		    }
-		}
-		/**
-		 * Sets the event parameters.
-		 * @param val the params to set
-		 */
-		this.setParams = function(val) {
-		    if (val !== undefined
-		    		&& val !== null
-		    		&& Array.isArray(val)) {
-		    	params = val;
-		    } else {
-	            var s = [];
-	            s.push("ERROR! StackedEvent.setParams() - ");
-	            s.push("argument must be Array");
-	            throw new Error(s.join(""));
-		    }
-		}
-		/**
-		 * Sets the event sender.
-		 * @param val the sender to set
-		 */
-		this.setSender = function(val) {
-	        if (val === undefined) {
-	            var s = [];
-	            s.push("ERROR! StackedEvent.setSender() - ");
-	            s.push("requires 1 argument");
-	            throw new Error(s.join(""));
-	        }
-	        if (val === null) {
-	        	sender = val;
-	        } else if (val instanceof BaseInteractiveObject) {
-	        	sender = val;
-        	} else {
-	            var s = [];
-	            s.push("ERROR! StackedEvent.setSender() - ");
-	            s.push("argument must be BaseInteractiveObject");
-	            throw new Error(s.join(""));
-        	}
-		}
+		this.sender = null;
+    }
+	StackedEvent.prototype = Object.create(Hashcode.prototype);
+	/**
+	 * Gets the flag indicating whether the event still exists.
+	 * @return <code>boolean</code>
+	 */
+	StackedEvent.prototype.exists = function() {
+		return this.exist;
+	}
+	/**
+	 * Gets the event name.
+	 * @return {@link String}
+	 */
+	StackedEvent.prototype.getEventname = function() {
+		return this.eventname;
+	}
+	/**
+	 * Gets the IO associated with the event.
+	 * @return {@link IO}
+	 */
+	StackedEvent.prototype.getIo = function() {
+		return this.io;
+	}
+	/**
+	 * Gets the event message.
+	 * @return {@link int}
+	 */
+	StackedEvent.prototype.getMsg = function() {
+		return this.msg;
+	}
+	/**
+	 * Gets the event parameters.
+	 * @return {@link Object}[]
+	 */
+	StackedEvent.prototype.getParams = function() {
+		return this.params;
+	}
+	/**
+	 * Gets the event sender.
+	 * @return {@link IO}
+	 */
+	StackedEvent.prototype.getSender = function() {
+		return this.sender;
+	}
+	/**
+	 * Sets the event name.
+	 * @param val the eventname to set
+	 */
+	StackedEvent.prototype.setEventname = function(val) {
+    	try {
+    		this.checkStringNullsAllowed(val);
+    	} catch (err) {
+            var s = [];
+            s.push("ERROR! StackedEvent.setEventname() - val ");
+            s.push(err.message);
+            throw new Error(s.join(""));
+    	}
+		this.eventname = val;
+	}
+	/**
+	 * Sets the flag indicating whether the event still exists.
+	 * @param val the exist to set
+	 */
+	StackedEvent.prototype.setExists = function(val) {
+    	try {
+    		this.checkBoolean(val);
+    	} catch (err) {
+            var s = [];
+            s.push("ERROR! StackedEvent.setExists() - val ");
+            s.push(err.message);
+            throw new Error(s.join(""));
+    	}
+    	this.exist = val;
+	}
+	/**
+	 * Sets the IO associated with the event.
+	 * @param val the io to set
+	 */
+	StackedEvent.prototype.setIo = function(val) {
+    	try {
+    		this.checkInstanceOfNullsAllowed(val, BaseInteractiveObject);
+    	} catch (err) {
+            var s = [];
+            s.push("ERROR! StackedEvent.setIo() - val ");
+            s.push(err.message);
+            throw new Error(s.join(""));
+    	}
+		this.io = val;
+	}
+	/**
+	 * Sets the event message.
+	 * @param val the msg to set
+	 */
+	StackedEvent.prototype.setMsg = function(val) {
+    	try {
+    		this.checkInteger(val);
+    	} catch (err) {
+            var s = [];
+            s.push("ERROR! StackedEvent.setMsg() - val ");
+            s.push(err.message);
+            throw new Error(s.join(""));
+    	}
+    	this.msg = val;
+	}
+	/**
+	 * Sets the event parameters.
+	 * @param val the params to set
+	 */
+	StackedEvent.prototype.setParams = function(val) {
+    	try {
+    		this.checkArray(val);
+    	} catch (err) {
+            var s = [];
+            s.push("ERROR! StackedEvent.setParams() - val ");
+            s.push(err.message);
+            throw new Error(s.join(""));
+    	}
+    	this.params = val;
+	}
+	/**
+	 * Sets the event sender.
+	 * @param val the sender to set
+	 */
+	StackedEvent.prototype.setSender = function(val) {
+    	try {
+    		this.checkInstanceOfNullsAllowed(val, BaseInteractiveObject);
+    	} catch (err) {
+            var s = [];
+            s.push("ERROR! StackedEvent.setIo() - val ");
+            s.push(err.message);
+            throw new Error(s.join(""));
+    	}
+    	this.sender = val;
 	}
 	StackedEvent.prototype = Object.create(Hashcode.prototype);
 	return StackedEvent;
