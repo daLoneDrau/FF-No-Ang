@@ -18,6 +18,8 @@ define(['jquery'], function($) {
     App.prototype.hideIntro = function(hidden_callback) {
         clearInterval(this.watchNameInputInterval);
         $('body').removeClass('intro');
+        console.log("try to hide");
+        $("#createcharacter").hide();
         setTimeout(function() {
             $('body').addClass('game');
             hidden_callback();
@@ -53,6 +55,7 @@ define(['jquery'], function($) {
     App.prototype.start = function(username) {
     	console.log("start");
     	this.game.newHero();
+        $("#inventory").show();
     	/*
         var self = this, firstTimePlaying = !self.storage.hasAlreadyPlayed();
         

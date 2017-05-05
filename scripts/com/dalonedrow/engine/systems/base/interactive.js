@@ -4,7 +4,7 @@
 define(["require", "com/dalonedrow/rpg/base/flyweights/baseinteractiveobject",
 	"com/dalonedrow/rpg/base/systems/script", 
 	"com/dalonedrow/rpg/base/systems/spellmaster",
-	"com/dalonedrow/utils/hashcode"], function(BaseInteractiveObject, Script, SpellMaster,
+	"com/dalonedrow/utils/hashcode"], function(require, BaseInteractiveObject, Script, SpellMaster,
 			Hashcode) {
     var instance = null;
     var Interactive = function() {

@@ -33,7 +33,7 @@ q:before, q:after {
 :focus {
 	outline: 0;
 }
-.ff7{
+.ff7 {
   background-color: #282880;
   box-shadow: 0 0 0 1px #c8e0e0,
     0 0 0 2px #808080,
@@ -41,6 +41,28 @@ q:before, q:after {
     inset 0 0 0 1px #303088;
   border-radius: 5px;
   padding: 5px;
+}
+.ff7-black {
+  background-color: #000;
+  box-shadow: 0 0 0 1px #c8e0e0,
+    0 0 0 2px #808080,
+    0 0 0 3px #283030,
+    inset 0 0 0 1px #303088;
+  border-radius: 5px;
+  padding: 5px;
+}
+.inv-slots {
+	width:128px;
+}
+.rpgui-icon {
+    display: inline-block;
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+    width: 32px;
+    height: 32px;
+}
+.rpgui-icon.empty-slot {
+    background-image: url(../img/common/empty-slot.png);
 }
 #parchment {
 	width: 844px;

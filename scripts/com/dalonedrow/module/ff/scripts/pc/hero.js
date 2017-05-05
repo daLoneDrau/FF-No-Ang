@@ -1,7 +1,8 @@
 /**
  * 
  */
-define(["com/dalonedrow/module/ff/rpg/ffscriptable", "com/dalonedrow/rpg/base/constants/ioglobals",
+define(["com/dalonedrow/module/ff/rpg/ffscriptable",
+	"com/dalonedrow/rpg/base/constants/scriptglobals",
 	"com/dalonedrow/rpg/base/flyweights/speechparameters"],
 		function(FFScriptable, ScriptGlobals, SpeechParameters) {
 	function Hero(io) {

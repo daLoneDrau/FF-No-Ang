@@ -10,10 +10,13 @@ define(["renderer", "com/dalonedrow/engine/systems/base/projectconstants",
 	'com/dalonedrow/engine/systems/base/interactive',
 	"com/dalonedrow/rpg/base/constants/die",
 	"com/dalonedrow/rpg/base/constants/dice",
-	"com/dalonedrow/rpg/base/systems/script"],
+	"com/dalonedrow/rpg/base/systems/script",
+	// LOAD SCRIPTS
+	"com/dalonedrow/module/ff/scripts/items/ironsword"
+	],
 	function(Renderer, ProjectConstants, FFCommand, FFEquipmentElements, FFEquipmentSlots, 
 			FFController, FFInteractive, FFScript, WebServiceClient, Interactive, Die, Dice,
-			Script) {
+			Script, IronSword) {
 	var Game = function(app) {
         this.app = app;
         //this.app.config = config;

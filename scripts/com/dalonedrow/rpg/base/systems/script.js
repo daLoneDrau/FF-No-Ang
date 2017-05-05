@@ -1183,6 +1183,7 @@ define(["require", "com/dalonedrow/engine/sprite/base/simplevector2",
      * @if an error occurs
      */
     Script.prototype.resetObject = function(io, initialize) {
+    	var BaseInteractiveObject = require("com/dalonedrow/rpg/base/flyweights/baseinteractiveobject");
     	try {
     		this.checkInstanceOf(io, BaseInteractiveObject);
     	} catch (err) {
@@ -1265,6 +1266,7 @@ define(["require", "com/dalonedrow/engine/sprite/base/simplevector2",
         }
     }
     Script.prototype.runEvent = function(script, eventName, io) {
+    	var BaseInteractiveObject = require("com/dalonedrow/rpg/base/flyweights/baseinteractiveobject");
     	try {
     		this.checkInstanceOf(script, Scriptable);
     	} catch (err) {
@@ -1311,6 +1313,7 @@ define(["require", "com/dalonedrow/engine/sprite/base/simplevector2",
         }
     }
     Script.prototype.runMessage = function(script, msg, io) {
+    	var BaseInteractiveObject = require("com/dalonedrow/rpg/base/flyweights/baseinteractiveobject");
     	try {
     		this.checkInstanceOf(script, Scriptable);
     	} catch (err) {
@@ -1533,6 +1536,7 @@ define(["require", "com/dalonedrow/engine/sprite/base/simplevector2",
      * @if an error occurs
      */
     Script.prototype.sendInitScriptEvent = function(io) {
+    	var BaseInteractiveObject = require("com/dalonedrow/rpg/base/flyweights/baseinteractiveobject");
     	try {
     		this.checkInstanceOfNullsAllowed(io, BaseInteractiveObject);
     	} catch (err) {
@@ -1715,6 +1719,7 @@ define(["require", "com/dalonedrow/engine/sprite/base/simplevector2",
         return ScriptGlobals.REFUSE;
     }
     Script.prototype.sendIOScriptEventReverse = function(io, msg, params, eventname) {
+    	var BaseInteractiveObject = require("com/dalonedrow/rpg/base/flyweights/baseinteractiveobject");
     	try {
     		this.checkInstanceOfNullsAllowed(io, BaseInteractiveObject);
     	} catch (err) {
@@ -1851,6 +1856,7 @@ define(["require", "com/dalonedrow/engine/sprite/base/simplevector2",
      * @throws RPGException
      */
     Script.prototype.sendScriptEvent = function(localScript, msg, params, io, eventName) {
+    	var BaseInteractiveObject = require("com/dalonedrow/rpg/base/flyweights/baseinteractiveobject");
     	try {
     		this.checkInstanceOf(localScript, Scriptable);
     	} catch (err) {
@@ -1884,10 +1890,10 @@ define(["require", "com/dalonedrow/engine/sprite/base/simplevector2",
             throw new Error(s.join(""));
     	}
     	try {
-    		this.checkStringNullsAllowed(eventname);
+    		this.checkStringNullsAllowed(eventName);
     	} catch (err) {
             var s = [];
-            s.push("ERROR! Script.sendScriptEvent() - eventname ");
+            s.push("ERROR! Script.sendScriptEvent() - eventName ");
             s.push(err.message);
             throw new Error(s.join(""));
     	}

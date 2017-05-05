@@ -1,17 +1,18 @@
 /**
  *
  */
-define(["require", "com/dalonedrow/engine/systems/base/interactive",
+define(["require",
 	"com/dalonedrow/engine/systems/base/projectconstants",
 	"com/dalonedrow/rpg/base/constants/equipmentglobals",
 	"com/dalonedrow/rpg/base/constants/ioglobals",
 	"com/dalonedrow/rpg/base/constants/scriptglobals",
 	"com/dalonedrow/rpg/base/flyweights/baseinteractiveobject",
+	"com/dalonedrow/rpg/base/flyweights/iocharacter",
 	"com/dalonedrow/rpg/base/flyweights/ioequipitem",
 	"com/dalonedrow/rpg/base/systems/script",
 	"com/dalonedrow/utils/hashcode"],
-		function(require, Interactive, ProjectConstants, EquipmentGlobals, IoGlobals, ScriptGlobals,
-				BaseInteractiveObject, IOEquipItem, Script, Hashcode) {
+		function(require, ProjectConstants, EquipmentGlobals, IoGlobals, ScriptGlobals,
+				BaseInteractiveObject, IOCharacter, IOEquipItem, Script, Hashcode) {
 	function IOItemData() {
 		Hashcode.call(this);
 	    /** the current number in an inventory slot. */
@@ -259,6 +260,7 @@ define(["require", "com/dalonedrow/engine/systems/base/interactive",
      * @if an error occurs
      */
     IOItemData.prototype.ARX_EQUIPMENT_Equip = function(target) {
+    	var Interactive = require("com/dalonedrow/engine/systems/base/interactive");
     	var BaseInteractiveObject =
     		require("com/dalonedrow/rpg/base/flyweights/baseinteractiveobject");
     	try {
@@ -291,7 +293,7 @@ define(["require", "com/dalonedrow/engine/systems/base/interactive",
                 }
             }
             if (validid >= 0) {
-                Interactive.getInstance().RemoveFromAllInventories(io);
+                Interactive.getInstance().RemoveFromAllInventories(this.io);
                 this.io.setShow(IoGlobals.SHOW_FLAG_ON_PLAYER); // on player
                 // handle drag
                 // if (toequip === DRAGINTER)

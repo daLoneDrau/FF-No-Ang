@@ -1,11 +1,10 @@
-define(["com/dalonedrow/engine/systems/base/interactive",
-	"com/dalonedrow/engine/systems/base/projectconstants",
+define(["com/dalonedrow/engine/systems/base/projectconstants",
 	"com/dalonedrow/rpg/base/constants/ioglobals",
 	"com/dalonedrow/rpg/base/constants/mathglobals",
 	"com/dalonedrow/rpg/base/flyweights/attribute",
 	"com/dalonedrow/rpg/base/flyweights/baseinteractiveobject",
 	"com/dalonedrow/utils/watchable"],
-		function(Interactive, ProjectConstants, IoGlobals, MathGlobals, Attribute,
+		function(ProjectConstants, IoGlobals, MathGlobals, Attribute,
 				BaseInteractiveObject, Watchable) {
 	function IOCharacter() {
 		Watchable.call(this);
@@ -58,14 +57,14 @@ define(["com/dalonedrow/engine/systems/base/interactive",
      * @if the attribute name is missing or incorrect
      */
     IOCharacter.prototype.adjustAttributeModifier = function(attr, val) {
-		if (attr === undefined
-				|| attr === null
-				|| typeof attr !== "string") {
+    	try {
+    		this.checkString(attr);
+    	} catch (err) {
             var s = [];
-            s.push("ERROR! IOCharacter.adjustAttributeModifier() - ");
-            s.push("attr must be string");
+            s.push("ERROR! IOCharacter.adjustAttributeModifier() - attr ");
+            s.push(err.message);
             throw new Error(s.join(""));
-		}
+    	}
 		if (!this.attributes.hasOwnProperty(attr)) {
             var s = [];
             s.push("ERROR! IOCharacter.adjustAttributeModifier() - ");
@@ -74,15 +73,14 @@ define(["com/dalonedrow/engine/systems/base/interactive",
             s.push(" never set on character")
             throw new Error(s.join(""));
 		}
-	    if (val === undefined
-	    		|| val !== null
-	    		|| isNaN(val)
-	    		|| typeof val !== "number") {
+    	try {
+    		this.checkFloat(val);
+    	} catch (err) {
             var s = [];
-            s.push("ERROR! IOCharacter.adjustAttributeModifier() - ");
-            s.push("val must be floating-point");
+            s.push("ERROR! IOCharacter.adjustAttributeModifier() - val ");
+            s.push(err.message);
             throw new Error(s.join(""));
-	    }
+    	}
         this.attributes[attr].adjustModifier(val);
     }
     /**
@@ -93,16 +91,15 @@ define(["com/dalonedrow/engine/systems/base/interactive",
      * @if an error occurs
      */
     IOCharacter.prototype.ARX_EQUIPMENT_Apply = function(elementType) {
-	    if (elementType === undefined
-	    		|| elementType === null
-	    		|| isNaN(elementType)
-	            || parseInt(Number(elementType)) !== elementType
-	            || isNaN(parseInt(elementType, 10))) {
+    	var Interactive = require("com/dalonedrow/engine/systems/base/interactive");
+    	try {
+    		this.checkInteger(elementType);
+    	} catch (err) {
             var s = [];
-            s.push("ERROR! IOCharacter.ARX_EQUIPMENT_Apply() - ");
-            s.push("elementType must be integer");
+            s.push("ERROR! IOCharacter.ARX_EQUIPMENT_Apply() - elementType ");
+            s.push(err.message);
             throw new Error(s.join(""));
-	    }
+    	}
         var toadd = 0;
         var i = ProjectConstants.getInstance().getMaxEquipped() - 1;
         for (; i >= 0; i--) {
@@ -131,25 +128,23 @@ define(["com/dalonedrow/engine/systems/base/interactive",
      * @if an error occurs
      */
     IOCharacter.prototype.ARX_EQUIPMENT_ApplyPercent = function(elementType, trueval) {
-	    if (elementType === undefined
-	    		|| elementType === null
-	    		|| isNaN(elementType)
-	            || parseInt(Number(elementType)) !== elementType
-	            || isNaN(parseInt(elementType, 10))) {
+    	var Interactive = require("com/dalonedrow/engine/systems/base/interactive");
+    	try {
+    		this.checkInteger(elementType);
+    	} catch (err) {
             var s = [];
-            s.push("ERROR! IOCharacter.ARX_EQUIPMENT_ApplyPercent() - ");
-            s.push("elementType must be integer");
+            s.push("ERROR! IOCharacter.ARX_EQUIPMENT_ApplyPercent() - elementType ");
+            s.push(err.message);
             throw new Error(s.join(""));
-	    }
-	    if (trueval === undefined
-	    		|| trueval !== null
-	    		|| isNaN(trueval)
-	    		|| typeof trueval !== "number") {
+    	}
+    	try {
+    		this.checkFloat(trueval);
+    	} catch (err) {
             var s = [];
-            s.push("ERROR! IOCharacter.ARX_EQUIPMENT_ApplyPercent() - ");
-            s.push("trueval must be floating-point");
+            s.push("ERROR! IOCharacter.ARX_EQUIPMENT_ApplyPercent() - trueval ");
+            s.push(err.message);
             throw new Error(s.join(""));
-	    }
+    	}
         var toadd = 0;
         var i = ProjectConstants.getInstance().getMaxEquipped() - 1;
         for (; i >= 0; i--) {
@@ -175,16 +170,14 @@ define(["com/dalonedrow/engine/systems/base/interactive",
      * @if an error occurs
      */
     IOCharacter.prototype.ARX_EQUIPMENT_Release = function(id) {
-	    if (id === undefined
-	    		|| id === null
-	    		|| isNaN(id)
-	            || parseInt(Number(id)) !== id
-	            || isNaN(parseInt(id, 10))) {
+    	try {
+    		this.checkInteger(id);
+    	} catch (err) {
             var s = [];
-            s.push("ERROR! IOCharacter.ARX_EQUIPMENT_Release() - ");
-            s.push("id must be integer");
+            s.push("ERROR! IOCharacter.ARX_EQUIPMENT_Release() - id ");
+            s.push(err.message);
             throw new Error(s.join(""));
-	    }
+    	}
         var i = ProjectConstants.getInstance().getMaxEquipped() - 1;
         for (; i >= 0; i--) {
             if (this.equippedItems[i] === id) {
@@ -198,6 +191,7 @@ define(["com/dalonedrow/engine/systems/base/interactive",
      * @if an error occurs
      */
     IOCharacter.prototype.ARX_EQUIPMENT_UnEquipAll = function() {
+    	var Interactive = require("com/dalonedrow/engine/systems/base/interactive");
         var i = ProjectConstants.getInstance().getMaxEquipped() - 1;
         for (; i >= 0; i--) {
             if (this.equippedItems[i] >= 0) {
@@ -222,14 +216,14 @@ define(["com/dalonedrow/engine/systems/base/interactive",
      * @param attr the attribute name
      */
     IOCharacter.prototype.clearAttributeModifier = function(attr) {
-		if (attr === undefined
-				|| attr === null
-				|| typeof attr !== "string") {
+    	try {
+    		this.checkString(attr);
+    	} catch (err) {
             var s = [];
-            s.push("ERROR! IOCharacter.clearAttributeModifier() - ");
-            s.push("attr must be string");
+            s.push("ERROR! IOCharacter.clearAttributeModifier() - attr ");
+            s.push(err.message);
             throw new Error(s.join(""));
-		}
+    	}
 		if (!this.attributes.hasOwnProperty(attr)) {
             var s = [];
             s.push("ERROR! IOCharacter.adjustAttributeModifier() - ");
@@ -279,15 +273,15 @@ define(["com/dalonedrow/engine/systems/base/interactive",
      * @param abbr the attribute's abbreviation
      * @return {@link Attribute}
      */
-	IOCharacter.prototype.getAttribute = function(abbr) {
-		if (attr === undefined
-				|| attr === null
-				|| typeof attr !== "string") {
+	IOCharacter.prototype.getAttribute = function(attr) {
+    	try {
+    		this.checkString(attr);
+    	} catch (err) {
             var s = [];
-            s.push("ERROR! IOCharacter.getAttribute() - ");
-            s.push("attr must be string");
+            s.push("ERROR! IOCharacter.getAttribute() - attr ");
+            s.push(err.message);
             throw new Error(s.join(""));
-		}
+    	}
 		if (!this.attributes.hasOwnProperty(attr)) {
             var s = [];
             s.push("ERROR! IOCharacter.getAttribute() - ");
@@ -296,7 +290,7 @@ define(["com/dalonedrow/engine/systems/base/interactive",
             s.push(" never set on character")
             throw new Error(s.join(""));
 		}
-        return attributes[abbr];
+        return this.attributes[attr];
     }
     /**
      * Gets the attribute modifier for a specific attribute.
@@ -304,14 +298,14 @@ define(["com/dalonedrow/engine/systems/base/interactive",
      * @return {@link float}
      */
     IOCharacter.prototype.getAttributeModifier = function(attr) {
-		if (attr === undefined
-				|| attr === null
-				|| typeof attr !== "string") {
+    	try {
+    		this.checkString(attr);
+    	} catch (err) {
             var s = [];
-            s.push("ERROR! IOCharacter.getAttributeModifier() - ");
-            s.push("attr must be string");
+            s.push("ERROR! IOCharacter.getAttributeModifier() - attr ");
+            s.push(err.message);
             throw new Error(s.join(""));
-		}
+    	}
 		if (!this.attributes.hasOwnProperty(attr)) {
             var s = [];
             s.push("ERROR! IOCharacter.getAttributeModifier() - ");
@@ -320,7 +314,7 @@ define(["com/dalonedrow/engine/systems/base/interactive",
             s.push(" never set on character")
             throw new Error(s.join(""));
 		}
-        return attributes[attr].getModifier();
+        return this.attributes[attr].getModifier();
     }
     /**
      * Gets an attribute's display name.
@@ -328,14 +322,14 @@ define(["com/dalonedrow/engine/systems/base/interactive",
      * @return {@link String}
      */
     IOCharacter.prototype.getAttributeName = function(attr) {
-		if (attr === undefined
-				|| attr === null
-				|| typeof attr !== "string") {
+    	try {
+    		this.checkString(attr);
+    	} catch (err) {
             var s = [];
-            s.push("ERROR! IOCharacter.getAttributeName() - ");
-            s.push("attr must be string");
+            s.push("ERROR! IOCharacter.getAttributeName() - attr ");
+            s.push(err.message);
             throw new Error(s.join(""));
-		}
+    	}
 		if (!this.attributes.hasOwnProperty(attr)) {
             var s = [];
             s.push("ERROR! IOCharacter.getAttributeName() - ");
@@ -359,14 +353,14 @@ define(["com/dalonedrow/engine/systems/base/interactive",
      * @return {@link float}
      */
     IOCharacter.prototype.getBaseAttributeScore = function(attr) {
-		if (attr === undefined
-				|| attr === null
-				|| typeof attr !== "string") {
+    	try {
+    		this.checkString(attr);
+    	} catch (err) {
             var s = [];
-            s.push("ERROR! IOCharacter.getBaseAttributeScore() - ");
-            s.push("attr must be string");
+            s.push("ERROR! IOCharacter.getBaseAttributeScore() - attr ");
+            s.push(err.message);
             throw new Error(s.join(""));
-		}
+    	}
 		if (!this.attributes.hasOwnProperty(attr)) {
             var s = [];
             s.push("ERROR! IOCharacter.getBaseAttributeScore() - ");
@@ -385,18 +379,16 @@ define(["com/dalonedrow/engine/systems/base/interactive",
      * @if the equipment slot was never defined
      */
     IOCharacter.prototype.getEquippedItem = function(slot) {
-	    if (slot === undefined
-	    		|| slot === null
-	    		|| isNaN(slot)
-	            || parseInt(Number(slot)) !== slot
-	            || isNaN(parseInt(slot, 10))) {
+    	try {
+    		this.checkInteger(slot);
+    	} catch (err) {
             var s = [];
-            s.push("ERROR! IOCharacter.getEquippedItem() - ");
-            s.push("slot must be integer");
+            s.push("ERROR! IOCharacter.getEquippedItem() - slot ");
+            s.push(err.message);
             throw new Error(s.join(""));
-	    }
+    	}
         if (slot < 0
-                || slot >= equippedItems.length) {
+                || slot >= this.equippedItems.length) {
             var s = [];
             s.push("ERROR! IOCharacter.getEquippedItem() - ");
             s.push("Error - equipment slot ");
@@ -411,14 +403,14 @@ define(["com/dalonedrow/engine/systems/base/interactive",
      * @return {@link float}
      */
     IOCharacter.prototype.getFullAttributeScore = function(attr) {
-		if (attr === undefined
-				|| attr === null
-				|| typeof attr !== "string") {
+    	try {
+    		this.checkString(attr);
+    	} catch (err) {
             var s = [];
-            s.push("ERROR! IOCharacter.getFullAttributeScore() - ");
-            s.push("attr must be string");
+            s.push("ERROR! IOCharacter.getFullAttributeScore() - attr ");
+            s.push(err.message);
             throw new Error(s.join(""));
-		}
+    	}
 		if (!this.attributes.hasOwnProperty(attr)) {
             var s = [];
             s.push("ERROR! IOCharacter.getFullAttributeScore() - ");
@@ -435,14 +427,14 @@ define(["com/dalonedrow/engine/systems/base/interactive",
      * @param val the new base attribute score
      */
     IOCharacter.prototype.setBaseAttributeScore = function(attr, val) {
-		if (attr === undefined
-				|| attr === null
-				|| typeof attr !== "string") {
+    	try {
+    		this.checkString(attr);
+    	} catch (err) {
             var s = [];
-            s.push("ERROR! IOCharacter.setBaseAttributeScore() - ");
-            s.push("attr must be string");
+            s.push("ERROR! IOCharacter.setBaseAttributeScore() - attr ");
+            s.push(err.message);
             throw new Error(s.join(""));
-		}
+    	}
 		if (!this.attributes.hasOwnProperty(attr)) {
             var s = [];
             s.push("ERROR! IOCharacter.setBaseAttributeScore() - ");
@@ -451,15 +443,14 @@ define(["com/dalonedrow/engine/systems/base/interactive",
             s.push(" never set on character")
             throw new Error(s.join(""));
 		}
-	    if (val === undefined
-	    		|| val === null
-	    		|| isNaN(val)
-	    		|| typeof val !== "number") {
+    	try {
+    		this.checkFloat(val);
+    	} catch (err) {
             var s = [];
-            s.push("ERROR! IOCharacter.setBaseAttributeScore() - ");
-            s.push("val must be floating-point");
+            s.push("ERROR! IOCharacter.setBaseAttributeScore() - val ");
+            s.push(err.message);
             throw new Error(s.join(""));
-	    }
+    	}
         this.attributes[attr].setBase(val);
     }
     /**
@@ -470,18 +461,16 @@ define(["com/dalonedrow/engine/systems/base/interactive",
      * @if the equipment slot was never defined
      */
     IOCharacter.prototype.setEquippedItem = function(slot, id) {
-	    if (slot === undefined
-	    		|| slot === null
-	    		|| isNaN(slot)
-	            || parseInt(Number(slot)) !== slot
-	            || isNaN(parseInt(slot, 10))) {
+    	try {
+    		this.checkInteger(slot);
+    	} catch (err) {
             var s = [];
-            s.push("ERROR! IOCharacter.setEquippedItem() - ");
-            s.push("slot must be integer");
+            s.push("ERROR! IOCharacter.getEquippedItem() - slot ");
+            s.push(err.message);
             throw new Error(s.join(""));
-	    }
+    	}
         if (slot < 0
-                || slot >= equippedItems.length) {
+                || slot >= this.equippedItems.length) {
             var s = [];
             s.push("ERROR! IOCharacter.setEquippedItem() - ");
             s.push("Error - equipment slot ");

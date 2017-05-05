@@ -46,7 +46,18 @@ define(function() {
 			/** flag indicating the interactive object is a party. */
 			IO_14_PARTY					: 8192,
 			/** flag indicating the interactive object is a winged mount. */
-			IO_15_MOVABLE				: 16384
+			IO_15_MOVABLE				: 16384,
+
+			SHOW_FLAG_NOT_DRAWN:				0,
+			SHOW_FLAG_IN_SCENE	:			1,
+			SHOW_FLAG_LINKED	:			2,
+			SHOW_FLAG_IN_INVENTORY	:		4,	// In Inventory
+			SHOW_FLAG_HIDDEN	:			5,	// In Inventory
+			SHOW_FLAG_TELEPORTING	:		6,	
+			SHOW_FLAG_KILLED	:			7,	// Not Used Yet
+			SHOW_FLAG_MEGAHIDE	:			8,
+			SHOW_FLAG_ON_PLAYER	:			9,
+			SHOW_FLAG_DESTROYED	:			255
 		}
 	})();
 	return IoGlobals;
