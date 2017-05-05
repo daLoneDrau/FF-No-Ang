@@ -23,7 +23,6 @@ define(['jquery', 'app', 'test/FFInteractiveObjectTest'],
             });
             // clicked New Game
     		$('#parchment .startgame').click(function(event) {
-    			console.log("start");
                 app.tryStartingGame(name);
             });
             initGame();

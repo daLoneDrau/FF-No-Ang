@@ -2,9 +2,11 @@
  * WebWebServiceClient
  * module with no dependencies
  */
-define(["com/dalonedrow/module/ff/constants/ffequipmentelements",
-	"com/dalonedrow/module/ff/constants/ffequipmentslots"], function(FFEquipmentElements,
-			FFEquipmentSlots) {
+define(["com/dalonedrow/engine/systems/base/interactive",
+	"com/dalonedrow/module/ff/constants/ffequipmentelements",
+	"com/dalonedrow/module/ff/constants/ffequipmentslots",
+	"com/dalonedrow/module/ff/rpg/ffitem"], function(Interactive,
+			FFEquipmentElements, FFEquipmentSlots, FFItem) {
     var instance = null;
 	var WebServiceClient = function() {
         if (instance !== null){
@@ -160,10 +162,88 @@ define(["com/dalonedrow/module/ff/constants/ffequipmentelements",
 	        }
 	    };
 	    this.loadItem = function(name) {
-	        var list = this.getItemByName();
+	        var obj = this.getItemByName(name);
+	        if (obj.length > 1) {
+	        	throw new Error("More than 1 item found!");
+	        }
+	        if (obj.length === 0) {
+	        	throw new Error("Item " + name + " doesn't exist");
+	        }
+	        obj = obj[0];
+	        var itemData = new FFItem();
+            // *************************************************
+            // weight
+            // *************************************************
+            if (obj.weight !== undefined) {
+                itemData.setWeight(obj.weight);
+            } else {
+                itemData.setWeight(0);
+            }
+            // *************************************************
+            // stack_size
+            // *************************************************
+            if (obj.stack_size !== undefined) {
+                itemData.setStackSize(obj.stack_size);
+            } else {
+                itemData.setStackSize(1);
+            }
+            // *************************************************
+            // name
+            // *************************************************
+            itemData.setItemName(obj.name);
+            // *************************************************
+            // title
+            // *************************************************
+            itemData.setTitle(obj.title);
+            // *************************************************
+            // max_owned
+            // *************************************************
+            if (obj.max_owned !== undefined) {
+                itemData.setMaxOwned(obj.max_owned);
+            } else {
+                itemData.setMaxOwned(1);
+            }
+            // *************************************************
+            // description
+            // *************************************************
+            itemData.setDescription(obj.description);
+            // *************************************************
+            // types
+            // *************************************************
+            if (obj.types !== undefined) {
+            	for (var i = obj.types.length - 1; i >= 0; i--) {
+                    itemData.ARX_EQUIPMENT_SetObjectType(obj.types[i].flag, true);        		
+            	}
+            }
+            // *************************************************
+            // modifiers
+            // *************************************************
+            if (obj.modifiers !== undefined) {
+            	for (var i in obj.modifiers) {
+                    var elementIndex =
+                        FFEquipmentElements.valueOf(i).getIndex();
+                    itemData.getEquipitem().getElement(elementIndex).set(
+                    		this.getModifierByCode(obj.modifiers[i]));
+            		
+            	}
+            	
+            }
+            // *************************************************
+            // internal_script
+            // *************************************************
+            io.setScript(new window[obj.internal_script]());
+            // *************************************************
+            // groups
+            // *************************************************
+            if (obj.groups !== undefined) {
+            	for (var i = obj.groups.length - 1; i >= 0; i--) {
+            		io.addGroup(obj.groups[i].name);
+            	}
+            }
+        	/*
+	        var io = Interactive.getInstance().newItem();
 	        for (var i = 0, len = list.length; i < len; i++) {
 	        	console.log(list[i]);
-	        	/*
 	            // *************************************************
 	            // weight
 	            // *************************************************
@@ -235,8 +315,8 @@ define(["com/dalonedrow/module/ff/constants/ffequipmentelements",
 	            }
 	            Script.getInstance().sendInitScriptEvent(io);
 	            return io;
-	            */
 	        }
+	            */
 	    };
 	}
 	WebServiceClient.getInstance = function() {

@@ -2,11 +2,11 @@ define(["com/dalonedrow/engine/systems/base/interactive",
 	"com/dalonedrow/engine/systems/base/projectconstants",
 	"com/dalonedrow/rpg/base/constants/ioglobals",
 	"com/dalonedrow/rpg/base/constants/mathglobals",
-	"com/dalonedrow/utils/watchable",
 	"com/dalonedrow/rpg/base/flyweights/attribute",
-	"com/dalonedrow/rpg/base/flyweights/baseinteractiveobject"],
-		function(Interactive, ProjectConstants, IoGlobals, MathGlobals, Watchable, Attribute,
-				BaseInteractiveObject) {
+	"com/dalonedrow/rpg/base/flyweights/baseinteractiveobject",
+	"com/dalonedrow/utils/watchable"],
+		function(Interactive, ProjectConstants, IoGlobals, MathGlobals, Attribute,
+				BaseInteractiveObject, Watchable) {
 	function IOCharacter() {
 		Watchable.call(this);
 	    /** the set of attributes defining the PC. */

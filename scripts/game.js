@@ -70,18 +70,6 @@ define(["renderer", "com/dalonedrow/engine/systems/base/projectconstants",
         // debug
         this.debugPathing = false;		
 	}
-    
-	Game.prototype.setup = function($bubbleContainer, canvas, background, foreground) {
-		//this.setBubbleManager(new BubbleManager($bubbleContainer));
-		this.setRenderer(new Renderer(this, canvas, background, foreground));
-		//this.setChatInput(input);
-		ProjectConstants.setInstance(new FFController());
-		Interactive.setInstance(new FFInteractive());
-		Script.setInstance(new FFScript());
-    };
-    Game.prototype.setStorage = function(storage) {
-        this.storage = storage;
-    };
     Game.prototype.initWebServiceClient = function() {
         var list = WebServiceClient.getInstance().getDieEntities();
         for (var i = 0, len = list.length; i < len; i++) {
@@ -122,6 +110,26 @@ define(["renderer", "com/dalonedrow/engine/systems/base/projectconstants",
 	            FFEquipmentSlots.values.push(new FFEquipmentSlots(list[i].name, list[i].value));
 	        }
     	}
+    };
+    Game.prototype.newHero = function(renderer) {
+    	Interactive.getInstance().newHero();
+    	var io = ProjectConstants.getInstance().getPlayerIO();
+    	console.log(io);
+    };
+    Game.prototype.setRenderer = function(renderer) {
+        this.renderer = renderer;
+    };
+    Game.prototype.setStorage = function(storage) {
+        this.storage = storage;
+    };
+	Game.prototype.setup = function($bubbleContainer, canvas, background, foreground) {
+		//this.setBubbleManager(new BubbleManager($bubbleContainer));
+		this.setRenderer(new Renderer(this, canvas, background, foreground));
+		//this.setChatInput(input);"
+		this.initWebServiceClient();
+		ProjectConstants.setInstance(new FFController());
+		Interactive.setInstance(new FFInteractive());
+		Script.setInstance(new FFScript());
     };
 	return Game;
 });

@@ -1,5 +1,5 @@
-define(["camera"],
-	function(Camera) {
+define(["camera", "timer"],
+	function(Camera, Timer) {
 	var Renderer = function(game, canvas, background, foreground) {
         this.game = game;
         this.context = null;

@@ -8,7 +8,6 @@ define(["require", "com/dalonedrow/engine/systems/base/interactive",
 	"com/dalonedrow/rpg/base/constants/mathglobals",
 	"com/dalonedrow/rpg/base/constants/scriptglobals",
 	"com/dalonedrow/rpg/base/flyweights/baseinteractiveobject",
-	"com/dalonedrow/rpg/base/flyweights/behaviourdata",
 	"com/dalonedrow/rpg/base/flyweights/iocharacter",
 	"com/dalonedrow/rpg/base/flyweights/iopathfind",
 	"com/dalonedrow/rpg/base/systems/script",
@@ -16,6 +15,7 @@ define(["require", "com/dalonedrow/engine/systems/base/interactive",
 		function(require, Interactive, ProjectConstants, EquipmentGlobals, IoGlobals, MathGlobals,
 				ScriptGlobals, BaseInteractiveObject, IOCharacter, Script, SpellMaster) {
 	function IoPcData() {
+		IOCharacter.call(this);
 		/** the number of bags the player has. */
 		this.bags = 0;
 		/** the {@link IoPcData}'s gender. */
