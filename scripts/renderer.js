@@ -40,6 +40,14 @@ define(["camera", "timer"],
         
         this.fixFlickeringTimer = new Timer(100);
 	};
+	/**
+	 * Clears all previously drawn content.
+	 * @param ctx the {@link CanvasRenderingContext2D} instance being cleared
+	 * @see https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/clearRect
+	 */
+	Renderer.prototype.clearScreen = function(ct2) {
+        ct2.clearRect(0, 0, this.canvas.width, this.canvas.height);
+    };
 	Renderer.prototype.createCamera = function() {
         this.camera = new Camera(this);
         this.camera.rescale();
@@ -125,6 +133,46 @@ define(["camera", "timer"],
         if (this.game.renderer) {
             this.game.setSpriteScale(this.scale);
         }
+    };
+    Renderer.prototype.renderFrame = function() {
+        if(this.mobile || this.tablet) {
+            this.renderFrameMobile();
+        }
+        else {
+            this.renderFrameDesktop();
+        }
+    };
+    Renderer.prototype.renderFrameDesktop = function() {
+    	// clear the screen and push onto the drawing stack
+        this.clearScreen(this.context);
+        this.context.save();
+        console.log(ctx)
+        console.log(this.context)
+        // fill the screen with green
+        this.background.fillStyle = "green";
+        this.background.fillRect(0, 0, this.canvas.width, this.canvas.height);
+        this.foreground.fillStyle = "blue";
+        this.foreground.fillRect(0, 0, this.canvas.width, this.canvas.height);
+        /*
+        this.setCameraView(this.context);
+        this.drawAnimatedTiles();
+    
+        if(this.game.started) {
+            this.drawSelectedCell();
+            this.drawTargetCell();
+        }
+
+        //this.drawOccupiedCells();
+        this.drawPathingCells();
+        this.drawEntities();
+        this.drawCombatInfo();
+        this.drawHighTiles(this.context);
+        this.context.restore();
+    
+        // Overlay UI elements
+        this.drawCursor();
+        this.drawDebugInfo();
+        */
     };
     /**
      * Sets the game's font size on the context and background canvases.

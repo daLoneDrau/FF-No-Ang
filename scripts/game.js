@@ -73,6 +73,53 @@ define(["renderer", "com/dalonedrow/engine/systems/base/projectconstants",
         // debug
         this.debugPathing = false;		
 	}
+    /**
+     * Processes game logic when the user triggers a click/touch event during the game.
+     */
+	Game.prototype.click = function() {
+		console.log("canvas click");
+		// figure out where on the screen was clicked
+        // var pos = this.getMouseGridPosition();
+        var entity;
+        /*
+        if (pos.x === this.previousClickPosition.x
+        		&& pos.y === this.previousClickPosition.y) {
+            return;
+        } else {
+            this.previousClickPosition = pos;
+        }
+        
+	    if (this.started
+	    && this.player
+	    && !this.isZoning()
+	    && !this.isZoningTile(this.player.nextGridX, this.player.nextGridY)
+	    && !this.player.isDead
+	    && !this.hoveringCollidingTile
+	    && !this.hoveringPlateauTile) {
+    	    entity = this.getEntityAt(pos.x, pos.y);
+	    
+    	    if(entity instanceof Mob) {
+    	        this.makePlayerAttack(entity);
+    	    }
+    	    else if(entity instanceof Item) {
+    	        this.makePlayerGoToItem(entity);
+    	    }
+    	    else if(entity instanceof Npc) {
+    	        if(this.player.isAdjacentNonDiagonal(entity) === false) {
+                    this.makePlayerTalkTo(entity);
+    	        } else {
+                    this.makeNpcTalk(entity);
+    	        }
+    	    }
+    	    else if(entity instanceof Chest) {
+    	        this.makePlayerOpenChest(entity);
+    	    }
+    	    else {
+    	        this.makePlayerGoTo(pos.x, pos.y);
+    	    }
+    	}
+    	*/
+    };
     Game.prototype.initWebServiceClient = function() {
         var list = WebServiceClient.getInstance().getDieEntities();
         for (var i = 0, len = list.length; i < len; i++) {
@@ -119,8 +166,26 @@ define(["renderer", "com/dalonedrow/engine/systems/base/projectconstants",
     	var io = ProjectConstants.getInstance().getPlayerIO();
     	console.log(io);
     };
+    Game.prototype.run = function(renderer) {
+    	console.log("running...")
+        this.currentTime = new Date().getTime();
+
+        if (this.started) {
+            //this.updateCursorLogic();
+            //this.updater.update();
+            this.renderer.renderFrame();
+        }
+
+        if (!this.isStopped) {
+        	requestAnimFrame(Game.prototype.run);
+        }
+    };
     Game.prototype.setRenderer = function(renderer) {
         this.renderer = renderer;
+    };
+    Game.prototype.start = function(renderer) {
+    	this.started = true;
+        this.run();
     };
     Game.prototype.setStorage = function(storage) {
         this.storage = storage;

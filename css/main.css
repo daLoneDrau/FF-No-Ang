@@ -83,3 +83,18 @@ q:before, q:after {
 	cursor: pointer;
 	cursor: hand;
 }
+/** CANVAS */
+canvas {
+	position:absolute;
+	image-rendering:optimizeSpeed;
+}
+/* remove cursor from canvas after game starts. */
+.started #canvas {
+    cursor: none;
+}
+#background, #foreground {
+	margin:0; padding:0;
+}
+#foreground {
+	-webkit-tap-highlight-color:rgba(0,0,0,0);
+}

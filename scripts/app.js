@@ -52,10 +52,33 @@ define(['jquery'], function($) {
         this.supportsWorkers = !!window.Worker;
         this.ready = true;
     };
+    App.prototype.setMouseCoordinates = function(event) {
+        var gamePos = $('#container').offset(),
+            scale = this.game.renderer.getScaleFactor(),
+            width = this.game.renderer.getWidth(),
+            height = this.game.renderer.getHeight(),
+            mouse = this.game.mouse;
+
+        mouse.x = event.pageX - gamePos.left - (this.isMobile ? 0 : 5 * scale);
+    	mouse.y = event.pageY - gamePos.top - (this.isMobile ? 0 : 7 * scale);
+
+    	if (mouse.x <= 0) {
+    	    mouse.x = 0;
+    	} else if (mouse.x >= width) {
+    	    mouse.x = width - 1;
+    	}
+
+    	if (mouse.y <= 0) {
+    	    mouse.y = 0;
+    	} else if(mouse.y >= height) {
+    	    mouse.y = height - 1;
+    	}
+    };
     App.prototype.start = function(username) {
     	console.log("start");
     	this.game.newHero();
         $("#inventory").show();
+        this.game.start();
     	/*
         var self = this, firstTimePlaying = !self.storage.hasAlreadyPlayed();
         
