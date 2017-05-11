@@ -1,45 +1,38 @@
 /**
  * 
  */
-package com.dalonedrau.jogl.engine;
-
-import com.dalonedrau.jogl.opengl.animation.AnimConsts;
-import com.dalonedrau.jogl.opengl.animation.AnimationFrameObject;
-import com.dalonedrau.jogl.opengl.animation.AnimationProcessObject;
-import com.dalonedrau.jogl.opengl.animation.AnimationSequenceObject;
-import com.dalonedrau.jogl.opengl.animation.AnimationSequenceObjectFactory;
-import com.rpg.base.interactive.flyweight.BaseInteractiveObject;
-
-/**
- * @author Donald
- */
-public class Animation {
-	/** the one and only instance of the <code>Animation</code> class. */
-	private static Animation	instance;
-	/**
-	 * Gives access to the singleton instance of {@link Animation}.
-	 * @return {@link Animation}
-	 */
-	public static Animation getInstance() {
-		if (Animation.instance == null) {
-			Animation.instance = new Animation();
-		}
-		return Animation.instance;
-	}
-	/** the list of animation processes. */
-	private AnimationProcessObject[]	processes;
-	/** Hidden constructor. */
-	private Animation() {
-		processes = new AnimationProcessObject[10];
-		for (int i = 0; i < processes.length; i++) {
-			processes[i] = new AnimationProcessObject();
-		}
-	}
-	public void computeAnimationSequenceLength(
-			final AnimationSequenceObject sequence) throws Exception {
-		long totalSpeed = 0;
-		for (int i = 0; i < sequence.getNumFrames(); i++) {
-			totalSpeed += computeFrameLength(sequence, sequence.getFrame(i));
+define(["com/dalonedrow/engine/sprite/animation/animationframe",
+	"com/dalonedrow/engine/sprite/animation/animationprocess",
+	"com/dalonedrow/engine/sprite/animation/animationsequence",
+	"com/dalonedrow/engine/systems/base/interactive",
+	"com/dalonedrow/engine/systems/base/time",
+	"com/dalonedrow/rpg/base/constants/animationglobals",
+	"com/dalonedrow/rpg/base/flyweights/baseinteractiveobject",
+	"com/dalonedrow/utils/hashcode"], function(AnimationFrame, AnimationProcess, AnimationSequence,
+			Interactive, Time, AnimationGlobals, BaseInteractiveObject, Hashcode) {
+	/** the singleton instance of the <code>Animator</code> class. */
+    var instance = null;
+    var Animator = function() {
+    	Hashcode.call(this);
+    	/** the list of animation processes. */
+    	this.processes = [new AnimationProcess(), new AnimationProcess(), new AnimationProcess(),
+    		new AnimationProcess(), new AnimationProcess(), new AnimationProcess(),
+    		new AnimationProcess(), new AnimationProcess(), new AnimationProcess(),
+    		new AnimationProcess()];    	
+    }
+    Animator.prototype = Object.create(Hashcode.prototype);
+	Animator.prototype.computeAnimationSequenceLength = function(sequence) {
+    	try {
+    		this.checkInstanceOf(sequence, AnimationSequence);
+    	} catch (err) {
+            var s = [];
+            s.push("ERROR! Animator.computeAnimationSequenceLength() - sequence ");
+            s.push(err.message);
+            throw new Error(s.join(""));
+    	}
+		var totalSpeed = 0;
+		for (var i = 0; i < sequence.getNumFrames(); i++) {
+			totalSpeed += this.computeFrameLength(sequence, sequence.getFrame(i));
 		}
 		sequence.setAnimationTime(totalSpeed);
 	}
@@ -49,12 +42,27 @@ public class Animation {
 	 * @param frame the {@link AnimationFrameObject}
 	 * @return long
 	 */
-	private long computeFrameLength(final AnimationSequenceObject sequence,
-			final AnimationFrameObject frame) {
-		long speed = frame.getDuration();
-		if (sequence.hasFlag(AnimConsts.ANIM_SEQUENCE_SPEED_MODIFIED)) {
+	Animator.prototype.computeFrameLength = function(sequence, frame) {
+    	try {
+    		this.checkInstanceOf(sequence, AnimationSequence);
+    	} catch (err) {
+            var s = [];
+            s.push("ERROR! Animator.computeFrameLength() - sequence ");
+            s.push(err.message);
+            throw new Error(s.join(""));
+    	}
+    	try {
+    		this.checkInstanceOf(frame, AnimationFrame);
+    	} catch (err) {
+            var s = [];
+            s.push("ERROR! Animator.computeFrameLength() - frame ");
+            s.push(err.message);
+            throw new Error(s.join(""));
+    	}
+		var speed = frame.getDuration();
+		if (sequence.hasFlag(AnimationGlobals.ANIM_SEQUENCE_SPEED_MODIFIED)) {
 			speed *= sequence.getModSpeed();
-		} else if (frame.hasFlag(AnimConsts.ANIM_FRAME_SPEED_MODIFIED)) {
+		} else if (frame.hasFlag(AnimationGlobals.ANIM_FRAME_SPEED_MODIFIED)) {
 			speed *= frame.getModSpeed();
 		}
 		return speed;
@@ -65,45 +73,45 @@ public class Animation {
 	 * returned.
 	 * @return <code>int</code>
 	 */
-	private int getNextAvailableProcess() {
-		int available = -1;
-		for (int i = 0; i < processes.length; i++) {
-			if (!processes[i].isInUse()) {
+	Animator.prototype.getNextAvailableProcess = function() {
+		var available = -1;
+		for (var i = 0; i < this.processes.length; i++) {
+			if (!this.processes[i].isInUse()) {
 				available = i;
 				break;
 			}
 		}
-		if (available == -1) {
-			available = processes.length;
-			// extend the processes array
-			AnimationProcessObject[] temp =
-					new AnimationProcessObject[processes.length + 1];
-			System.arraycopy(processes, 0, temp, 0, processes.length);
-			temp[available] = new AnimationProcessObject();
-			processes = temp;
+		if (available === -1) {
+			available = this.processes.length;
+			this.processes.push(new AnimationProcess());
 		}
 		return available;
 	}
-	private void handleProcess(final AnimationProcessObject process)
-			throws Exception {
-		long now = Time.getInstance().getFrameStart();
+	Animator.prototype.handleProcess = function(process) {
+    	try {
+    		this.checkInstanceOf(process, AnimationProcess);
+    	} catch (err) {
+            var s = [];
+            s.push("ERROR! Animator.handleProcess() - process ");
+            s.push(err.message);
+            throw new Error(s.join(""));
+    	}
+		var now = Time.getInstance().getFrameStart();
 		// set the frame start time if needed
-		if (process.getFrameStart() == AnimConsts.ANIM_NOT_STARTED) {
+		if (process.getFrameStart() === AnimationGlobals.ANIM_NOT_STARTED) {
 			process.setFrameStart(now);
 		}
 		// get the current sequence
-		AnimationSequenceObject sequence =
-				AnimationSequenceObjectFactory.getInstance().getSequenceById(
-						process.getCurrentAnimationSequenceId());
+		var sequence = AnimationSequence.getSequenceById(process.getCurrentAnimationSequenceId());
 		// get the current frame
-		int currFrameIndex = process.getCurrentFrame();
-		AnimationFrameObject currFrame = sequence.getFrame(currFrameIndex);
-		long frameEndTime = process.getFrameStart();
-		frameEndTime += computeFrameLength(sequence, currFrame);
+		var currFrameIndex = process.getCurrentFrame();
+		var currFrame = sequence.getFrame(currFrameIndex);
+		var frameEndTime = process.getFrameStart();
+		frameEndTime += this.computeFrameLength(sequence, currFrame);
 		// has the sequence finished?
 		// TO DO
-		computeAnimationSequenceLength(sequence);
-		long sequenceEnd = sequence.getAnimationTime();
+		this.computeAnimationSequenceLength(sequence);
+		var sequenceEnd = sequence.getAnimationTime();
 		// is it time to move on to the next frame?
 		if (frameEndTime < now) {
 			// time to move to next frame.
@@ -113,24 +121,20 @@ public class Animation {
 				process.setCurrentFrame(currFrameIndex + 1);
 				process.setFrameStart(now);
 			} else {
-				if (sequence.hasFlag(AnimConsts.ANIM_REPEATS_FROM_BEGINNING)) {
+				if (sequence.hasFlag(AnimationGlobals.ANIM_REPEATS_FROM_BEGINNING)) {
 					process.setCurrentFrame(0);
 					process.setFrameStart(now);
-				} else if (sequence.hasFlag(
-						AnimConsts.ANIM_REPEATS_FROM_STARTKEYFRAME)) {
+				} else if (sequence.hasFlag(AnimationGlobals.ANIM_REPEATS_FROM_STARTKEYFRAME)) {
 					process.setCurrentFrame(sequence.getStartKeyFrame());
 					process.setFrameStart(now);
-				} else if (sequence.hasFlag(
-						AnimConsts.ANIM_REPEATS_FROM_ENDKEYFRAME)) {
+				} else if (sequence.hasFlag(AnimationGlobals.ANIM_REPEATS_FROM_ENDKEYFRAME)) {
 					process.setCurrentFrame(sequence.getEndKeyFrame());
 					process.setFrameStart(now);
-				} else if (sequence.hasFlag(
-						AnimConsts.ANIM_GOTO_END_FRAME)) {
+				} else if (sequence.hasFlag(AnimationGlobals.ANIM_GOTO_END_FRAME)) {
 					process.setCurrentFrame(sequence.getEndKeyFrame());
 					// this call stops the animation
 					process.setInUse(false);
-				} else if (sequence.hasFlag(
-						AnimConsts.ANIM_GOTO_START_FRAME)) {
+				} else if (sequence.hasFlag(AnimationGlobals.ANIM_GOTO_START_FRAME)) {
 					process.setCurrentFrame(sequence.getStartKeyFrame());
 					// this call stops the animation
 					process.setInUse(false);
@@ -140,7 +144,7 @@ public class Animation {
 			}
 		}
 		// change the IO's image to the latest frame from the sequence
-		setIOImageFromAnimation(process, sequence);
+		this.setIOImageFromAnimation(process, sequence);
 		// TO DO ASSIGN FLAGS TO IO
 	}
 	/**
@@ -149,13 +153,13 @@ public class Animation {
 	 * @param sequenceId the animation sequence id
 	 * @return true if the animation is already playing; false otherwise
 	 */
-	private boolean isAnimationPlaying(final int ioId, final int sequenceId) {
+	Animator.prototype.isAnimationPlaying = function(final int ioId, final int sequenceId) {
 		boolean is = false;
-		for (int i = 0; i < processes.length; i++) {
-			if (processes[i].isInUse()
-					&& processes[i].getCurrentAnimationSequenceId()
+		for (var i = 0; i < this.processes.length; i++) {
+			if (this.processes[i].isInUse()
+					&& this.processes[i].getCurrentAnimationSequenceId()
 					== sequenceId
-					&& processes[i].getRefId() == ioId) {
+					&& this.processes[i].getRefId() === ioId) {
 				is = true;
 				break;
 			}
@@ -167,13 +171,13 @@ public class Animation {
 	 * @param io the {@link BaseInteractiveObject}
 	 * @param sequenceId the animation sequence id
 	 */
-	public void playAnimation(final BaseInteractiveObject io,
+	Animator.prototype.playAnimation = function(final BaseInteractiveObject io,
 			final int sequenceId) {
-		if (!isAnimationPlaying(io.getRefId(), sequenceId)) {
+		if (!this.isAnimationPlaying(io.getRefId(), sequenceId)) {
 			int index = getNextAvailableProcess();
-			processes[index].setRefId(io.getRefId());
-			processes[index].setCurrentAnimationSequenceId(sequenceId);
-			processes[index].setInUse(true);
+			this.processes[index].setRefId(io.getRefId());
+			this.processes[index].setCurrentAnimationSequenceId(sequenceId);
+			this.processes[index].setInUse(true);
 		}
 	}
 	/**
@@ -181,15 +185,15 @@ public class Animation {
 	 * @param io the {@link BaseInteractiveObject}
 	 * @param sequenceId the animation sequence id
 	 * @param flags any flags assigned to the animation
-	 * @throws Exception if an error occurs
+	 * @if an error occurs
 	 */
-	public void playAnimation(final BaseInteractiveObject io,
-			final int sequenceId, final long flags) throws Exception {
-		if (!isAnimationPlaying(io.getRefId(), sequenceId)) {
+	Animator.prototype.playAnimation = function(final BaseInteractiveObject io,
+			final int sequenceId, final long flags) {
+		if (!this.isAnimationPlaying(io.getRefId(), sequenceId)) {
 			int index = getNextAvailableProcess();
-			processes[index].setRefId(io.getRefId());
-			processes[index].setCurrentAnimationSequenceId(sequenceId);
-			processes[index].setInUse(true);
+			this.processes[index].setRefId(io.getRefId());
+			this.processes[index].setCurrentAnimationSequenceId(sequenceId);
+			this.processes[index].setInUse(true);
 		}
 		AnimationSequenceObject sequence =
 				AnimationSequenceObjectFactory.getInstance().getSequenceById(
@@ -201,10 +205,10 @@ public class Animation {
 	 * Plays an animation for an interactive object.
 	 * @param io the {@link BaseInteractiveObject}
 	 * @param sequenceName the name of the animation sequence
-	 * @throws Exception if an error occurs
+	 * @if an error occurs
 	 */
-	public void playAnimation(final BaseInteractiveObject io,
-			final String sequenceName) throws Exception {
+	Animator.prototype.playAnimation = function(final BaseInteractiveObject io,
+			final String sequenceName) {
 		AnimationSequenceObject sequence =
 				AnimationSequenceObjectFactory.getInstance().getSequenceByName(
 						sequenceName);
@@ -216,10 +220,10 @@ public class Animation {
 	 * @param io the {@link BaseInteractiveObject}
 	 * @param sequenceName the name of the animation sequence
 	 * @param flags any flags assigned to the animation
-	 * @throws Exception if an error occurs
+	 * @if an error occurs
 	 */
-	public void playAnimation(final BaseInteractiveObject io,
-			final String sequenceName, final long flags) throws Exception {
+	Animator.prototype.playAnimation = function(final BaseInteractiveObject io,
+			final String sequenceName, final long flags) {
 		this.playAnimation(
 				io, 
 				AnimationSequenceObjectFactory.getInstance().getSequenceByName(
@@ -230,15 +234,15 @@ public class Animation {
 	 * Removes all animation flags assigned to a specific animation sequence.
 	 * @param io the {@link BaseInteractiveObject}
 	 * @param sequenceName the name of the animation sequence
-	 * @throws Exception if an error occurs
+	 * @if an error occurs
 	 */
-	public void removeAllAnimationFlags(final BaseInteractiveObject io,
-			final String sequenceName) throws Exception {
+	Animator.prototype.removeAllAnimationFlags = function(final BaseInteractiveObject io,
+			final String sequenceName) {
 		AnimationSequenceObject sequence =
 				AnimationSequenceObjectFactory.getInstance().getSequenceByName(
 						sequenceName);
-		for (int i = 0; i < processes.length; i++) {
-			AnimationProcessObject process = processes[i];
+		for (var i = 0; i < this.processes.length; i++) {
+			AnimationProcessObject process = this.processes[i];
 			if (process.getCurrentAnimationSequenceId() 
 					== sequence.getRefId()) {
 				// found the sequence
@@ -252,10 +256,10 @@ public class Animation {
 	 * rendered for the current animation frame.
 	 * @param process the {@link AnimationProcessObject}
 	 * @param sequence the {@link AnimationSequenceObject}
-	 * @throws Exception if an error occurs
+	 * @if an error occurs
 	 */
-	private void setIOImageFromAnimation(final AnimationProcessObject process,
-			final AnimationSequenceObject sequence) throws Exception {
+	Animator.prototype.setIOImageFromAnimation = function(final AnimationProcessObject process,
+			final AnimationSequenceObject sequence) {
 		// sets the image rendered for the io in the animation
 		AnimationFrameObject currFrame =
 				sequence.getFrame(process.getCurrentFrame());
@@ -268,42 +272,42 @@ public class Animation {
 	 * Stops all animations playing for an interactive object.
 	 * @param io the {@link BaseInteractiveObject}
 	 */
-	public void stopAllAnimations(final BaseInteractiveObject io) {
-		for (int i = 0; i < processes.length; i++) {
-			if (processes[i].getRefId() == io.getRefId()) {
+	Animator.prototype.stopAllAnimations = function(final BaseInteractiveObject io) {
+		for (var i = 0; i < this.processes.length; i++) {
+			if (this.processes[i].getRefId() === io.getRefId()) {
 				// found the animation process
-				processes[i].setInUse(false);
+				this.processes[i].setInUse(false);
 			}
 		}
 	}
-	public void stopRepeatingAnimation(final BaseInteractiveObject io)
-			throws Exception {
-		for (int i = 0; i < processes.length; i++) {
-			AnimationProcessObject process = processes[i];
-			if (process.getRefId() == io.getRefId()) {
+	Animator.prototype.stopRepeatingAnimation = function(final BaseInteractiveObject io)
+			{
+		for (var i = 0; i < this.processes.length; i++) {
+			AnimationProcessObject process = this.processes[i];
+			if (process.getRefId() === io.getRefId()) {
 				// get the animation sequence
 				AnimationSequenceObject sequence =
 						AnimationSequenceObjectFactory
 								.getInstance()
 								.getSequenceById(
 										process.getCurrentAnimationSequenceId());
-				sequence.removeFlag(AnimConsts.ANIM_REPEATS_FROM_BEGINNING);
-				sequence.removeFlag(AnimConsts.ANIM_REPEATS_FROM_STARTKEYFRAME);
-				sequence.removeFlag(AnimConsts.ANIM_REPEATS_FROM_ENDKEYFRAME);
-				sequence.assignFlag(AnimConsts.ANIM_GOTO_END_FRAME);
+				sequence.removeFlag(AnimationGlobals.ANIM_REPEATS_FROM_BEGINNING);
+				sequence.removeFlag(AnimationGlobals.ANIM_REPEATS_FROM_STARTKEYFRAME);
+				sequence.removeFlag(AnimationGlobals.ANIM_REPEATS_FROM_ENDKEYFRAME);
+				sequence.assignFlag(AnimationGlobals.ANIM_GOTO_END_FRAME);
 			}
 		}
 	}
 	/** Updates all animations. */
-	public void update() {
+	Animator.prototype.update = function() {
 		try {
-			for (int i = 0; i < processes.length; i++) {
-				if (processes[i].isInUse()) {
+			for (var i = 0; i < this.processes.length; i++) {
+				if (this.processes[i].isInUse()) {
 					if (Interactive.getInstance().hasIO(
-							processes[i].getRefId())) {
-						handleProcess(processes[i]);
+							this.processes[i].getRefId())) {
+						handleProcess(this.processes[i]);
 					} else {
-						processes[i].setInUse(false);
+						this.processes[i].setInUse(false);
 					}
 				}
 			}

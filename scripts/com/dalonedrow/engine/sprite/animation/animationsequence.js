@@ -1,15 +1,5 @@
 define(["com/dalonedrow/engine/sprite/animation/animationframe",
-	"com/dalonedrow/utils/hashcode",
-	
-	
-	"com/dalonedrow/rpg/base/constants/ioglobals",
-	"com/dalonedrow/rpg/base/constants/mathglobals",
-	"com/dalonedrow/rpg/base/flyweights/attribute",
-	"com/dalonedrow/rpg/base/flyweights/baseinteractiveobject"],
-		function(AnimationFrame, Hashcode, 
-				
-				ProjectConstants, IoGlobals, MathGlobals, Attribute,
-				BaseInteractiveObject) {
+	"com/dalonedrow/utils/hashcode"], function(AnimationFrame, Hashcode) {
 	function AnimationSequence(id) {
 		Hashcode.call(this);
     	try {
@@ -108,14 +98,14 @@ define(["com/dalonedrow/engine/sprite/animation/animationframe",
 	AnimationSequence.prototype.clearFlags = function() {
 		this.flags = 0;
 	}
-	public final long getAnimationTime = function() {
+	AnimationSequence.prototype.getAnimationTime = function() {
 		return this.animationTime;
 	}
 	/**
 	 * Gets the endKeyFrame.
 	 * @return <code>int</code>
 	 */
-	public int getEndKeyFrame = function() {
+	AnimationSequence.prototype.getEndKeyFrame = function() {
 		return this.endKeyFrame;
 	}
 	/**
@@ -124,48 +114,57 @@ define(["com/dalonedrow/engine/sprite/animation/animationframe",
 	 * @return {@link AnimationFrameObject}
 	 * @if the index is invalid
 	 */
-	public AnimationFrameObject getFrame = function(final int index) {
-		AnimationFrameObject frame = null;
+	AnimationSequence.prototype.getFrame = function(index) {
+    	try {
+    		this.checkInteger(index);
+    	} catch (err) {
+            var s = [];
+            s.push("ERROR! AnimationSequence.getFrame() - index ");
+            s.push(err.message);
+            throw new Error(s.join(""));
+    	}
+		var frame = null;
 		if (index >= 0
 				&& index < this.frames.length) {
-			frame =
-					AnimationFrameObjectFactory.getInstance().getFrameById(
-							this.frames[index]);
+			frame = AnimationFrame.getFrameById(this.frames[index]);
 		}
-		if (frame == null) {
-			PooledStringBuilder sb = StringBuilderPool.getInstance()
-					.getStringBuilder();
-			sb.append("ERROR! AnimationSequenceObject.getFrame() - ");
-			sb.append("invalid index - ");
-			sb.append(index);
-			Exception ex = new Exception(sb.toString());
-			sb.returnToPool();
-			throw ex;
+		if (frame === null) {
+			var sb = [];
+			sb.push("ERROR! AnimationSequenceObject.getFrame() - ");
+			sb.push("invalid index - ");
+			sb.push(index);
+			throw new Error(sb.join(""));
 		}
 		return frame;
 	}
-	public final float getModSpeed = function() {
+	AnimationSequence.prototype.getModSpeed = function() {
 		return this.modSpeed;
 	}
 	/**
 	 * Gets the total number of frames in the sequence.
 	 * @return <code>int</code>
 	 */
-	public int getNumFrames = function() {
+	AnimationSequence.prototype.getNumFrames = function() {
+		var numFrames = 0;
+		for (var i = this.frames[i] - 1; i >= 0; i--) {
+			if (this.frames[i] !== -1) {
+				numFrames++;
+			}
+		}
 		return numFrames;
 	}
 	/**
 	 * Gets the sequence's reference id
 	 * @return <code>int</code>
 	 */
-	public final int getRefId = function() {
+	AnimationSequence.prototype.getRefId = function() {
 		return this.refId;
 	}
 	/**
 	 * Gets the startKeyFrame.
 	 * @return <code>int</code>
 	 */
-	public int getStartKeyFrame = function() {
+	AnimationSequence.prototype.getStartKeyFrame = function() {
 		return this.startKeyFrame;
 	}
 	/**
@@ -174,44 +173,274 @@ define(["com/dalonedrow/engine/sprite/animation/animationframe",
 	 * @param flag the flag
 	 * @return true if the flag was set; false otherwise
 	 */
-	public boolean hasFlag = function(final long flag) {
+	AnimationSequence.prototype.hasFlag = function(flag) {
     	try {
     		this.checkPowerOfTwo(flag);
     	} catch (err) {
             var s = [];
-            s.push("ERROR! AnimationSequence.assignFlag() - flag ");
+            s.push("ERROR! AnimationSequence.hasFlag() - flag ");
             s.push(err.message);
             throw new Error(s.join(""));
     	}
-        this.flags |= flag;
-		return (this.flags & flag) == flag;
+		return (this.flags & flag) === flag;
 	}
 	/**
 	 * Removes a flag.
 	 * @param flag the flag
 	 */
-	AnimationSequence.prototype.removeFlag = function(final long flag) {
+	AnimationSequence.prototype.removeFlag = function(flag) {
+    	try {
+    		this.checkPowerOfTwo(flag);
+    	} catch (err) {
+            var s = [];
+            s.push("ERROR! AnimationSequence.removeFlag() - flag ");
+            s.push(err.message);
+            throw new Error(s.join(""));
+    	}
 		this.flags &= ~flag;
 
 	}
-	AnimationSequence.prototype.setAnimationTime = function(final long animationTime) {
-		this.animationTime = animationTime;
+	AnimationSequence.prototype.setAnimationTime = function(val) {
+    	try {
+    		this.checkInteger(val);
+    	} catch (err) {
+            var s = [];
+            s.push("ERROR! AnimationSequence.setAnimationTime() - val ");
+            s.push(err.message);
+            throw new Error(s.join(""));
+    	}
+		this.animationTime = val;
 	}
 	/**
 	 * Sets the endKeyFrame
 	 * @param endKeyFrame the endKeyFrame to set
 	 */
-	AnimationSequence.prototype.setEndKeyFrame = function(int endKeyFrame) {
-		this.endKeyFrame = endKeyFrame;
+	AnimationSequence.prototype.setEndKeyFrame = function(val) {
+    	try {
+    		this.checkInteger(val);
+    	} catch (err) {
+            var s = [];
+            s.push("ERROR! AnimationSequence.setEndKeyFrame() - val ");
+            s.push(err.message);
+            throw new Error(s.join(""));
+    	}
+		this.endKeyFrame = val;
 	}
-	AnimationSequence.prototype.setModSpeed = function(final float val) {
+	AnimationSequence.prototype.setModSpeed = function(val) {
+    	try {
+    		this.checkFloat(val);
+    	} catch (err) {
+            var s = [];
+            s.push("ERROR! AnimationSequence.setModSpeed() - val ");
+            s.push(err.message);
+            throw new Error(s.join(""));
+    	}
 		this.modSpeed = val;
 	}
 	/**
 	 * Sets the startKeyFrame
 	 * @param startKeyFrame the startKeyFrame to set
 	 */
-	AnimationSequence.prototype.setStartKeyFrame = function(int startKeyFrame) {
-		this.startKeyFrame = startKeyFrame;
+	AnimationSequence.prototype.setStartKeyFrame = function(val) {
+    	try {
+    		this.checkInteger(val);
+    	} catch (err) {
+            var s = [];
+            s.push("ERROR! AnimationSequence.setStartKeyFrame() - val ");
+            s.push(err.message);
+            throw new Error(s.join(""));
+    	}
+		this.startKeyFrame = val;
 	}
-}
+	/** the list of image names used. */
+	AnimationSequence.names		= [null, null, null, null, null, null, null, null, null, null];
+	/** the next available image id. */
+	AnimationSequence.nextId		= 0;
+	/** the list of images. */
+	AnimationSequence.sequences	= [null, null, null, null, null, null, null, null, null, null];
+	/**
+	 * Attempts to add an animation sequence to the
+	 * {@link AnimationSequence}.
+	 * @param sequenceName the sequence's name
+	 * @param sequence the {@link AnimationSequenceObject}
+	 * @if the sequence could not be loaded
+	 */
+	AnimationSequence.addSequence = function(sequenceName, sequence) {
+    	try {
+    		AnimationSequence.prototype.checkString(sequenceName);
+    	} catch (err) {
+            var s = [];
+            s.push("ERROR! AnimationSequence.addSequence() - sequenceName ");
+            s.push(err.message);
+            throw new Error(s.join(""));
+    	}
+    	try {
+    		AnimationSequence.prototype.checkInstanceOf(sequence, AnimationSequence);
+    	} catch (err) {
+            var s = [];
+            s.push("ERROR! AnimationSequence.addSequence() - sequence ");
+            s.push(err.message);
+            throw new Error(s.join(""));
+    	}
+		if (AnimationSequence.hasFrame(sequenceName)) {
+			var sb = [];
+			sb.push("ERROR! AnimationSequence.addSequence() - ");
+			sb.push("sequence '");
+			sb.push(sequenceName);
+			sb.push("' already loaded");
+            throw new Error(sb.join(""));
+			throw ex;
+		}
+		if (sequence.getRefId() < AnimationSequence.sequences.length
+				&& AnimationSequence.sequences[sequence.getRefId()] !== null) {
+			var sb = [];
+			sb.push("ERROR! AnimationSequence.addSequence() - ");
+			sb.push("sequence '");
+			sb.push(sequenceName);
+			sb.push("' assigned invalid refId.  RefId already in use.");
+            throw new Error(sb.join(""));
+		}
+		while (sequence.getRefId() >= AnimationSequence.sequences.length) {
+			AnimationSequence.names.push(null);
+			AnimationSequence.sequences.push(null);
+		}
+		AnimationSequence.names[sequence.getRefId()] = sequenceName;
+		AnimationSequence.sequences[sequence.getRefId()] = sequence;
+	}
+	/**
+	 * Gets the next available sequence id.
+	 * @return int
+	 */
+	AnimationSequence.getAnimationSequence.nextId = function() {
+		return AnimationSequence.nextId++;
+	}
+	/**
+	 * Gets a {@link AnimationSequenceObject} by its reference id.
+	 * @param id the reference id
+	 * @return {@link AnimationSequenceObject}
+	 * @if the sequence does not exist
+	 */
+	AnimationSequence.getSequenceById = function(id) {
+    	try {
+    		AnimationSequence.prototype.checkInteger(id);
+    	} catch (err) {
+            var s = [];
+            s.push("ERROR! AnimationSequence.getSequenceById() - id ");
+            s.push(err.message);
+            throw new Error(s.join(""));
+    	}
+		var sequence = null;
+		if (id >= 0
+				&& id < AnimationSequence.sequences.length) {
+			sequence = AnimationSequence.sequences[id];
+		}
+		if (sequence === null) {
+			var sb = [];
+			sb.push("ERROR! AnimationSequence.getSequenceById() - ");
+			sb.push("invalid refId. sequence with refId");
+			sb.push(id);
+			sb.push(" was never loaded.");
+            throw new Error(sb.join(""));
+		}
+		return sequence;
+	}
+	/**
+	 * Gets a {@link AnimationSequenceObject} by its name.
+	 * @param sequenceName the sequence's name
+	 * @return {@link AnimationSequenceObject}
+	 * @if the sequence does not exist
+	 */
+	AnimationSequence.getSequenceByName = function(sequenceName) {
+    	try {
+    		AnimationSequence.prototype.checkString(sequenceName);
+    	} catch (err) {
+            var s = [];
+            s.push("ERROR! AnimationSequence.getSequenceByName() - sequenceName ");
+            s.push(err.message);
+            throw new Error(s.join(""));
+    	}
+		var sequence = null;
+		var id = -1;
+		for (var i = 0; i < AnimationSequence.names.length; i++) {
+			if (AnimationSequence.names[i] !== null
+					&& AnimationSequence.names[i] === sequenceName) {
+				id = i;
+				break;
+			}
+		}
+		if (id >= 0
+				&& id < AnimationSequence.sequences.length) {
+			sequence = AnimationSequence.sequences[id];
+		}
+		if (sequence === null) {
+			var sb = [];
+			sb.push("ERROR! AnimationSequence.getSequenceByName() - ");
+			sb.push("invalid refId. sequence '");
+			sb.push(sequenceName);
+			sb.push("' was never loaded.");
+            throw new Error(sb.join(""));
+		}
+		return sequence;
+	}
+	/**
+	 * Gets the reference id for a specific sequence.
+	 * @param sequenceName the sequence's name
+	 * @return int
+	 * @if the sequence was not loaded
+	 */
+	AnimationSequence.getSequenceRefId = function(sequenceName) {
+    	try {
+    		AnimationSequence.prototype.checkString(sequenceName);
+    	} catch (err) {
+            var s = [];
+            s.push("ERROR! AnimationSequence.getSequenceRefId() - sequenceName ");
+            s.push(err.message);
+            throw new Error(s.join(""));
+    	}
+		var id = -1;
+		for (var i = 0; i < AnimationSequence.names.length; i++) {
+			if (AnimationSequence.names[i] !== null
+					&& AnimationSequence.names[i] === sequenceName) {
+				id = i;
+				break;
+			}
+		}
+		if (id === -1) {
+			var sb = [];
+			sb.push("ERROR! AnimationSequence.getSequenceRefId() - ");
+			sb.push("invalid name: '");
+			sb.push(sequenceName);
+			sb.push("'");
+            throw new Error(sb.join(""));
+		}
+		return id;
+	}
+	/**
+	 * Determines if the {@link AnimationSequence} has a sequence
+	 * by a specific name.
+	 * @param sequenceName the sequence's name
+	 * @return true if a sequence by that name has been stored already; false
+	 *         otherwise
+	 */
+	AnimationSequence.hasFrame = function(sequenceName) {
+    	try {
+    		AnimationSequence.prototype.checkString(sequenceName);
+    	} catch (err) {
+            var s = [];
+            s.push("ERROR! AnimationSequence.hasFrame() - sequenceName ");
+            s.push(err.message);
+            throw new Error(s.join(""));
+    	}
+		var has = false;
+		for (var i = 0; i < AnimationSequence.names.length; i++) {
+			if (sequenceName !== null
+					&& AnimationSequence.names[i] !== null
+					&& sequenceName.equals(AnimationSequence.names[i])) {
+				has = true;
+				break;
+			}
+		}
+		return has;
+	}
+	return AnimationSequence;
+});

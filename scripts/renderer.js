@@ -1,7 +1,9 @@
 define(["camera", "timer",
+	"com/dalonedrow/engine/sprite/base/maptile",
+	"com/dalonedrow/engine/sprite/base/simplevector2",
 	"com/dalonedrow/engine/sprite/base/tile",
 	"com/dalonedrow/engine/sprite/base/tilesheet"],
-	function(Camera, Timer, Tile, Tilesheet) {
+	function(Camera, Timer, MapTile, SimpleVector2, Tile, Tilesheet) {
 	var Renderer = function(game, canvas, background, foreground) {
         this.game = game;
         this.context = null;
@@ -41,11 +43,17 @@ define(["camera", "timer",
         this.tablet = Detect.isTablet(window.innerWidth);
         
         this.fixFlickeringTimer = new Timer(100);
-        this.sampleSheet = new Tilesheet('img/wang.png');
-        this.sampleTiles = [
-        	new Tile(this.sampleSheet, 0),
-        	new Tile(this.sampleSheet, 1)
-        ];
+        this.sampleSheet = new Tilesheet('img/ff_floor.png');
+        this.map = [];
+        this.sampleTiles = [];
+        for (var i = 0; i < 16; i++) {
+        	this.sampleTiles.push(new Tile(this.sampleSheet, i));
+        }
+        this.map.push(new MapTile(new SimpleVector2(6, 0), this.sampleTiles[10]));
+        this.map.push(new MapTile(new SimpleVector2(6, 1), this.sampleTiles[10]));
+        this.map.push(new MapTile(new SimpleVector2(5, 2), this.sampleTiles[12]));
+        this.map.push(new MapTile(new SimpleVector2(6, 2), this.sampleTiles[0]));
+        this.map.push(new MapTile(new SimpleVector2(7, 2), this.sampleTiles[6]));
 	};
 	/**
 	 * Clears all previously drawn content.
@@ -158,9 +166,16 @@ define(["camera", "timer",
         // fill the screen with green
         this.background.fillStyle = "green";
         this.background.fillRect(0, 0, this.canvas.width, this.canvas.height);
-        Tile.sort(this.sampleTiles);
-        this.sampleTiles[0].render(this.background, 0, 0);
-        this.sampleTiles[1].render(this.background, 32, 0);
+        for (var i = this.map.length - 1; i >= 0; i--) {
+        	var x = this.map[i].getPosition().getX() * Tilesheet.size * Tilesheet.scale;
+        	var y = this.canvas.height - Tilesheet.size * Tilesheet.scale
+        	- this.map[i].getPosition().getY() * Tilesheet.size * Tilesheet.scale;
+        	this.map[i].getTile().render(this.background, x, y);
+        	console.log(x+","+y);
+        }
+        //Tile.sort(this.sampleTiles);
+        //this.sampleTiles[0].render(this.background, 0, 0);
+        //this.sampleTiles[1].render(this.background, 32, 0);
         //this.background.drawImage(sampleSheet, sx, sy, sWidth, sHeight, dx, dy, dWidth, dHeight);
         //this.foreground.fillStyle = "blue";
         //this.foreground.fillRect(0, 0, this.canvas.width, this.canvas.height);

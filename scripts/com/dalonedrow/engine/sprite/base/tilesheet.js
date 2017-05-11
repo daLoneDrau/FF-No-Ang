@@ -21,10 +21,26 @@ define(["require", "com/dalonedrow/utils/hashcode"], function(require, Hashcode)
     	};
     }
     Tilesheet.prototype = Object.create(Hashcode.prototype);
-    Tilesheet.size = 32;
+    Tilesheet.scale = 2;
+    Tilesheet.size = 16;
+    /** DawnBringer Tileset - ff_floor.png. */
     Tilesheet.imageMap = {
-    		0: { "x": 0, "y": 0 },
-    		1: { "x": 32, "y": 192 }
+    		0: { "x": 16, "y": 16 },
+    		1: { "x": 16, "y": 0 },
+    		2: { "x": 32, "y": 16 },
+    		3: { "x": 32, "y": 0 },
+    		4: { "x": 16, "y": 32 },
+    		5: { "x": 80, "y": 16 },
+    		6: { "x": 32, "y": 32 },
+    		7: { "x": 96, "y": 16 },
+    		8: { "x": 0, "y": 16 },
+    		9: { "x": 0, "y": 0 },
+    		10: { "x": 48, "y": 16 },
+    		11: { "x": 48, "y": 0 },
+    		12: { "x": 0, "y": 32 },
+    		13: { "x": 64, "y": 16 },
+    		14: { "x": 48, "y": 32 },
+    		15: { "x": 80, "y": 0 }
     };
 	/**
 	 * Sets the <code>SimpleVector2</code> position.
@@ -66,7 +82,8 @@ define(["require", "com/dalonedrow/utils/hashcode"], function(require, Hashcode)
             throw new Error(s.join(""));
     	}
     	var sx = Tilesheet.imageMap[tile.getValue()].x, sy = Tilesheet.imageMap[tile.getValue()].y;
-    	ctx.drawImage(this.img, sx, sy, Tilesheet.size, Tilesheet.size, dx, dy, Tilesheet.size, Tilesheet.size);
+    	ctx.drawImage(this.img, sx, sy, Tilesheet.size, Tilesheet.size,
+    			dx, dy, Tilesheet.size * Tilesheet.scale, Tilesheet.size * Tilesheet.scale);
 	};
 	return Tilesheet;
 });

@@ -1,8 +1,6 @@
 
 define(['jquery', 'app', 'test/FFInteractiveObjectTest'],
-	function($, App, ProjectConstants, FFCommand, FFEquipmentElements, FFEquipmentSlots, 
-			FFController, FFInteractive, FFScript, WebServiceClient, Interactive, Die, Dice, Script,
-			FFInteractiveObjectTest) {
+	function($, App, FFInteractiveObjectTest) {
     var app, game;
     console.log("main called");
     window.requestAnimFrame = (function(){
