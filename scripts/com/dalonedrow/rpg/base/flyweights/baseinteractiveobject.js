@@ -127,18 +127,15 @@ define(["require", "com/dalonedrow/engine/sprite/base/simplevector2",
      * @param flag the flag
      */
 	BaseInteractiveObject.prototype.addBehaviorFlag = function(flag) {
-        if (flag !== undefined
-        		&& flag !== null
-        		&& !isNaN(flag)
-	            && parseInt(Number(flag)) === flag
-        		&& flag && (flag & (flag - 1)) === 0) {
-	        this.behaviorFlags |= flag;
-        } else {
+    	try {
+    		this.checkPowerOfTwo(flag);
+    	} catch (err) {
             var s = [];
-            s.push("ERROR! BaseInteractiveObject.addBehaviorFlag() - ");
-            s.push("flag must be power of 2");
+            s.push("ERROR! BaseInteractiveObject.addBehaviorFlag() - flag ");
+            s.push(err.message);
             throw new Error(s.join(""));
-        }
+    	}
+        this.behaviorFlags |= flag;
     }
     /**
      * Adds a game flag.

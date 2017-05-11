@@ -1,5 +1,7 @@
-define(["camera", "timer"],
-	function(Camera, Timer) {
+define(["camera", "timer",
+	"com/dalonedrow/engine/sprite/base/tile",
+	"com/dalonedrow/engine/sprite/base/tilesheet"],
+	function(Camera, Timer, Tile, Tilesheet) {
 	var Renderer = function(game, canvas, background, foreground) {
         this.game = game;
         this.context = null;
@@ -39,6 +41,11 @@ define(["camera", "timer"],
         this.tablet = Detect.isTablet(window.innerWidth);
         
         this.fixFlickeringTimer = new Timer(100);
+        this.sampleSheet = new Tilesheet('img/wang.png');
+        this.sampleTiles = [
+        	new Tile(this.sampleSheet, 0),
+        	new Tile(this.sampleSheet, 1)
+        ];
 	};
 	/**
 	 * Clears all previously drawn content.
@@ -151,8 +158,13 @@ define(["camera", "timer"],
         // fill the screen with green
         this.background.fillStyle = "green";
         this.background.fillRect(0, 0, this.canvas.width, this.canvas.height);
-        this.foreground.fillStyle = "blue";
-        this.foreground.fillRect(0, 0, this.canvas.width, this.canvas.height);
+        Tile.sort(this.sampleTiles);
+        this.sampleTiles[0].render(this.background, 0, 0);
+        this.sampleTiles[1].render(this.background, 32, 0);
+        //this.background.drawImage(sampleSheet, sx, sy, sWidth, sHeight, dx, dy, dWidth, dHeight);
+        //this.foreground.fillStyle = "blue";
+        //this.foreground.fillRect(0, 0, this.canvas.width, this.canvas.height);
+        //ctx.drawImage(image, sx, sy, sWidth, sHeight, dx, dy, dWidth, dHeight);
         /*
         this.setCameraView(this.context);
         this.drawAnimatedTiles();
