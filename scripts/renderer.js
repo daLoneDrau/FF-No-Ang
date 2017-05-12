@@ -43,17 +43,74 @@ define(["camera", "timer",
         this.tablet = Detect.isTablet(window.innerWidth);
         
         this.fixFlickeringTimer = new Timer(100);
-        this.sampleSheet = new Tilesheet('img/ff_floor.png');
+        this.sampleSheet = new Tilesheet('img/jerom_16_dawn.png');
         this.map = [];
         this.sampleTiles = [];
-        for (var i = 0; i < 16; i++) {
+        for (var i = 0; i < 7; i++) {
         	this.sampleTiles.push(new Tile(this.sampleSheet, i));
         }
-        this.map.push(new MapTile(new SimpleVector2(6, 0), this.sampleTiles[10]));
-        this.map.push(new MapTile(new SimpleVector2(6, 1), this.sampleTiles[10]));
-        this.map.push(new MapTile(new SimpleVector2(5, 2), this.sampleTiles[12]));
-        this.map.push(new MapTile(new SimpleVector2(6, 2), this.sampleTiles[0]));
-        this.map.push(new MapTile(new SimpleVector2(7, 2), this.sampleTiles[6]));
+        var x = 0, y = 0;
+        for (var l = x + 8	; x < l; x++) {
+            this.map.push(new MapTile(new SimpleVector2(x, y), this.sampleTiles[4]));
+        }
+        this.map.push(new MapTile(new SimpleVector2(x++, y), this.sampleTiles[6]));
+        for (var l = x + 8; x < l; x++) {
+            this.map.push(new MapTile(new SimpleVector2(x, y), this.sampleTiles[4]));
+        }
+        x = 0, y++;
+        this.map.push(new MapTile(new SimpleVector2(x++, y), this.sampleTiles[3]));
+        for (var l = x + 15; x < l	; x++) {
+            this.map.push(new MapTile(new SimpleVector2(x, y), this.sampleTiles[0]));
+        }
+        this.map.push(new MapTile(new SimpleVector2(x++, y), this.sampleTiles[3]));
+        x = 0, y++;
+        this.map.push(new MapTile(new SimpleVector2(x++, y), this.sampleTiles[3]));
+        for (var l = x + 15; x < l	; x++) {
+            this.map.push(new MapTile(new SimpleVector2(x, y), this.sampleTiles[0]));
+        }
+        this.map.push(new MapTile(new SimpleVector2(x++, y), this.sampleTiles[3]));
+        x = 0, y++;
+        this.map.push(new MapTile(new SimpleVector2(x++, y), this.sampleTiles[3]));
+        for (var l = x + 15; x < l	; x++) {
+            this.map.push(new MapTile(new SimpleVector2(x, y), this.sampleTiles[0]));
+        }
+        this.map.push(new MapTile(new SimpleVector2(x++, y), this.sampleTiles[3]));
+        x = 0, y++;
+        for (var l = x + 17; x < l	; x++) {
+            this.map.push(new MapTile(new SimpleVector2(x, y), this.sampleTiles[0]));
+        }
+        x = 0, y++;
+        this.map.push(new MapTile(new SimpleVector2(x++, y), this.sampleTiles[3]));
+        for (var l = x + 15; x < l	; x++) {
+            this.map.push(new MapTile(new SimpleVector2(x, y), this.sampleTiles[0]));
+        }
+        this.map.push(new MapTile(new SimpleVector2(x++, y), this.sampleTiles[3]));
+        x = 0, y++;
+        this.map.push(new MapTile(new SimpleVector2(x++, y), this.sampleTiles[3]));
+        for (var l = x + 15; x < l	; x++) {
+            this.map.push(new MapTile(new SimpleVector2(x, y), this.sampleTiles[0]));
+        }
+        this.map.push(new MapTile(new SimpleVector2(x++, y), this.sampleTiles[3]));
+        x = 0, y++;
+        this.map.push(new MapTile(new SimpleVector2(x++, y), this.sampleTiles[3]));
+        for (var l = x + 8; x < l	; x++) {
+            this.map.push(new MapTile(new SimpleVector2(x, y), this.sampleTiles[0]));
+        }
+        this.map.push(new MapTile(new SimpleVector2(x++, y), this.sampleTiles[2]));
+        for (var l = x + 6; x < l	; x++) {
+            this.map.push(new MapTile(new SimpleVector2(x, y), this.sampleTiles[0]));
+        }
+        this.map.push(new MapTile(new SimpleVector2(x++, y), this.sampleTiles[3]));
+        x = 0, y++;
+        this.map.push(new MapTile(new SimpleVector2(x++, y), this.sampleTiles[3]));
+        for (var l = x + 7; x < l; x++) {
+            this.map.push(new MapTile(new SimpleVector2(x, y), this.sampleTiles[4]));
+        }
+        this.map.push(new MapTile(new SimpleVector2(x++, y), this.sampleTiles[5]));
+        for (var l = x + 7; x < l; x++) {
+            this.map.push(new MapTile(new SimpleVector2(x, y), this.sampleTiles[4]));
+        }
+        this.map.push(new MapTile(new SimpleVector2(x++, y), this.sampleTiles[3]));
 	};
 	/**
 	 * Clears all previously drawn content.
@@ -167,6 +224,10 @@ define(["camera", "timer",
         this.background.fillStyle = "green";
         this.background.fillRect(0, 0, this.canvas.width, this.canvas.height);
         for (var i = this.map.length - 1; i >= 0; i--) {
+        	console.log(this.map[i]);
+        	console.log(this.map[i].getPosition().getX());
+        	console.log(Tilesheet.size);
+        	console.log(Tilesheet.scale);
         	var x = this.map[i].getPosition().getX() * Tilesheet.size * Tilesheet.scale;
         	var y = this.canvas.height - Tilesheet.size * Tilesheet.scale
         	- this.map[i].getPosition().getY() * Tilesheet.size * Tilesheet.scale;

@@ -19,7 +19,7 @@ define(['jquery'], function($) {
         clearInterval(this.watchNameInputInterval);
         $('body').removeClass('intro');
         console.log("try to hide");
-        $("#createcharacter").hide();
+        //$("#createcharacter").hide();
         setTimeout(function() {
             $('body').addClass('game');
             hidden_callback();

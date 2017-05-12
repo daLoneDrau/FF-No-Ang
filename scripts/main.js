@@ -31,9 +31,10 @@ define(['jquery', 'app', 'test/FFInteractiveObjectTest'],
             });
             // clicked New Game
     		$('#parchment .startgame').click(function(event) {
-                app.tryStartingGame(name);
+    			console.log("click")
             });
             initGame();
+            app.tryStartingGame(name);
             //runTests();
         });    	
     };

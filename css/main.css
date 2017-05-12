@@ -64,6 +64,23 @@ q:before, q:after {
 .rpgui-icon.empty-slot {
     background-image: url(../img/common/empty-slot.png);
 }
+#container {
+	width: 980px;
+    margin: 0 auto;
+    position: absolute;
+    top: 50%;
+    margin-top: -252px;
+    left: 50%;
+    margin-left: -490px;	
+}
+#bar-container {
+height: 34px;
+    top: -2px;
+    background-size: 960px;
+        position: relative;
+    width: 100%;
+    z-index: 10;
+}
 #parchment {
 	width: 844px;
     height: 364px;
@@ -91,6 +108,10 @@ canvas {
 /* remove cursor from canvas after game starts. */
 .started #canvas {
     cursor: none;
+}
+#canvas {
+	width: 100%;
+    height: 448px;
 }
 #background, #foreground {
 	margin:0; padding:0;
