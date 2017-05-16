@@ -52,6 +52,26 @@ define(["require", "com/dalonedrow/utils/hashcode"], function(require, Hashcode)
     	    		14: { "x": 48, "y": 32 },
     	    		15: { "x": 80, "y": 0 }
     	    };
+        } else if (src === "img/sharm_tiny.png") {
+            /** Sharm's  Tileset - ff_floor.png. */
+        	this.imageMap = {
+    	    		0: { "x": 0, "y": 0 }, 		// grass no vegetation
+    	    		1: { "x": 16, "y": 0 },		// grass light vegetation
+    	    		2: { "x": 32, "y": 0 },		// grass heavy vegetation
+    	    		3: { "x": 48, "y": 0 },		// bush
+    	    		4: { "x": 64, "y": 0 },		// forest
+    	    		5: { "x": 80, "y": 0 },		// mountain
+    	    		6: { "x": 96, "y": 0 },		// water frame 1
+    	    		7: { "x": 112, "y": 0 },	// water frame 2
+    	    		8: { "x": 0, "y": 16 },		// city
+    	    		9: { "x": 16, "y": 16 },		// castle
+    	    		10: { "x": 32, "y": 16 },
+    	    		11: { "x": 48, "y": 16 },
+    	    		12: { "x": 64, "y": 16 },
+    	    		13: { "x": 80, "y": 16 },
+    	    		14: { "x": 96, "y": 16 },
+    	    		15: { "x": 112, "y": 16 }
+    	    };
         }
     }
     Tilesheet.prototype = Object.create(Hashcode.prototype);

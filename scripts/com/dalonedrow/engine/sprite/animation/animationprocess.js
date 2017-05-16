@@ -24,7 +24,7 @@ define(["com/dalonedrow/rpg/base/constants/animationglobals",
 		/**
 		 * the reference id of the next animation played after the current finishes.
 		 */
-		this.nextAnimation = 0;
+		this.nextAnimation = -1;
 		/** any flags applied to the next animation. */
 		this.nextFlags = 0;
 		/**

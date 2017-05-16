@@ -40,7 +40,7 @@ define(["com/dalonedrow/utils/hashcode"], function(Hashcode) {
 		/** the order that this frame appears in in the animation sequence. */
 		this.frameNumber = order;
 		/**
-		 * the reference id for the {@link SpriteImageObject} this frame displays.
+		 * the reference id for the {@link Sprite} this frame displays.
 		 */
 		this.imageRefId = imgId;
 		this.modSpeed = 0;
