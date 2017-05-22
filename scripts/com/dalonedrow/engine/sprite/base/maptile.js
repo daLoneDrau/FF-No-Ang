@@ -29,6 +29,7 @@ define(["com/dalonedrow/engine/sprite/base/simplevector2",
 		this.image = null;
 		this.animated = false;
 		this.animations = null;
+		this.animator = null;
 		this.type = type;
     }
     MapTile.prototype = Object.create(Hashcode.prototype);
@@ -95,6 +96,18 @@ define(["com/dalonedrow/engine/sprite/base/simplevector2",
     	}
     	if (this.animated) {
     		console.log("animated");
+    		if (this.animator === null) {
+    			this.animator = new AnimationProcess();
+    			this.animator.setFrameStart(Time.getInstance().getFrameStart());
+    			this.animator.setCurrentFrame
+    		}
+    		// check which frame is playing
+    		var now = Time.getInstance().getFrameStart();
+    		var frameStart = this.animator.getFrameStart();
+    		// check to see if time to move to next frame
+    		// move to next frame
+    		// get image to render
+    		// render
     	} else { // render static image
     		this.image.render(ctx, dx, dy);
     	}

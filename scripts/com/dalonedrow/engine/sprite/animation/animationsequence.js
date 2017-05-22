@@ -99,6 +99,11 @@ define(["com/dalonedrow/engine/sprite/animation/animationframe",
 		this.flags = 0;
 	}
 	AnimationSequence.prototype.getAnimationTime = function() {
+		if (this.animationTime === 0) {
+			for (var i = this.frames[i] - 1; i >= 0; i--) {
+				this.animationTime += 
+			}
+		}
 		return this.animationTime;
 	}
 	/**
