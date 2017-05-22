@@ -7,7 +7,7 @@ define(["com/dalonedrow/engine/sprite/base/simplevector2",
 	"com/dalonedrow/engine/sprite/base/sprite",
 	"com/dalonedrow/utils/hashcode"],
 		function(SimpleVector2, AnimationProcess, Sprite, Hashcode) {
-    var MapTile = function(position, sprite) {
+    var MapTile = function(position, type) {
 		Hashcode.call(this);
     	try {
     		this.checkInstanceOf(position, SimpleVector2);
@@ -18,17 +18,18 @@ define(["com/dalonedrow/engine/sprite/base/simplevector2",
             throw new Error(s.join(""));
     	}
     	try {
-    		this.checkInstanceOf(sprite, Sprite);
+    		this.checkInteger(type);
     	} catch (err) {
             var s = [];
-            s.push("ERROR! MapTile() - sprite ");
+            s.push("ERROR! MapTile() - type ");
             s.push(err.message);
             throw new Error(s.join(""));
     	}
 		this.position = position;
-		this.image = sprite;
+		this.image = null;
 		this.animated = false;
-		this.type = -1;
+		this.animations = null;
+		this.type = type;
     }
     MapTile.prototype = Object.create(Hashcode.prototype);
 	/**
@@ -39,19 +40,33 @@ define(["com/dalonedrow/engine/sprite/base/simplevector2",
     	return this.image;
     }
 	/**
+	 * Gets the {@link MapTile}'s image.
+	 * @return {@link Sprite}
+	 */
+    MapTile.prototype.setAnimation = function(anim) {
+		this.animations = anim;
+    }
+	/**
 	 * Gets the {@link MapTile}'s position.
 	 * @return {@link SimpleVector2}
 	 */
     MapTile.prototype.getPosition = function() {
     	return this.position;
     }
+	/**
+	 * Gets the {@link MapTile}'s type.
+	 * @return {@link SimpleVector2}
+	 */
     MapTile.prototype.getType = function() {
     	return this.type;
     }
 	/**
-	 * Sets the <code>SimpleVector2</code> position.
-	 * @param x1 the new position along the x-axis
-	 * @param y1 the new position along the y-axis
+	 * Renders the map tile.
+	 * @param ctx the {@link CanvasRenderingContext2D}
+	 * @param dx the X coordinate in the destination canvas at which to place the top-left corner of
+	 * the source image
+	 * @param dy the Y coordinate in the destination canvas at which to place the top-left corner of
+	 * the source image
 	 */
     MapTile.prototype.render = function(ctx, dx, dy) {
 		try {
@@ -79,7 +94,7 @@ define(["com/dalonedrow/engine/sprite/base/simplevector2",
             throw new Error(s.join(""));
     	}
     	if (this.animated) {
-    		
+    		console.log("animated");
     	} else { // render static image
     		this.image.render(ctx, dx, dy);
     	}
@@ -127,7 +142,22 @@ define(["com/dalonedrow/engine/sprite/base/simplevector2",
             s.push(err.message);
             throw new Error(s.join(""));
     	}
-    	this.tile = val;
+    	this.image = val;
+    }
+	/**
+	 * Sets the {@link MapTile}'s image.
+	 * @param val an integer value
+	 */
+    MapTile.prototype.setType = function(val) {
+    	try {
+    		this.checkInteger(val);
+    	} catch (err) {
+            var s = [];
+            s.push("ERROR! MapTile.setType() - val ");
+            s.push(err.message);
+            throw new Error(s.join(""));
+    	}
+    	this.type = val;
     }
 	return MapTile;
 });

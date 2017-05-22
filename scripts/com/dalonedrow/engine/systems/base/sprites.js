@@ -15,6 +15,10 @@ define(["com/dalonedrow/engine/sprite/base/sprite",
 		this.nextId = 0;
     }
     Sprites.prototype = Object.create(Hashcode.prototype);
+    /**
+     * Adds a {@link Sprite} to the image library.
+     * @param sprite the {@link Sprite} being added
+     */
     Sprites.prototype.addSprite = function(sprite) {
     	try {
     		this.checkInstanceOf(sprite, Sprite);
@@ -43,9 +47,19 @@ define(["com/dalonedrow/engine/sprite/base/sprite",
     	}
     	return sprite;
     }
+    /**
+     * Gets the singleton instance of the image library}
+     * @return {@link Sprites}
+     */
 	Sprites.getInstance = function() {
+		/*
         if (instance === null) {
         	throw new Error("No instance has been set!");
+        }
+        */ 
+        if (instance === null) {
+        	console.log("no instance of Sprites")
+            instance = new Sprites();
         }
         return instance;
 	}

@@ -2,8 +2,9 @@ define(["camera", "timer",
 	"com/dalonedrow/engine/sprite/base/maptile",
 	"com/dalonedrow/engine/sprite/base/simplevector2",
 	"com/dalonedrow/engine/sprite/base/tile",
-	"com/dalonedrow/engine/sprite/base/tilesheet"],
-	function(Camera, Timer, MapTile, SimpleVector2, Tile, Tilesheet) {
+	"com/dalonedrow/engine/sprite/base/tilesheet",
+	"com/dalonedrow/module/ff/sprite/sharmmap"],
+	function(Camera, Timer, MapTile, SimpleVector2, Tile, Tilesheet, SharmMap) {
 	var Renderer = function(game, canvas, background, foreground) {
         this.game = game;
         this.context = null;
@@ -18,7 +19,7 @@ define(["camera", "timer",
         if (foreground && foreground.getContext) {
         	this.foreground = foreground.getContext("2d");
         }
-    
+        console.log(this.context);
         this.canvas = canvas;
         this.backcanvas = background;
         this.forecanvas = foreground;
@@ -43,128 +44,125 @@ define(["camera", "timer",
         this.tablet = Detect.isTablet(window.innerWidth);
         
         this.fixFlickeringTimer = new Timer(100);
-        this.sampleSheet = new Tilesheet('img/sharm_tiny.png');
-        this.map = [];
-        this.sampleTiles = [];
-        for (var i = 0; i < 15; i++) {
-        	this.sampleTiles.push(new Tile(this.sampleSheet, i));
-        }
+        //***************************************
+        //              CREATE MAP
+        //***************************************
+        this.map = new SharmMap();
         // mmmfgggwwwwgggbmmmm
         var x = 0, y = 0;
         for (var l = x + 3; x < l; x++) { // 3 mountain
-            this.map.push(new MapTile(new SimpleVector2(x, y), this.sampleTiles[5]));
+            this.map.addCell(new MapTile(new SimpleVector2(x, y), SharmMap.TILE_MOUNTAIN));
         }
-        this.map.push(new MapTile(new SimpleVector2(x++, y), this.sampleTiles[4]));
+        this.map.addCell(new MapTile(new SimpleVector2(x++, y), SharmMap.TILE_FOREST));
         for (var l = x + 3; x < l; x++) { // 3 grass
-            this.map.push(new MapTile(new SimpleVector2(x, y), this.sampleTiles[1]));
+            this.map.addCell(new MapTile(new SimpleVector2(x, y), SharmMap.TILE_GRASS_LT_VEG));
         }
         for (var l = x + 4; x < l; x++) { // 4 water
-            this.map.push(new MapTile(new SimpleVector2(x, y), this.sampleTiles[6]));
+            this.map.addCell(new MapTile(new SimpleVector2(x, y), SharmMap.TILE_WATER_1));
         }
         for (var l = x + 3; x < l; x++) { // 3 grass
-            this.map.push(new MapTile(new SimpleVector2(x, y), this.sampleTiles[1]));
+            this.map.addCell(new MapTile(new SimpleVector2(x, y), SharmMap.TILE_GRASS_LT_VEG));
         }
-        this.map.push(new MapTile(new SimpleVector2(x++, y), this.sampleTiles[3]));
+        this.map.addCell(new MapTile(new SimpleVector2(x++, y), SharmMap.TILE_BUSH));
         for (var l = x + 4; x < l; x++) { // 4 mountain
-            this.map.push(new MapTile(new SimpleVector2(x, y), this.sampleTiles[5]));
+            this.map.addCell(new MapTile(new SimpleVector2(x, y), SharmMap.TILE_MOUNTAIN));
         }
-        
         // fffggcwwwwwwgggbmmm
         x = 0, y++;
         for (var l = x + 3; x < l; x++) { // 3 forest
-            this.map.push(new MapTile(new SimpleVector2(x, y), this.sampleTiles[4]));
+            this.map.addCell(new MapTile(new SimpleVector2(x, y), SharmMap.TILE_FOREST));
         }
         for (var l = x + 2; x < l; x++) { // 2 grass
-            this.map.push(new MapTile(new SimpleVector2(x, y), this.sampleTiles[1]));
+            this.map.addCell(new MapTile(new SimpleVector2(x, y), SharmMap.TILE_GRASS_LT_VEG));
         }
-        this.map.push(new MapTile(new SimpleVector2(x++, y), this.sampleTiles[8]));
+        this.map.addCell(new MapTile(new SimpleVector2(x++, y), SharmMap.TILE_CITY));
         for (var l = x + 6; x < l; x++) { // 6 water
-            this.map.push(new MapTile(new SimpleVector2(x, y), this.sampleTiles[6]));
+            this.map.addCell(new MapTile(new SimpleVector2(x, y), SharmMap.TILE_WATER_1));
         }
         for (var l = x + 3; x < l; x++) { // 3 grass
-            this.map.push(new MapTile(new SimpleVector2(x, y), this.sampleTiles[1]));
+            this.map.addCell(new MapTile(new SimpleVector2(x, y), SharmMap.TILE_GRASS_LT_VEG));
         }
-        this.map.push(new MapTile(new SimpleVector2(x++, y), this.sampleTiles[3]));
+        this.map.addCell(new MapTile(new SimpleVector2(x++, y), SharmMap.TILE_BUSH));
         for (var l = x + 3; x < l; x++) { // 3 mountain
-            this.map.push(new MapTile(new SimpleVector2(x, y), this.sampleTiles[5]));
+            this.map.addCell(new MapTile(new SimpleVector2(x, y), SharmMap.TILE_MOUNTAIN));
         }
         // mfgggwwwwwwwwgggbbb
         x = 0, y++;
-        this.map.push(new MapTile(new SimpleVector2(x++, y), this.sampleTiles[5]));
-        this.map.push(new MapTile(new SimpleVector2(x++, y), this.sampleTiles[4]));
+        this.map.addCell(new MapTile(new SimpleVector2(x++, y), SharmMap.TILE_MOUNTAIN));
+        this.map.addCell(new MapTile(new SimpleVector2(x++, y), SharmMap.TILE_FOREST));
         for (var l = x + 3; x < l; x++) { // 3 grass
-            this.map.push(new MapTile(new SimpleVector2(x, y), this.sampleTiles[1]));
+            this.map.addCell(new MapTile(new SimpleVector2(x, y), SharmMap.TILE_GRASS_LT_VEG));
         }
         for (var l = x + 8; x < l; x++) { // 8 water
-            this.map.push(new MapTile(new SimpleVector2(x, y), this.sampleTiles[6]));
+            this.map.addCell(new MapTile(new SimpleVector2(x, y), SharmMap.TILE_WATER_1));
         }
         for (var l = x + 3; x < l; x++) { // 3 grass
-            this.map.push(new MapTile(new SimpleVector2(x, y), this.sampleTiles[1]));
+            this.map.addCell(new MapTile(new SimpleVector2(x, y), SharmMap.TILE_GRASS_LT_VEG));
         }
         for (var l = x + 3; x < l; x++) { // 3 bush
-            this.map.push(new MapTile(new SimpleVector2(x, y), this.sampleTiles[3]));
+            this.map.addCell(new MapTile(new SimpleVector2(x, y), SharmMap.TILE_BUSH));
         }
         // mfgggwwwwwwwwgggbbm
         x = 0, y++;
-        this.map.push(new MapTile(new SimpleVector2(x++, y), this.sampleTiles[5]));
-        this.map.push(new MapTile(new SimpleVector2(x++, y), this.sampleTiles[4]));
+        this.map.addCell(new MapTile(new SimpleVector2(x++, y), SharmMap.TILE_MOUNTAIN));
+        this.map.addCell(new MapTile(new SimpleVector2(x++, y), SharmMap.TILE_FOREST));
         for (var l = x + 3; x < l; x++) { // 3 grass
-            this.map.push(new MapTile(new SimpleVector2(x, y), this.sampleTiles[1]));
+            this.map.addCell(new MapTile(new SimpleVector2(x, y), SharmMap.TILE_GRASS_LT_VEG));
         }
         for (var l = x + 9; x < l; x++) { // 9 water
-            this.map.push(new MapTile(new SimpleVector2(x, y), this.sampleTiles[6]));
+            this.map.addCell(new MapTile(new SimpleVector2(x, y), SharmMap.TILE_WATER_1));
         }
         for (var l = x + 2; x < l; x++) { // 2 grass
-            this.map.push(new MapTile(new SimpleVector2(x, y), this.sampleTiles[1]));
+            this.map.addCell(new MapTile(new SimpleVector2(x, y), SharmMap.TILE_GRASS_LT_VEG));
         }
         for (var l = x + 2; x < l; x++) { // 2 bush
-            this.map.push(new MapTile(new SimpleVector2(x, y), this.sampleTiles[3]));
+            this.map.addCell(new MapTile(new SimpleVector2(x, y), SharmMap.TILE_BUSH));
         }
-        this.map.push(new MapTile(new SimpleVector2(x++, y), this.sampleTiles[5]));
+        this.map.addCell(new MapTile(new SimpleVector2(x++, y), SharmMap.TILE_MOUNTAIN));
         // mmfggCwwggwwwwgbbmm
         x = 0, y++;
         for (var l = x + 2; x < l; x++) { // 2 mountain
-            this.map.push(new MapTile(new SimpleVector2(x, y), this.sampleTiles[5]));
+            this.map.addCell(new MapTile(new SimpleVector2(x, y), SharmMap.TILE_MOUNTAIN));
         }
-        this.map.push(new MapTile(new SimpleVector2(x++, y), this.sampleTiles[4]));
+        this.map.addCell(new MapTile(new SimpleVector2(x++, y), SharmMap.TILE_FOREST));
         for (var l = x + 2; x < l; x++) { // 2 grass
-            this.map.push(new MapTile(new SimpleVector2(x, y), this.sampleTiles[1]));
+            this.map.addCell(new MapTile(new SimpleVector2(x, y), SharmMap.TILE_GRASS_LT_VEG));
         }
-        this.map.push(new MapTile(new SimpleVector2(x++, y), this.sampleTiles[9]));
+        this.map.addCell(new MapTile(new SimpleVector2(x++, y), SharmMap.TILE_CASTLE));
         for (var l = x + 2; x < l; x++) { // 2 water
-            this.map.push(new MapTile(new SimpleVector2(x, y), this.sampleTiles[6]));
+            this.map.addCell(new MapTile(new SimpleVector2(x, y), SharmMap.TILE_WATER_1));
         }
         for (var l = x + 2; x < l; x++) { // 2 grass
-            this.map.push(new MapTile(new SimpleVector2(x, y), this.sampleTiles[1]));
+            this.map.addCell(new MapTile(new SimpleVector2(x, y), SharmMap.TILE_GRASS_LT_VEG));
         }
         for (var l = x + 4; x < l; x++) { // 4 water
-            this.map.push(new MapTile(new SimpleVector2(x, y), this.sampleTiles[6]));
+            this.map.addCell(new MapTile(new SimpleVector2(x, y), SharmMap.TILE_WATER_1));
         }
-        this.map.push(new MapTile(new SimpleVector2(x++, y), this.sampleTiles[1]));
+        this.map.addCell(new MapTile(new SimpleVector2(x++, y), SharmMap.TILE_GRASS_LT_VEG));
         for (var l = x + 2; x < l; x++) { // 2 bush
-            this.map.push(new MapTile(new SimpleVector2(x, y), this.sampleTiles[3]));
+            this.map.addCell(new MapTile(new SimpleVector2(x, y), SharmMap.TILE_BUSH));
         }
         for (var l = x + 2; x < l; x++) { // 2 mountain
-            this.map.push(new MapTile(new SimpleVector2(x, y), this.sampleTiles[5]));
+            this.map.addCell(new MapTile(new SimpleVector2(x, y), SharmMap.TILE_MOUNTAIN));
         }
         // mmmfgggggggwwgbbmmm
         x = 0, y++;
         for (var l = x + 3; x < l; x++) { // 3 mountain
-            this.map.push(new MapTile(new SimpleVector2(x, y), this.sampleTiles[5]));
+            this.map.addCell(new MapTile(new SimpleVector2(x, y), SharmMap.TILE_MOUNTAIN));
         }
-        this.map.push(new MapTile(new SimpleVector2(x++, y), this.sampleTiles[4]));
+        this.map.addCell(new MapTile(new SimpleVector2(x++, y), SharmMap.TILE_FOREST));
         for (var l = x + 7; x < l; x++) { // 7 grass
-            this.map.push(new MapTile(new SimpleVector2(x, y), this.sampleTiles[1]));
+            this.map.addCell(new MapTile(new SimpleVector2(x, y), SharmMap.TILE_GRASS_LT_VEG));
         }
         for (var l = x + 2; x < l; x++) { // 2 water
-            this.map.push(new MapTile(new SimpleVector2(x, y), this.sampleTiles[6]));
+            this.map.addCell(new MapTile(new SimpleVector2(x, y), SharmMap.TILE_WATER_1));
         }
-        this.map.push(new MapTile(new SimpleVector2(x++, y), this.sampleTiles[1]));
+        this.map.addCell(new MapTile(new SimpleVector2(x++, y), SharmMap.TILE_GRASS_LT_VEG));
         for (var l = x + 2; x < l; x++) { // 2 bush
-            this.map.push(new MapTile(new SimpleVector2(x, y), this.sampleTiles[3]));
+            this.map.addCell(new MapTile(new SimpleVector2(x, y), SharmMap.TILE_BUSH));
         }
         for (var l = x + 3; x < l; x++) { // 3 mountain
-            this.map.push(new MapTile(new SimpleVector2(x, y), this.sampleTiles[5]));
+            this.map.addCell(new MapTile(new SimpleVector2(x, y), SharmMap.TILE_MOUNTAIN));
         }
 	};
 	/**
@@ -176,6 +174,7 @@ define(["camera", "timer",
         ct2.clearRect(0, 0, this.canvas.width, this.canvas.height);
     };
 	Renderer.prototype.createCamera = function() {
+		console.log("creating camera");
         this.camera = new Camera(this);
         this.camera.rescale();
     
@@ -269,29 +268,33 @@ define(["camera", "timer",
             this.renderFrameDesktop();
         }
     };
+    Renderer.prototype.getMapHeight = function() {
+    	return this.map.getHeight();
+    }
+    Renderer.prototype.getMapWidth = function() {
+    	return this.map.getWidth();
+    }
     Renderer.prototype.renderFrameDesktop = function() {
     	// clear the screen and push onto the drawing stack
         this.clearScreen(this.context);
         this.context.save();
-        console.log(ctx)
-        console.log(this.context)
         // fill the screen with green
         this.background.fillStyle = "green";
         this.background.fillRect(0, 0, this.canvas.width, this.canvas.height);
-        for (var i = this.map.length - 1; i >= 0; i--) {
-        	console.log(this.map[i]);
-        	console.log(this.map[i].getPosition().getX());
-        	console.log(Tilesheet.size);
-        	console.log(Tilesheet.scale);
-        	var x = this.map[i].getPosition().getX() * Tilesheet.size * Tilesheet.scale;
-        	var y = this.canvas.height - Tilesheet.size * Tilesheet.scale
-        	- this.map[i].getPosition().getY() * Tilesheet.size * Tilesheet.scale;
-        	this.map[i].getTile().render(this.background, x, y);
-        	console.log(x+","+y);
+        
+        // iterate through the map drawing tiles
+        var cells = this.map.getCells();
+        for (var i = cells.length - 1; i >= 0; i--) {
+        	var cell = cells[i];
+        	if (this.camera.isVisible(cell)) {
+        		var cx = cell.getPosition().getX() * 16 - this.camera.getX();
+        		var cy = cell.getPosition().getY() * 16 - this.camera.getY();
+        		cy = this.canvas.height - 16 - cy;
+        		cell.render(this.background, cx, cy);
+        	}
         }
         //Tile.sort(this.sampleTiles);
         //this.sampleTiles[0].render(this.background, 0, 0);
-        //this.sampleTiles[1].render(this.background, 32, 0);
         //this.background.drawImage(sampleSheet, sx, sy, sWidth, sHeight, dx, dy, dWidth, dHeight);
         //this.foreground.fillStyle = "blue";
         //this.foreground.fillRect(0, 0, this.canvas.width, this.canvas.height);

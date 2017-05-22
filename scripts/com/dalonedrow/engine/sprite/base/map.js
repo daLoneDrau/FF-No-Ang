@@ -9,13 +9,13 @@ define(["com/dalonedrow/engine/sprite/base/maptile", "com/dalonedrow/utils/hashc
 		this.cells = [];
     }
     Map.prototype = Object.create(Hashcode.prototype);
-	/**
-	 * Gets the {@link MapTile}'s position.
-	 * @return {@link SimpleVector2}
-	 */
+    /**
+     * Adds a cell to the {@link Map}.
+     * @param cell the {@link MapTile} being added
+     */
     Map.prototype.addCell = function(cell) {
 		try {
-    		this.checkInstanceOf(ctx, MapTile);
+    		this.checkInstanceOf(cell, MapTile);
     	} catch (err) {
             var s = [];
             s.push("ERROR! Map.addCell() - cell ");
@@ -30,32 +30,37 @@ define(["com/dalonedrow/engine/sprite/base/maptile", "com/dalonedrow/utils/hashc
     		}
     	}
     	if (!found) {
+    		// set the cell's sprite image based on the Map implementation
     		this.setTileSprite(cell);
     		this.cells.push(cell);    		
+    	} else {
+            var s = [];
+            s.push("ERROR! Map.addCell() - cell at position ");
+            s.push(cell.getPosition().toString());
+            s.push(" was already set!");
+    		throw new Error(s.join(""));
     	}
     };
 	/**
 	 * Gets the {@link MapTile}'s position.
 	 * @param val a {@link SimpleVector2}
 	 */
-    Map.prototype.getVisibleCells = function(x, y) {
-    	try {
-    		this.checkInteger(x);
-    	} catch (err) {
-            var s = [];
-            s.push("ERROR! Map.getVisibleCells() - x ");
-            s.push(err.message);
-            throw new Error(s.join(""));
+    Map.prototype.getCells = function() {
+    	return this.cells;
+    }
+    Map.prototype.getHeight = function() {
+    	var h = 0;
+    	for (var i = this.cells.length - 1; i >= 0; i--) {
+    		h = Math.max(h, this.cells[i].getPosition().getY());
     	}
-    	try {
-    		this.checkInteger(y);
-    	} catch (err) {
-            var s = [];
-            s.push("ERROR! Map.getVisibleCells() - x ");
-            s.push(err.message);
-            throw new Error(s.join(""));
+    	return ++h;
+    }
+    Map.prototype.getWidth = function() {
+    	var w = 0;
+    	for (var i = this.cells.length - 1; i >= 0; i--) {
+    		w = Math.max(w, this.cells[i].getPosition().getX());
     	}
-    	var visible = [];
+    	return ++w;
     }
 	return Map;
 });

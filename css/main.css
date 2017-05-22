@@ -65,7 +65,7 @@ q:before, q:after {
     background-image: url(../img/common/empty-slot.png);
 }
 #container {
-	width: 980px;
+	width: 992px;
     margin: 0 auto;
     position: absolute;
     top: 50%;

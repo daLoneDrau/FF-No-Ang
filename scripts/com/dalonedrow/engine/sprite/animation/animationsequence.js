@@ -34,7 +34,7 @@ define(["com/dalonedrow/engine/sprite/animation/animationframe",
 	 * @param frame the {@link AnimationFrameObject}
 	 * @if an error occurs
 	 */
-	AnimationSequence.prototype.addFrame = function(frame) {
+	AnimationSequence.prototype.addFrame = function() {
 		var index, refId;
 		if (arguments.length === 1) {
 	    	try {
@@ -53,7 +53,7 @@ define(["com/dalonedrow/engine/sprite/animation/animationframe",
 				sb.push(index);
 	            throw new Error(sb.join(""));
 			}
-			refId = frame.getRefId();
+			refId = arguments[0].getRefId();
 		} else if (arguments.length === 2) {
 	    	try {
 	    		this.checkInteger(arguments[0]);
@@ -311,7 +311,7 @@ define(["com/dalonedrow/engine/sprite/animation/animationframe",
 	 * Gets the next available sequence id.
 	 * @return int
 	 */
-	AnimationSequence.getAnimationSequence.nextId = function() {
+	AnimationSequence.getNextId = function() {
 		return AnimationSequence.nextId++;
 	}
 	/**

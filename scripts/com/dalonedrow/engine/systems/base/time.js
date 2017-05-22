@@ -65,14 +65,6 @@ define(["com/dalonedrow/utils/hashcode"], function(Hashcode) {
 	}
 	/**
 	 * Gets the number of milliseconds that have passed since the game was
-	 * started, not including the time spent paused.
-	 * @return long
-	 */
-	Time.prototype.getGameTime = function() {
-		return this.getGameTime(false);
-	}
-	/**
-	 * Gets the number of milliseconds that have passed since the game was
 	 * started.
 	 * @param usePause if true, the time returned include the time spent paused;
 	 *            otherwise the time returned does not include paused time
@@ -82,10 +74,7 @@ define(["com/dalonedrow/utils/hashcode"], function(Hashcode) {
     	try {
     		this.checkBoolean(usePause);
     	} catch (err) {
-            var s = [];
-            s.push("ERROR! Time.getGameTime() - usePause ");
-            s.push(err.message);
-            throw new Error(s.join(""));
+    		usePause = false;
     	}
 		var tim = this.getCurrentTime();
 		if (this.timerPaused && usePause) {
@@ -180,8 +169,15 @@ define(["com/dalonedrow/utils/hashcode"], function(Hashcode) {
 		return 1;
 	}
 	Time.getInstance = function() {
+		/*
+	}
         if (instance === null) {
         	throw new Error("No instance has been set!");
+        }
+        */
+        if (instance === null) {
+        	console.log("no instance of Time")
+            instance = new Time();
         }
         return instance;
 	}

@@ -8,6 +8,7 @@ define(["renderer", "com/dalonedrow/engine/systems/base/projectconstants",
 	"com/dalonedrow/module/ff/systems/ffscript",
 	"com/dalonedrow/module/ff/systems/webserviceclient",
 	'com/dalonedrow/engine/systems/base/interactive',
+	'com/dalonedrow/engine/systems/base/time',
 	"com/dalonedrow/rpg/base/constants/die",
 	"com/dalonedrow/rpg/base/constants/dice",
 	"com/dalonedrow/rpg/base/systems/script",
@@ -15,7 +16,7 @@ define(["renderer", "com/dalonedrow/engine/systems/base/projectconstants",
 	"com/dalonedrow/module/ff/scripts/items/ironsword"
 	],
 	function(Renderer, ProjectConstants, FFCommand, FFEquipmentElements, FFEquipmentSlots, 
-			FFController, FFInteractive, FFScript, WebServiceClient, Interactive, Die, Dice,
+			FFController, FFInteractive, FFScript, WebServiceClient, Interactive, Time, Die, Dice,
 			Script, IronSword) {
 	var Game = function(app) {
         this.app = app;
@@ -164,7 +165,6 @@ define(["renderer", "com/dalonedrow/engine/systems/base/projectconstants",
     Game.prototype.newHero = function(renderer) {
     	Interactive.getInstance().newHero();
     	var io = ProjectConstants.getInstance().getPlayerIO();
-    	console.log(io);
     };
     Game.prototype.run = function(renderer) {
     	console.log("running...")
@@ -173,6 +173,7 @@ define(["renderer", "com/dalonedrow/engine/systems/base/projectconstants",
         if (this.started) {
             //this.updateCursorLogic();
             //this.updater.update();
+        	Time.getInstance().startFrame();
             this.renderer.renderFrame();
         }
 
@@ -192,6 +193,7 @@ define(["renderer", "com/dalonedrow/engine/systems/base/projectconstants",
     };
 	Game.prototype.setup = function($bubbleContainer, canvas, background, foreground) {
 		//this.setBubbleManager(new BubbleManager($bubbleContainer));
+		console.log(canvas);
 		this.setRenderer(new Renderer(this, canvas, background, foreground));
 		//this.setChatInput(input);"
 		this.initWebServiceClient();
