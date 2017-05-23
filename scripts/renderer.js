@@ -19,7 +19,6 @@ define(["camera", "timer",
         if (foreground && foreground.getContext) {
         	this.foreground = foreground.getContext("2d");
         }
-        console.log(this.context);
         this.canvas = canvas;
         this.backcanvas = background;
         this.forecanvas = foreground;
@@ -174,7 +173,6 @@ define(["camera", "timer",
         ct2.clearRect(0, 0, this.canvas.width, this.canvas.height);
     };
 	Renderer.prototype.createCamera = function() {
-		console.log("creating camera");
         this.camera = new Camera(this);
         this.camera.rescale();
     

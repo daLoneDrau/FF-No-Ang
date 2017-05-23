@@ -1,5 +1,5 @@
 define(["com/dalonedrow/utils/hashcode"], function(Hashcode) {
-	function AnimationFrame(id, time, order, imgId) {
+	function AnimationFrame(id, time, order, imgId, name) {
 		Hashcode.call(this);
     	try {
     		this.checkInteger(id);
@@ -33,6 +33,14 @@ define(["com/dalonedrow/utils/hashcode"], function(Hashcode) {
             s.push(err.message);
             throw new Error(s.join(""));
     	}
+    	try {
+    		this.checkString(name);
+    	} catch (err) {
+            var s = [];
+            s.push("ERROR! AnimationFrame() - name ");
+            s.push(err.message);
+            throw new Error(s.join(""));
+    	}
 		/** the length in nanoseconds that this frame should play. */
 		this.duration = time;
 		/** any flags applied to the frame. */
@@ -45,7 +53,8 @@ define(["com/dalonedrow/utils/hashcode"], function(Hashcode) {
 		this.imageRefId = imgId;
 		this.modSpeed = 0;
 		/** the frame's reference id. */
-		this.refId = id;		
+		this.refId = id;
+		AnimationFrame.addFrame(name, this);
 	}
 	AnimationFrame.prototype = Object.create(Hashcode.prototype);
 	/**
@@ -203,7 +212,7 @@ define(["com/dalonedrow/utils/hashcode"], function(Hashcode) {
 	 */
 	AnimationFrame.addFrame = function(frameName, frame) {
     	try {
-    		this.checkString(frameName);
+    		AnimationFrame.prototype.checkString(frameName);
     	} catch (err) {
             var s = [];
             s.push("ERROR! AnimationFrame.addFrame() - frameName ");
@@ -211,14 +220,14 @@ define(["com/dalonedrow/utils/hashcode"], function(Hashcode) {
             throw new Error(s.join(""));
     	}
     	try {
-    		this.checkInstanceOf(frame, AnimationFrame);
+    		AnimationFrame.prototype.checkInstanceOf(frame, AnimationFrame);
     	} catch (err) {
             var s = [];
             s.push("ERROR! AnimationFrame.addFrame() - frame ");
             s.push(err.message);
             throw new Error(s.join(""));
     	}
-		if (this.hasFrame(frameName)) {
+		if (AnimationFrame.hasFrame(frameName)) {
 			var sb = [];
 			sb.push("ERROR! AnimationFrame.addFrame() - ");
 			sb.push("frame '");

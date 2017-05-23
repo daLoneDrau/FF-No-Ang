@@ -285,7 +285,7 @@ define(["require", "com/dalonedrow/engine/systems/base/interactive",
         // summary:
         //      Gets an instance of the singleton. It is better to use 
         if (instance === null) {
-        	console.log("no instance")
+        	console.log("no instance of WebServiceClient")
             instance = new WebServiceClient();
         }
         return instance;

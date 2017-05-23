@@ -3,10 +3,14 @@
  * @author DaLoneDrow
  */
 define(["com/dalonedrow/engine/sprite/base/simplevector2",
+	"com/dalonedrow/engine/sprite/animation/animationframe",
 	"com/dalonedrow/engine/sprite/animation/animationprocess",
 	"com/dalonedrow/engine/sprite/base/sprite",
+	"com/dalonedrow/engine/systems/base/sprites",
+	"com/dalonedrow/rpg/base/constants/animationglobals",
 	"com/dalonedrow/utils/hashcode"],
-		function(SimpleVector2, AnimationProcess, Sprite, Hashcode) {
+		function(SimpleVector2, AnimationFrame, AnimationProcess, Sprite, Sprites, AnimationGlobals,
+				Hashcode) {
     var MapTile = function(position, type) {
 		Hashcode.call(this);
     	try {
@@ -28,8 +32,7 @@ define(["com/dalonedrow/engine/sprite/base/simplevector2",
 		this.position = position;
 		this.image = null;
 		this.animated = false;
-		this.animations = null;
-		this.animator = null;
+		this.animation = null;
 		this.type = type;
     }
     MapTile.prototype = Object.create(Hashcode.prototype);
@@ -60,6 +63,9 @@ define(["com/dalonedrow/engine/sprite/base/simplevector2",
 	 */
     MapTile.prototype.getType = function() {
     	return this.type;
+    }
+    MapTile.prototype.isAnimated = function() {
+    	return this.animated;
     }
 	/**
 	 * Renders the map tile.
@@ -96,52 +102,23 @@ define(["com/dalonedrow/engine/sprite/base/simplevector2",
     	}
     	if (this.animated) {
     		console.log("animated");
-    		if (this.animator === null) {
-    			this.animator = new AnimationProcess();
-    			this.animator.setFrameStart(Time.getInstance().getFrameStart());
-    			this.animator.setCurrentFrame
-    		}
-    		// check which frame is playing
-    		var now = Time.getInstance().getFrameStart();
-    		var frameStart = this.animator.getFrameStart();
-    		// check to see if time to move to next frame
-    		// move to next frame
-    		// get image to render
-    		// render
+    		this.animation.process();
+    		var currentFrame = this.animation.getCurrentFrame();
+    		console.log(currentFrame);
+    		var frame = this.animation.sequence.getFrame(currentFrame);
+    		console.log(frame);
+    		var sprite = Sprites.getInstance().getSprite(frame.getImageRefId());
+    		console.log(sprite);
+    		sprite.render(ctx, dx, dy);
+    		/*
+    		Sprites.getInstance().getSprite(
+    				AnimationFrame.getFrameById(
+    						this.animation.sequence.getFrame(this.animation.getCurrentFrame())).getImageRefId()).render(ctx, dx, dy);
+    		*/
     	} else { // render static image
     		this.image.render(ctx, dx, dy);
     	}
 	};
-	/**
-	 * Gets the {@link MapTile}'s position.
-	 * @param val a {@link SimpleVector2}
-	 */
-    MapTile.prototype.setIsAnimated = function(val) {
-    	try {
-    		this.checkBoolean(val);
-    	} catch (err) {
-            var s = [];
-            s.push("ERROR! MapTile.setIsAnimated() - val ");
-            s.push(err.message);
-            throw new Error(s.join(""));
-    	}
-    	this.animated = val;
-    }
-	/**
-	 * Gets the {@link MapTile}'s position.
-	 * @param val a {@link SimpleVector2}
-	 */
-    MapTile.prototype.setPosition = function(val) {
-    	try {
-    		this.checkInstanceOf(val, SimpleVector2);
-    	} catch (err) {
-            var s = [];
-            s.push("ERROR! MapTile.setPosition() - val ");
-            s.push(err.message);
-            throw new Error(s.join(""));
-    	}
-    	this.position = val;
-    }
 	/**
 	 * Sets the {@link MapTile}'s image.
 	 * @param val a {@link Sprite}
@@ -156,6 +133,36 @@ define(["com/dalonedrow/engine/sprite/base/simplevector2",
             throw new Error(s.join(""));
     	}
     	this.image = val;
+    };
+	/**
+	 * Gets the {@link MapTile}'s position.
+	 * @param val a {@link SimpleVector2}
+	 */
+    MapTile.prototype.setIsAnimated = function(val) {
+    	try {
+    		this.checkBoolean(val);
+    	} catch (err) {
+            var s = [];
+            s.push("ERROR! MapTile.setIsAnimated() - val ");
+            s.push(err.message);
+            throw new Error(s.join(""));
+    	}
+    	this.animated = val;
+    };
+	/**
+	 * Gets the {@link MapTile}'s position.
+	 * @param val a {@link SimpleVector2}
+	 */
+    MapTile.prototype.setPosition = function(val) {
+    	try {
+    		this.checkInstanceOf(val, SimpleVector2);
+    	} catch (err) {
+            var s = [];
+            s.push("ERROR! MapTile.setPosition() - val ");
+            s.push(err.message);
+            throw new Error(s.join(""));
+    	}
+    	this.position = val;
     }
 	/**
 	 * Sets the {@link MapTile}'s image.

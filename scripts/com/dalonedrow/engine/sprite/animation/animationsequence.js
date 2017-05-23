@@ -101,7 +101,7 @@ define(["com/dalonedrow/engine/sprite/animation/animationframe",
 	AnimationSequence.prototype.getAnimationTime = function() {
 		if (this.animationTime === 0) {
 			for (var i = this.frames[i] - 1; i >= 0; i--) {
-				this.animationTime += 
+				this.animationTime += this.frames[i].getDuration();
 			}
 		}
 		return this.animationTime;

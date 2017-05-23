@@ -85,9 +85,9 @@ define(["com/dalonedrow/engine/sprite/base/maptile",
         this.gridW = 15 * factor;
         this.gridH = 7 * factor;
     
-        console.log("---------");
-        console.log("Factor:"+factor);
-        console.log("W:"+this.gridW + " H:" + this.gridH);
+        console.debug("---------");
+        console.debug("Factor:"+factor);
+        console.debug("W:"+this.gridW + " H:" + this.gridH);
         this.viewport.width = this.gridW * 16
         this.viewport.height = this.gridH * 16
     };

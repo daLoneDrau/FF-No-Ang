@@ -142,7 +142,6 @@ define(["renderer", "com/dalonedrow/engine/systems/base/projectconstants",
         	FFCommand.values.push(new FFCommand(list[i].name, list[i].sort_order));
         }
     	if (FFEquipmentElements.values.length === 0) {
-    		console.log("need to load FFEquipmentElements2")
             list = WebServiceClient.getInstance().getEquipmentElementEntities();
             for (var i = 0, len = list.length; i < len; i++) {
             	if (!list[i].value) {
@@ -152,7 +151,6 @@ define(["renderer", "com/dalonedrow/engine/systems/base/projectconstants",
             }
     	}
     	if (FFEquipmentSlots.values.length === 0) {
-    		console.log("need to load FFEquipmentSlots2")
 	        list = WebServiceClient.getInstance().getEquipmentSlotEntities();
 	        for (var i = 0, len = list.length; i < len; i++) {
 	        	if (!list[i].value) {
@@ -167,10 +165,11 @@ define(["renderer", "com/dalonedrow/engine/systems/base/projectconstants",
     	var io = ProjectConstants.getInstance().getPlayerIO();
     };
     Game.prototype.run = function(renderer) {
-    	console.log("running...")
+    	console.log("running..."+this.started)
         this.currentTime = new Date().getTime();
 
         if (this.started) {
+        	console.log("renderrr");
             //this.updateCursorLogic();
             //this.updater.update();
         	Time.getInstance().startFrame();
@@ -193,7 +192,6 @@ define(["renderer", "com/dalonedrow/engine/systems/base/projectconstants",
     };
 	Game.prototype.setup = function($bubbleContainer, canvas, background, foreground) {
 		//this.setBubbleManager(new BubbleManager($bubbleContainer));
-		console.log(canvas);
 		this.setRenderer(new Renderer(this, canvas, background, foreground));
 		//this.setChatInput(input);"
 		this.initWebServiceClient();

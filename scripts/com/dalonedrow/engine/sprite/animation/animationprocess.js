@@ -5,8 +5,9 @@
  * drawn
  * @author DaLoneDrau
  */
-define(["com/dalonedrow/rpg/base/constants/animationglobals",
-	"com/dalonedrow/utils/hashcode"], function(AnimationGlobals, Hashcode) {
+define(["com/dalonedrow/engine/systems/base/time",
+	"com/dalonedrow/rpg/base/constants/animationglobals",
+	"com/dalonedrow/utils/hashcode"], function(Time, AnimationGlobals, Hashcode) {
 	function AnimationProcess() {
 		Hashcode.call(this);
 		/** the reference id of the current animation. */
@@ -86,6 +87,38 @@ define(["com/dalonedrow/rpg/base/constants/animationglobals",
             throw new Error(s.join(""));
     	}
 		this.currentAnimationSequenceId = val;
+	}
+	/**
+	 * Sets the current frame being displayed.
+	 * @param index the index to set
+	 */
+	AnimationProcess.prototype.process = function() {
+		console.log("animprocessing")
+		var now = Time.getInstance().getFrameStart();
+		if (this.frameStart === AnimationGlobals.ANIM_NOT_STARTED) {
+			this.frameStart = now;
+		}
+		// check to see if time to move to next frame
+		var diff = now - this.frameStart;
+		var frameLen = this.sequence.getFrame(this.currentFrame).getDuration();
+		if (diff > frameLen) {
+			// reset the frame start
+			this.frameStart = now;
+			// move to next frame, but don't go over # of frames
+			this.currentFrame++;
+			if (this.currentFrame >= this.sequence.getNumFrames()) {
+				// check flags to loop back if needed
+				if (this.sequence.hasFlag(AnimationGlobals.ANIM_REPEATS_FROM_BEGINNING)) {
+					this.currentFrame = 0;
+				} else if (this.sequence.hasFlag(AnimationGlobals.ANIM_REPEATS_FROM_STARTKEYFRAME)) {
+					this.currentFrame = this.sequence.getStartKeyFrame();
+				} else if (this.sequence.hasFlag(AnimationGlobals.ANIM_REPEATS_FROM_ENDKEYFRAME)) {
+					this.currentFrame = this.sequence.getEndKeyFrame();
+				} else {
+					this.currentFrame = this.sequence.getNumFrames() - 1;
+				}
+			}
+		}
 	}
 	/**
 	 * Sets the current frame being displayed.

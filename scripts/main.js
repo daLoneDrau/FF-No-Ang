@@ -47,7 +47,6 @@ define(['jquery', 'app', 'test/FFInteractiveObjectTest'],
         	    //input = document.getElementById("chatinput");
             // initialize the game with canvases
     		game = new Game(app);
-    		console.log(canvas);
     		game.setup('#bubbles', canvas, background, foreground);
     		//game.setup('#bubbles', canvas, background, foreground, input);
     		game.setStorage(app.storage);

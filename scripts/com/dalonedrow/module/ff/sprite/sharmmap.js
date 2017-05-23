@@ -3,12 +3,13 @@
  * @author DaLoneDrow
  */
 define(["com/dalonedrow/engine/sprite/animation/animationframe",
+	"com/dalonedrow/engine/sprite/animation/animationprocess",
 	"com/dalonedrow/engine/sprite/animation/animationsequence",
 	"com/dalonedrow/engine/sprite/base/map",	
 	"com/dalonedrow/engine/sprite/base/maptile",
 	"com/dalonedrow/engine/sprite/base/sprite",
 	"com/dalonedrow/engine/systems/base/sprites"],
-		function(AnimationFrame, AnimationSequence, Map, MapTile, Sprite, Sprites) {
+		function(AnimationFrame, AnimationProcess, AnimationSequence, Map, MapTile, Sprite, Sprites) {
     var SharmMap = function() {
     	Map.call(this);
     	this.srcFile = 'img/sharm_tiny.png';
@@ -42,6 +43,22 @@ define(["com/dalonedrow/engine/sprite/animation/animationframe",
     		Sprites.getInstance().addSprite(sprite);
     		this.imageMap[i].imgRef = sprite.getRefId();
     	}
+    	if (SharmMap.WATER_ANIMATION === null) {
+    		SharmMap.WATER_ANIMATION = new AnimationProcess();
+			var flowingWater = new AnimationSequence(AnimationSequence.getNextId());
+			flowingWater.addFrame(new AnimationFrame(AnimationFrame.getNextId(),
+					500,
+					0,
+					this.imageMap[SharmMap.TILE_WATER_1].imgRef,
+					"water_1"));
+			flowingWater.addFrame(new AnimationFrame(AnimationFrame.getNextId(),
+					500,
+					1,
+					this.imageMap[SharmMap.TILE_WATER_2].imgRef,
+					"water_2"));
+			flowingWater.setAnimationTime(1000); // play for 1000ms
+    		SharmMap.WATER_ANIMATION.sequence = flowingWater;
+    	}
     }
     SharmMap.prototype = Object.create(Map.prototype);
     SharmMap.prototype.setTileSprite = function(cell) {
@@ -59,16 +76,7 @@ define(["com/dalonedrow/engine/sprite/animation/animationframe",
 			switch (cell.getType()) {
 			case SharmMap.TILE_WATER_1:
 			case SharmMap.TILE_WATER_2:
-				var flowingWater = new AnimationSequence(AnimationSequence.getNextId());
-				flowingWater.addFrame(new AnimationFrame(AnimationFrame.getNextId(),
-						500,
-						0,
-						this.imageMap[SharmMap.TILE_WATER_1].imgRef));
-				flowingWater.addFrame(new AnimationFrame(AnimationFrame.getNextId(),
-						500,
-						1,
-						this.imageMap[SharmMap.TILE_WATER_2].imgRef));
-				flowingWater.setAnimationTime(1000); // play for 1000ms
+				cell.animation = SharmMap.WATER_ANIMATION;
 				break;
 			}
 		}
@@ -83,5 +91,6 @@ define(["com/dalonedrow/engine/sprite/animation/animationframe",
     SharmMap.TILE_WATER_2 = 7;
     SharmMap.TILE_CITY = 8;
     SharmMap.TILE_CASTLE = 9;
+    SharmMap.WATER_ANIMATION = null;
 	return SharmMap;
 });
