@@ -91,8 +91,8 @@ define(["com/dalonedrow/engine/sprite/base/simplevector2", "com/dalonedrow/utils
                 throw new Error(s.join(""));
         	}
     	}
-    	return w > 0 && h > 0 && this.width > 0 && this.height > 0 && x >= this.x
-    	&& x + w <= this.x + this.width && y >= this.y && y + h <= this.y + this.height;
+    	return w1 > 0 && h1 > 0 && this.width > 0 && this.height > 0 && x1 >= this.x
+    	&& x1 + w1 <= this.x + this.width && y1 >= this.y && y1 + h1 <= this.y + this.height;
     };
     /**
      * Gets the {@link Sprite}'s reference id.

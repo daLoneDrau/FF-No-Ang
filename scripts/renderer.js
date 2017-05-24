@@ -46,7 +46,7 @@ define(["camera", "timer",
         //***************************************
         //              CREATE MAP
         //***************************************
-        this.map = new SharmMap();
+        this.map = new SharmMap(this.scale);
         // mmmfgggwwwwgggbmmmm
         var x = 0, y = 0;
         for (var l = x + 3; x < l; x++) { // 3 mountain
@@ -66,7 +66,7 @@ define(["camera", "timer",
         for (var l = x + 4; x < l; x++) { // 4 mountain
             this.map.addCell(new MapTile(new SimpleVector2(x, y), SharmMap.TILE_MOUNTAIN));
         }
-        // fffggcwwwwwwgggbmmm
+        // fffggcwwwwwwgggbmlm
         x = 0, y++;
         for (var l = x + 3; x < l; x++) { // 3 forest
             this.map.addCell(new MapTile(new SimpleVector2(x, y), SharmMap.TILE_FOREST));
@@ -82,9 +82,9 @@ define(["camera", "timer",
             this.map.addCell(new MapTile(new SimpleVector2(x, y), SharmMap.TILE_GRASS_LT_VEG));
         }
         this.map.addCell(new MapTile(new SimpleVector2(x++, y), SharmMap.TILE_BUSH));
-        for (var l = x + 3; x < l; x++) { // 3 mountain
-            this.map.addCell(new MapTile(new SimpleVector2(x, y), SharmMap.TILE_MOUNTAIN));
-        }
+        this.map.addCell(new MapTile(new SimpleVector2(x++, y), SharmMap.TILE_MOUNTAIN));
+        this.map.addCell(new MapTile(new SimpleVector2(x++, y), SharmMap.TILE_LAVA_1));
+        this.map.addCell(new MapTile(new SimpleVector2(x++, y), SharmMap.TILE_MOUNTAIN));
         // mfgggwwwwwwwwgggbbb
         x = 0, y++;
         this.map.addCell(new MapTile(new SimpleVector2(x++, y), SharmMap.TILE_MOUNTAIN));
@@ -175,7 +175,9 @@ define(["camera", "timer",
 	Renderer.prototype.createCamera = function() {
         this.camera = new Camera(this);
         this.camera.rescale();
-    
+        console.log(this.camera.gridW)
+        console.log(this.tilesize)
+        console.log(this.scale)
         this.canvas.width = this.camera.gridW * this.tilesize * this.scale;
         this.canvas.height = this.camera.gridH * this.tilesize * this.scale;
         log.debug("#entities set to "+this.canvas.width+" x "+this.canvas.height);
@@ -285,9 +287,9 @@ define(["camera", "timer",
         for (var i = cells.length - 1; i >= 0; i--) {
         	var cell = cells[i];
         	if (this.camera.isVisible(cell)) {
-        		var cx = cell.getPosition().getX() * 16 - this.camera.getX();
-        		var cy = cell.getPosition().getY() * 16 - this.camera.getY();
-        		cy = this.canvas.height - 16 - cy;
+        		var cx = cell.getPosition().getX() * cell.getSize() - this.camera.getX();
+        		var cy = cell.getPosition().getY() * cell.getSize() - this.camera.getY();
+        		cy = this.canvas.height - cell.getSize() - cy;
         		cell.render(this.background, cx, cy);
         	}
         }

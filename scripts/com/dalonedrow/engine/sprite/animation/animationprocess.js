@@ -93,7 +93,6 @@ define(["com/dalonedrow/engine/systems/base/time",
 	 * @param index the index to set
 	 */
 	AnimationProcess.prototype.process = function() {
-		console.log("animprocessing")
 		var now = Time.getInstance().getFrameStart();
 		if (this.frameStart === AnimationGlobals.ANIM_NOT_STARTED) {
 			this.frameStart = now;

@@ -33,6 +33,7 @@ define(["com/dalonedrow/engine/sprite/base/simplevector2",
 		this.image = null;
 		this.animated = false;
 		this.animation = null;
+		this.size = 0;
 		this.type = type;
     }
     MapTile.prototype = Object.create(Hashcode.prototype);
@@ -42,6 +43,13 @@ define(["com/dalonedrow/engine/sprite/base/simplevector2",
 	 */
     MapTile.prototype.getImage = function() {
     	return this.image;
+    }
+	/**
+	 * Gets the {@link MapTile}'s size.
+	 * @return {@link Sprite}
+	 */
+    MapTile.prototype.getSize = function() {
+    	return this.size;
     }
 	/**
 	 * Gets the {@link MapTile}'s image.
@@ -101,14 +109,10 @@ define(["com/dalonedrow/engine/sprite/base/simplevector2",
             throw new Error(s.join(""));
     	}
     	if (this.animated) {
-    		console.log("animated");
     		this.animation.process();
     		var currentFrame = this.animation.getCurrentFrame();
-    		console.log(currentFrame);
     		var frame = this.animation.sequence.getFrame(currentFrame);
-    		console.log(frame);
     		var sprite = Sprites.getInstance().getSprite(frame.getImageRefId());
-    		console.log(sprite);
     		sprite.render(ctx, dx, dy);
     		/*
     		Sprites.getInstance().getSprite(
@@ -133,6 +137,21 @@ define(["com/dalonedrow/engine/sprite/base/simplevector2",
             throw new Error(s.join(""));
     	}
     	this.image = val;
+    };
+	/**
+	 * Sets the {@link MapTile}'s size.
+	 * @param val the new size
+	 */
+    MapTile.prototype.setSize = function(val) {
+    	try {
+    		this.checkInteger(val);
+    	} catch (err) {
+            var s = [];
+            s.push("ERROR! MapTile.setSize() - val ");
+            s.push(err.message);
+            throw new Error(s.join(""));
+    	}
+    	this.size = val;
     };
 	/**
 	 * Gets the {@link MapTile}'s position.

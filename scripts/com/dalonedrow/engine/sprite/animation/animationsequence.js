@@ -151,7 +151,7 @@ define(["com/dalonedrow/engine/sprite/animation/animationframe",
 	 */
 	AnimationSequence.prototype.getNumFrames = function() {
 		var numFrames = 0;
-		for (var i = this.frames[i] - 1; i >= 0; i--) {
+		for (var i = this.frames.length - 1; i >= 0; i--) {
 			if (this.frames[i] !== -1) {
 				numFrames++;
 			}

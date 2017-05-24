@@ -164,20 +164,20 @@ define(["renderer", "com/dalonedrow/engine/systems/base/projectconstants",
     	Interactive.getInstance().newHero();
     	var io = ProjectConstants.getInstance().getPlayerIO();
     };
-    Game.prototype.run = function(renderer) {
-    	console.log("running..."+this.started)
+    Game.prototype.run = function() {
+    	console.log("running...")
         this.currentTime = new Date().getTime();
 
         if (this.started) {
-        	console.log("renderrr");
             //this.updateCursorLogic();
             //this.updater.update();
         	Time.getInstance().startFrame();
-            this.renderer.renderFrame();
+        	this.renderer.renderFrame();
         }
 
         if (!this.isStopped) {
-        	requestAnimFrame(Game.prototype.run);
+        	// bind this instance to the run method
+            requestAnimFrame(this.run.bind(this));
         }
     };
     Game.prototype.setRenderer = function(renderer) {

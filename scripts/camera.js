@@ -48,8 +48,12 @@ define(["com/dalonedrow/engine/sprite/base/maptile",
     		}
     	} catch (err) {
             var s = [];
-            s.push("ERROR! SharmMap.isVisible() - o ");
+            s.push("ERROR! Camera.isVisible() - o ");
             s.push(err.message);
+            s.push(":");
+            console.log(err)
+            s.push(" line ");
+            s.push(err.lineNumber);
             throw new Error(s.join(""));
     	}
     	return vis;
@@ -59,11 +63,11 @@ define(["com/dalonedrow/engine/sprite/base/maptile",
 		try {
     		this.checkInstanceOf(o, MapTile);
 	   		 r.x = o.getPosition().getX();
-	   		 r.x *= 16;
+	   		 r.x *= o.getSize();
 			 r.y = o.getPosition().getY();
-	   		 r.y *= 16;
-	   		 r.width = 16;
-	   		 r.height = 16;
+	   		 r.y *= o.getSize();
+	   		 r.width = o.getSize();
+	   		 r.height = o.getSize();
     	} catch (err) {
             var s = [];
             s.push("ERROR! SharmMap.getBoundingBox() - o ");
@@ -81,15 +85,14 @@ define(["com/dalonedrow/engine/sprite/base/maptile",
     };
     Camera.prototype.rescale = function() {
         var factor = this.renderer.mobile ? 1 : 2;
-    
         this.gridW = 15 * factor;
         this.gridH = 7 * factor;
     
-        console.debug("---------");
-        console.debug("Factor:"+factor);
-        console.debug("W:"+this.gridW + " H:" + this.gridH);
-        this.viewport.width = this.gridW * 16
-        this.viewport.height = this.gridH * 16
+        console.log("---------");
+        console.log("Factor:"+factor);
+        console.log("W:"+this.gridW + " H:" + this.gridH);
+        this.viewport.width = this.gridW * 32
+        this.viewport.height = this.gridH * 32
     };
 	return Camera;
 });
