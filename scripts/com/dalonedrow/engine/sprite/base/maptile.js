@@ -139,21 +139,6 @@ define(["com/dalonedrow/engine/sprite/base/simplevector2",
     	this.image = val;
     };
 	/**
-	 * Sets the {@link MapTile}'s size.
-	 * @param val the new size
-	 */
-    MapTile.prototype.setSize = function(val) {
-    	try {
-    		this.checkInteger(val);
-    	} catch (err) {
-            var s = [];
-            s.push("ERROR! MapTile.setSize() - val ");
-            s.push(err.message);
-            throw new Error(s.join(""));
-    	}
-    	this.size = val;
-    };
-	/**
 	 * Gets the {@link MapTile}'s position.
 	 * @param val a {@link SimpleVector2}
 	 */
@@ -182,7 +167,22 @@ define(["com/dalonedrow/engine/sprite/base/simplevector2",
             throw new Error(s.join(""));
     	}
     	this.position = val;
-    }
+    };
+	/**
+	 * Sets the {@link MapTile}'s size.
+	 * @param val the new size
+	 */
+    MapTile.prototype.setSize = function(val) {
+    	try {
+    		this.checkInteger(val);
+    	} catch (err) {
+            var s = [];
+            s.push("ERROR! MapTile.setSize() - val ");
+            s.push(err.message);
+            throw new Error(s.join(""));
+    	}
+    	this.size = val;
+    };
 	/**
 	 * Sets the {@link MapTile}'s image.
 	 * @param val an integer value

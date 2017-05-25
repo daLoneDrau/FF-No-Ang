@@ -2,13 +2,18 @@
  * WebWebServiceClient
  * module with no dependencies
  */
-define(["require", "com/dalonedrow/engine/systems/base/interactive",
+define(["require",
+	"com/dalonedrow/engine/systems/base/interactive",
+	"com/dalonedrow/engine/sprite/base/maptile",
+	"com/dalonedrow/engine/sprite/base/simplevector2",
 	"com/dalonedrow/module/ff/constants/ffequipmentelements",
 	"com/dalonedrow/module/ff/constants/ffequipmentslots",
+	"com/dalonedrow/module/ff/constants/ffmaptiles",
 	"com/dalonedrow/module/ff/rpg/ffitem",
 	"com/dalonedrow/rpg/base/flyweights/equipmentitemmodifier",
-	"com/dalonedrow/rpg/base/systems/script"], function(require, Interactive,
-			FFEquipmentElements, FFEquipmentSlots, FFItem, EquipmentItemModifier, Script) {
+	"com/dalonedrow/rpg/base/systems/script"], function(require, Interactive, MapTile,
+			SimpleVector2, FFEquipmentElements, FFEquipmentSlots, FFMapTiles, FFItem,
+			EquipmentItemModifier, Script) {
     var instance = null;
 	var WebServiceClient = function() {
         if (instance !== null){
@@ -122,12 +127,51 @@ define(["require", "com/dalonedrow/engine/systems/base/interactive",
 	        xmlhttp.send();
 	        return JSON.parse(xmlhttp.responseText);	    	
 	    };
+	    this.getMapTileEntities = function() {
+		    var u = [ httpBase, 'map_tiles' ].join("");
+	    	var xmlhttp = new XMLHttpRequest();
+	        xmlhttp.onreadystatechange = function() {
+	            if (xmlhttp.readyState == XMLHttpRequest.DONE ) {
+	               if (xmlhttp.status == 200) {
+	               } else if (xmlhttp.status == 400) {
+	            	   console.log('There was an error 400');
+	               } else {
+	            	   console.log('something else other than 200 was returned');
+	               }
+	            }
+	        };
+	        xmlhttp.open("GET", u, false);
+	        xmlhttp.send();
+	        return JSON.parse(xmlhttp.responseText);	    	
+	    };
 	    /**
 	     * Makes a synchronous call to the service to retrieve an Item by its name.
 	     * @param name the item's name
 	     */
 	    this.getItemByName = function(name) {
 		    var urlBase = [ httpBase, 'io_item_data' ].join("");
+	    	var u = [urlBase , '/name/', name].join("");
+	    	var xmlhttp = new XMLHttpRequest();
+	        xmlhttp.onreadystatechange = function() {
+	            if (xmlhttp.readyState == XMLHttpRequest.DONE ) {
+	               if (xmlhttp.status == 200) {
+	               } else if (xmlhttp.status == 400) {
+	            	   console.log('There was an error 400');
+	               } else {
+	            	   console.log('something else other than 200 was returned');
+	               }
+	            }
+	        };
+	        xmlhttp.open("GET", u, false);
+	        xmlhttp.send();
+	        return JSON.parse(xmlhttp.responseText);	    	
+	    };
+	    /**
+	     * Makes a synchronous call to the service to retrieve an Item by its name.
+	     * @param name the item's name
+	     */
+	    this.getMapByName = function(name) {
+		    var urlBase = [ httpBase, 'map_levels' ].join("");
 	    	var u = [urlBase , '/name/', name].join("");
 	    	var xmlhttp = new XMLHttpRequest();
 	        xmlhttp.onreadystatechange = function() {
@@ -194,6 +238,15 @@ define(["require", "com/dalonedrow/engine/systems/base/interactive",
 	        		list[i].value = 0;
 	        	}
 	            FFEquipmentSlots.values.push(new FFEquipmentSlots(list[i].name, list[i].value));
+	        }
+	    };
+	    this.loadMapTiles = function() {
+	        var list = WebServiceClient.getInstance().getMapTileEntities();
+	        for (var i = 0, len = list.length; i < len; i++) {
+	        	if (!list[i].code_number) {
+	        		list[i].code_number = 0;
+	        	}
+	        	FFMapTiles.values.push(new FFMapTiles(list[i].name, list[i].code_number));
 	        }
 	    };
 	    this.loadItem = function(name) {
@@ -279,6 +332,35 @@ define(["require", "com/dalonedrow/engine/systems/base/interactive",
             }
             Script.getInstance().sendInitScriptEvent(io);
             return io;
+	    };
+	    this.loadMap = function(name, scale, mapClassString) {
+	    	var map = [];
+	        var levels = this.getMapByName(name);
+	        if (levels.length === 0) {
+	        	throw new Error("Map " + name + " doesn't exist");
+	        }
+	        for (var i = levels.length - 1; i >= 0; i--) {
+	        	var mapLevel = new (require(mapClassString))(scale);
+	        	mapLevel.setElevation(levels[i].elevation);
+	        	mapLevel.setName(levels[i].name);
+	        	for (var j = levels[i].cells.length - 1; j >= 0; j--) {
+	        		var cellObj = levels[i].cells[j];
+	        		if (cellObj.x === undefined) {
+	        			cellObj.x = 0;
+	        		}
+	        		if (cellObj.y === undefined) {
+	        			cellObj.y = 0;
+	        		}
+		        	var cell = new MapTile(new SimpleVector2(cellObj.x, cellObj.y),
+		        			FFMapTiles[cellObj.map_tile.name.toUpperCase()].getValue());
+		        	mapLevel.addCell(cell);
+		        	cell = null;
+		        	cellObj = null;
+	        	}
+	        	map.push(mapLevel);
+	        }
+	        levels = null;
+            return map;
 	    };
 	}
 	WebServiceClient.getInstance = function() {

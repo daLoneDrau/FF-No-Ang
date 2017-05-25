@@ -31,19 +31,21 @@ define(["com/dalonedrow/engine/sprite/animation/animationframe",
     	    		0: { "x": 0, "y": 0, "animated": false }, 		// grass no vegetation
     	    		1: { "x": 16, "y": 0, "animated": false },		// grass light vegetation
     	    		2: { "x": 32, "y": 0, "animated": false },		// grass heavy vegetation
-    	    		3: { "x": 48, "y": 0, "animated": false },		// bush
-    	    		4: { "x": 64, "y": 0, "animated": false },		// forest
-    	    		5: { "x": 80, "y": 0, "animated": false },		// mountain
-    	    		6: { "x": 96, "y": 0, "animated": true },		// water frame 1
-    	    		7: { "x": 112, "y": 0, "animated": true },		// water frame 2
-    	    		8: { "x": 0, "y": 16, "animated": false },		// city
-    	    		9: { "x": 16, "y": 16, "animated": false },		// castle
-    	    		10: { "x": 32, "y": 16, "animated": true },		// lava frame 1
-    	    		11: { "x": 48, "y": 16, "animated": true },		// lava frame 2
+    	    		3: { "x": 48, "y": 32, "animated": false },		// bush
+    	    		4: { "x": 64, "y": 0, "animated": false },		// tree
+    	    		5: { "x": 80, "y": 0, "animated": false },		// rocks
+    	    		6: { "x": 96, "y": 0, "animated": false },		// road
+    	    		7: { "x": 112, "y": 0, "animated": true },		// water frame 1
+    	    		8: { "x": 0, "y": 16, "animated": false },		// wall 1
+    	    		9: { "x": 16, "y": 16, "animated": false },		// flowers
+    	    		10: { "x": 32, "y": 16, "animated": true },		// 
+    	    		11: { "x": 48, "y": 16, "animated": true },		// 
     	    		12: { "x": 64, "y": 16, "animated": false },
     	    		13: { "x": 80, "y": 16, "animated": false },
     	    		14: { "x": 96, "y": 16, "animated": false },
-    	    		15: { "x": 112, "y": 16, "animated": false }
+    	    		15: { "x": 112, "y": 16, "animated": false },
+    	    		16: { "x": 0, "y": 48, "animated": true },		// water frame 2,
+    	    		17: { "x": 0, "y": 48, "animated": false }		// wall 2
     	    };
         	this.size = 16;
         	break;
@@ -55,8 +57,8 @@ define(["com/dalonedrow/engine/sprite/animation/animationframe",
     	    		1: { "x": 32, "y": 0, "animated": false },		// grass light vegetation
     	    		2: { "x": 64, "y": 0, "animated": false },		// grass heavy vegetation
     	    		3: { "x": 96, "y": 0, "animated": false },		// bush
-    	    		4: { "x": 128, "y": 0, "animated": false },		// forest
-    	    		5: { "x": 160, "y": 0, "animated": false },		// mountain
+    	    		4: { "x": 128, "y": 0, "animated": false },		// tree
+    	    		5: { "x": 160, "y": 0, "animated": false },		// rocks
     	    		6: { "x": 192, "y": 0, "animated": true },		// water frame 1
     	    		7: { "x": 224, "y": 0, "animated": true },		// water frame 2
     	    		8: { "x": 0, "y": 32, "animated": false },		// city

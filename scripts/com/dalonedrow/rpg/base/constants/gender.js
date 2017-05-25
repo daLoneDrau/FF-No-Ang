@@ -48,9 +48,9 @@ define(["com/dalonedrow/utils/hashcode"], function(Hashcode) {
 	    return Gender.values.length;
 	}
 	/**
-	 * Gets the {@link FFEquipmentSlots} value of a specific element code.
+	 * Gets the {@link Gender} value of a specific element code.
 	 * @param code the code
-	 * @return {@link FFEquipmentSlots}
+	 * @return {@link Gender}
 	 */
     Gender.valueOf = function(name) {
 	    var value = null;
