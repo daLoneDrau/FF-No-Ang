@@ -3,6 +3,7 @@ define(['jquery', 'app', 'test/FFInteractiveObjectTest'],
 	function($, App, FFInteractiveObjectTest) {
     var app, game;
     console.log("main called");
+    // define animation loop method
     window.requestAnimFrame = (function(){
   	  return  window.requestAnimationFrame       || 
   	          window.webkitRequestAnimationFrame || 
@@ -17,12 +18,23 @@ define(['jquery', 'app', 'test/FFInteractiveObjectTest'],
     	var t = new FFInteractiveObjectTest();
     	t.test();
     };
+    // game start-up process:
+    // 1. initialize the application
+    // 2. initialize the game
+    // 3. display the intro screen
+    var newHero = function() {
+		var io = game.newHero();
+		console.log(io);
+		$("#stats").html(["HEALTH: ", io.getPCData().getFullAttributeScore("ST"), "/",
+			io.getPCData().getFullAttributeScore("MST"), "<br>ATTACK: ",
+			io.getPCData().getFullAttributeScore("SK")].join(""));
+    }
     /**
      * App initialization called when page loads.
      */
     var initApp = function() {
         $(document).ready(function() {
-            console.log("in initApp");
+            console.log("document ready - in initApp");
         	// create new app
         	app = new App();
             app.center();
@@ -30,8 +42,15 @@ define(['jquery', 'app', 'test/FFInteractiveObjectTest'],
             	console.log("clicked on body");
             });
             // clicked New Game
-    		$('#parchment .startgame').click(function(event) {
-    			console.log("click")
+    		$('#menuNewGame').click(function(event) {
+    			$('div#newGame').hide();
+    			game.state = 1;
+    			$('div#charSel').show();
+    			newHero();
+            });
+            // clicked New Game
+    		$('#rerollChar').click(function(event) {
+    			newHero();
             });
             initGame();
             app.tryStartingGame(name);
@@ -39,12 +58,10 @@ define(['jquery', 'app', 'test/FFInteractiveObjectTest'],
         });    	
     };
     var initGame = function() {
-        require(['game'], function(Game) {
-            
+        require(['game'], function(Game) {            
             var canvas = document.getElementById("entities"),
-        	    background = document.getElementById("background"),
-        	    foreground = document.getElementById("foreground");
-        	    //input = document.getElementById("chatinput");
+            background = document.getElementById("background"),
+            foreground = document.getElementById("foreground");
             // initialize the game with canvases
     		game = new Game(app);
     		game.setup('#bubbles', canvas, background, foreground);
@@ -80,5 +97,6 @@ define(['jquery', 'app', 'test/FFInteractiveObjectTest'],
             });
         });
     };
+    // initialize the game application
     initApp();
 });

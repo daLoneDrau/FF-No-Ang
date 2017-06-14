@@ -19,6 +19,7 @@ define(["renderer", "com/dalonedrow/engine/systems/base/projectconstants",
 			FFController, FFInteractive, FFScript, WebServiceClient, Interactive, Time, Die, Dice,
 			Script, IronSword) {
 	var Game = function(app) {
+		this.state = 0; // intro screen
         this.app = app;
         //this.app.config = config;
         this.ready = false;
@@ -160,12 +161,14 @@ define(["renderer", "com/dalonedrow/engine/systems/base/projectconstants",
 	        }
     	}
     };
-    Game.prototype.newHero = function(renderer) {
+    Game.prototype.newHero = function() {
     	Interactive.getInstance().newHero();
     	var io = ProjectConstants.getInstance().getPlayerIO();
+    	return io;
     };
+    /** Main game loop. */
     Game.prototype.run = function() {
-    	console.log("running...")
+    	//console.log("running...")
         this.currentTime = new Date().getTime();
 
         if (this.started) {

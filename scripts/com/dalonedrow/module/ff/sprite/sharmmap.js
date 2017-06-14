@@ -28,24 +28,34 @@ define(["com/dalonedrow/engine/sprite/animation/animationframe",
         	this.srcFile = 'img/sharm_tiny.png';
             /** Sharm's  Tileset - ff_floor.png. */
         	this.imageMap = {
-    	    		0: { "x": 0, "y": 0, "animated": false }, 		// grass no vegetation
-    	    		1: { "x": 16, "y": 0, "animated": false },		// grass light vegetation
-    	    		2: { "x": 32, "y": 0, "animated": false },		// grass heavy vegetation
-    	    		3: { "x": 48, "y": 32, "animated": false },		// bush
-    	    		4: { "x": 64, "y": 0, "animated": false },		// tree
-    	    		5: { "x": 80, "y": 0, "animated": false },		// rocks
-    	    		6: { "x": 96, "y": 0, "animated": false },		// road
-    	    		7: { "x": 112, "y": 0, "animated": true },		// water frame 1
-    	    		8: { "x": 0, "y": 16, "animated": false },		// wall 1
-    	    		9: { "x": 16, "y": 16, "animated": false },		// flowers
-    	    		10: { "x": 32, "y": 16, "animated": true },		// 
-    	    		11: { "x": 48, "y": 16, "animated": true },		// 
-    	    		12: { "x": 64, "y": 16, "animated": false },
-    	    		13: { "x": 80, "y": 16, "animated": false },
-    	    		14: { "x": 96, "y": 16, "animated": false },
-    	    		15: { "x": 112, "y": 16, "animated": false },
-    	    		16: { "x": 0, "y": 48, "animated": true },		// water frame 2,
-    	    		17: { "x": 0, "y": 48, "animated": false }		// wall 2
+    	    		0: 	{ "x": 0,	"y": 0,		"animated": false 	}, 	// grass no vegetation
+    	    		1: 	{ "x": 16,	"y": 0,		"animated": false 	},	// grass light vegetation
+    	    		2: 	{ "x": 32,	"y": 0, 	"animated": false 	},	// grass heavy vegetation
+    	    		3: 	{ "x": 48,	"y": 0,		"animated": false 	},	// bush
+    	    		4: 	{ "x": 64,	"y": 0, 	"animated": false 	},	// tree
+    	    		5: 	{ "x": 80,	"y": 0, 	"animated": false 	},	// rocks
+    	    		6: 	{ "x": 96,	"y": 0, 	"animated": false 	},	// road
+    	    		7: 	{ "x": 112,	"y": 0, 	"animated": true	},	// water frame 1
+    	    		8: 	{ "x": 0,	"y": 16, 	"animated": false 	},	// wall 1
+    	    		9: 	{ "x": 16,	"y": 16, 	"animated": false 	},	// flowers
+    	    		10: { "x": 32,	"y": 16, 	"animated": false 	},	// cave floor
+    	    		11: { "x": 48,	"y": 16, 	"animated": false 	},	// dungeon floor
+    	    		12: { "x": 64,	"y": 16, 	"animated": false 	},
+    	    		13: { "x": 80,	"y": 16, 	"animated": false 	},
+    	    		14: { "x": 96,	"y": 16, 	"animated": false 	},
+    	    		15: { "x": 112,	"y": 16, 	"animated": false 	},
+    	    		16: { "x": 0,	"y": 32, 	"animated": false 	},	// cave wall solid
+    	    		17: { "x": 16,	"y": 32, 	"animated": false 	},	// pit
+    	    		18: { "x": 32,	"y": 32, 	"animated": false 	},	// 
+    	    		19: { "x": 48,	"y": 32, 	"animated": false 	},	// 
+    	    		20: { "x": 64,	"y": 32, 	"animated": false 	},
+    	    		21: { "x": 80,	"y": 32, 	"animated": false 	},
+    	    		22: { "x": 96,	"y": 32, 	"animated": false 	},
+    	    		23: { "x": 112,	"y": 32, 	"animated": false 	},
+    	    		24: { "x": 0,	"y": 48, 	"animated": true 	},	// water frame 2,
+    	    		25: { "x": 16,	"y": 48, 	"animated": false 	},	// wall 2
+    	    		26: { "x": 32,	"y": 48, 	"animated": true 	},	// lava frame 2,
+    	    		27: { "x": 48,	"y": 48, 	"animated": true 	}	// lava frame 2,
     	    };
         	this.size = 16;
         	break;
@@ -53,22 +63,34 @@ define(["com/dalonedrow/engine/sprite/animation/animationframe",
         	this.srcFile = 'img/sharm_med.png';
             /** Sharm's  Tileset - ff_floor.png. */
         	this.imageMap = {
-    	    		0: { "x": 0, "y": 0, "animated": false }, 		// grass no vegetation
-    	    		1: { "x": 32, "y": 0, "animated": false },		// grass light vegetation
-    	    		2: { "x": 64, "y": 0, "animated": false },		// grass heavy vegetation
-    	    		3: { "x": 96, "y": 0, "animated": false },		// bush
-    	    		4: { "x": 128, "y": 0, "animated": false },		// tree
-    	    		5: { "x": 160, "y": 0, "animated": false },		// rocks
-    	    		6: { "x": 192, "y": 0, "animated": true },		// water frame 1
-    	    		7: { "x": 224, "y": 0, "animated": true },		// water frame 2
-    	    		8: { "x": 0, "y": 32, "animated": false },		// city
-    	    		9: { "x": 32, "y": 32, "animated": false },		// castle
-    	    		10: { "x": 64, "y": 32, "animated": true },		// lava frame 1
-    	    		11: { "x": 96, "y": 32, "animated": true },		// lava frame 2
-    	    		12: { "x": 128, "y": 32, "animated": false },
-    	    		13: { "x": 160, "y": 32, "animated": false },
-    	    		14: { "x": 192, "y": 32, "animated": false },
-    	    		15: { "x": 224, "y": 32, "animated": false }
+    	    		0: 	{ "x": 0,	"y": 0,		"animated": false 	}, 	// grass no vegetation
+    	    		1: 	{ "x": 32,	"y": 0,		"animated": false 	},	// grass light vegetation
+    	    		2: 	{ "x": 64,	"y": 0, 	"animated": false 	},	// grass heavy vegetation
+    	    		3: 	{ "x": 96,	"y": 0,		"animated": false 	},	// bush
+    	    		4: 	{ "x": 128,	"y": 0, 	"animated": false 	},	// tree
+    	    		5: 	{ "x": 160,	"y": 0, 	"animated": false 	},	// rocks
+    	    		6: 	{ "x": 192,	"y": 0, 	"animated": false 	},	// road
+    	    		7: 	{ "x": 224,	"y": 0, 	"animated": true	},	// water frame 1
+    	    		8: 	{ "x": 0,	"y": 32, 	"animated": false 	},	// wall 1
+    	    		9: 	{ "x": 32,	"y": 32, 	"animated": false 	},	// flowers
+    	    		10: { "x": 64,	"y": 32, 	"animated": false 	},	// cave floor
+    	    		11: { "x": 96,	"y": 32, 	"animated": false 	},	// dungeon floor
+    	    		12: { "x": 128,	"y": 32, 	"animated": false 	},
+    	    		13: { "x": 160,	"y": 32, 	"animated": false 	},
+    	    		14: { "x": 192,	"y": 32, 	"animated": false 	},
+    	    		15: { "x": 224,	"y": 32, 	"animated": false 	},
+    	    		16: { "x": 0,	"y": 64, 	"animated": false 	},	// cave wall solid
+    	    		17: { "x": 32,	"y": 64, 	"animated": false 	},	// pit
+    	    		18: { "x": 64,	"y": 64, 	"animated": false 	},	// 
+    	    		19: { "x": 96,	"y": 64, 	"animated": false 	},	// 
+    	    		20: { "x": 128,	"y": 64, 	"animated": false 	},
+    	    		21: { "x": 160,	"y": 64, 	"animated": false 	},
+    	    		22: { "x": 192,	"y": 64, 	"animated": false 	},
+    	    		23: { "x": 224,	"y": 64, 	"animated": false 	},
+    	    		24: { "x": 0,	"y": 96, 	"animated": true 	},	// water frame 2,
+    	    		25: { "x": 32,	"y": 96, 	"animated": false 	},	// wall 2
+    	    		26: { "x": 64,	"y": 96, 	"animated": true 	},	// lava frame 2,
+    	    		27: { "x": 96,	"y": 96, 	"animated": true 	}	// lava frame 2,
     	    };
         	this.size = 32;
     		break;
@@ -130,13 +152,28 @@ define(["com/dalonedrow/engine/sprite/animation/animationframe",
     		this.checkInstanceOf(cell, MapTile);
     	} catch (err) {
             var s = [];
-            s.push("ERROR! Map.addCell() - cell ");
+            s.push("ERROR! SharmMap.addCell() - cell ");
             s.push(err.message);
             throw new Error(s.join(""));
     	}
     	cell.setSize(this.size);
     	this.oldAddCell(cell);
     }
+    SharmMap.prototype.checkTileImage = function(cell) {
+		try {
+    		this.checkInstanceOf(cell, MapTile);
+    	} catch (err) {
+            var s = [];
+            s.push("ERROR! SharmMap.checkTileImage() - cell ");
+            s.push(err.message);
+            throw new Error(s.join(""));
+    	}
+		switch (cell.getType()) {
+		case SharmMap.TILE_CAVE_WALL:
+			console.log("check wall" + cell.getPosition())
+			break;
+		}
+    };
     SharmMap.prototype.setTileSprite = function(cell) {
 		try {
     		this.checkInstanceOf(cell, MapTile);
@@ -166,13 +203,17 @@ define(["com/dalonedrow/engine/sprite/animation/animationframe",
     SharmMap.TILE_GRASS_HV_VEG = 2;
     SharmMap.TILE_BUSH = 3;
     SharmMap.TILE_FOREST = 4;
-    SharmMap.TILE_MOUNTAIN = 5;
-    SharmMap.TILE_WATER_1 = 6;
-    SharmMap.TILE_WATER_2 = 7;
-    SharmMap.TILE_CITY = 8;
-    SharmMap.TILE_CASTLE = 9;
-    SharmMap.TILE_LAVA_1 = 10;
-    SharmMap.TILE_LAVA_2 = 11;
+    SharmMap.TILE_ROCKS = 5;
+    SharmMap.TILE_ROAD = 6;
+    SharmMap.TILE_WATER_1 = 7;
+    SharmMap.TILE_DUNGEON_WALL = 8;
+    SharmMap.TILE_FLOWERS = 9;
+    SharmMap.TILE_CAVE_FLOOR = 10;
+    SharmMap.TILE_DUNGEON_FLOOR = 11;
+    SharmMap.TILE_CAVE_WALL = 16;
+    SharmMap.TILE_WATER_2 = 24;
+    SharmMap.TILE_LAVA_1 = 26;
+    SharmMap.TILE_LAVA_2 = 27;
     SharmMap.WATER_ANIMATION = null;
     SharmMap.LAVA_ANIMATION = null;
 	return SharmMap;

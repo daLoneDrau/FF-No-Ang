@@ -4,11 +4,12 @@ define(["camera", "timer",
 	"com/dalonedrow/engine/sprite/base/simplevector2",
 	"com/dalonedrow/engine/sprite/base/tile",
 	"com/dalonedrow/engine/sprite/base/tilesheet",
+	"com/dalonedrow/module/ff/constants/ffgamestates",
 	"com/dalonedrow/module/ff/constants/ffmaptiles",
 	"com/dalonedrow/module/ff/sprite/sharmmap",
 	"com/dalonedrow/module/ff/systems/webserviceclient"],
-	function(Camera, Timer, Map, MapTile, SimpleVector2, Tile, Tilesheet, FFMapTiles, SharmMap,
-			WebServiceClient) {
+	function(Camera, Timer, Map, MapTile, SimpleVector2, Tile, Tilesheet, FFGameStates,
+			FFMapTiles, SharmMap, WebServiceClient) {
 	var Renderer = function(game, canvas, background, foreground) {
         this.game = game;
         this.elevation2 = null;
@@ -53,7 +54,7 @@ define(["camera", "timer",
     	if (FFMapTiles.values.length === 0) {
     		WebServiceClient.getInstance().loadMapTiles();
     	}
-        this.map = WebServiceClient.getInstance().loadMap("Baron Paschall's Manor Grounds",
+        this.map = WebServiceClient.getInstance().loadMap("Warlock of Firetop Mountain Tunnels",
         		this.scale,
         		"com/dalonedrow/module/ff/sprite/sharmmap");
         this.map.sort(Map.sort);
@@ -175,41 +176,25 @@ define(["camera", "timer",
     Renderer.prototype.getMapWidth = function() {
     	return this.map.getWidth();
     }
-    Renderer.prototype.renderMap = function() {
-        // iterate through the map drawing tiles
-        var cells = this.map[0].getCells();
-        for (var i = cells.length - 1; i >= 0; i--) {
-        	var cell = cells[i];
-        	if (this.camera.isVisible(cell)) {
-        		var cx = cell.getPosition().getX() * cell.getSize() - this.camera.getX();
-        		var cy = cell.getPosition().getY() * cell.getSize() - this.camera.getY();
-        		cy = this.canvas.height - cell.getSize() - cy;
-        		cell.render(this.elevation1, cx, cy);
-        	}
-        }
-        if (this.map.length > 1) {
-            cells = this.map[1].getCells();
-            for (var i = cells.length - 1; i >= 0; i--) {
-            	var cell = cells[i];
-            	if (this.camera.isVisible(cell)) {
-            		var cx = cell.getPosition().getX() * cell.getSize() - this.camera.getX();
-            		var cy = cell.getPosition().getY() * cell.getSize() - this.camera.getY();
-            		cy = this.canvas.height - cell.getSize() - cy;
-            		cell.render(this.elevation2, cx, cy);
-            	}
-            }
-        }
-    }
     Renderer.prototype.renderFrameDesktop = function() {
     	// clear the screen and push onto the drawing stack
         this.clearScreen(this.elevation2);
         this.elevation2.save();
-        // fill the screen with green
-        this.elevation1.fillStyle = "green";
+        // fill the screen with black
+        this.elevation1.fillStyle = "black";
         this.elevation1.fillRect(0, 0, this.canvas.width, this.canvas.height);
-        
+        switch (this.game.state) {
+        case FFGameStates.INTRO:
+        	console.log("intro");
+        	break;
+        case FFGameStates.CHARACTER_SELECTION:
+        	console.log("charsel");
+        	break;
+        }
+        /*
         // iterate through the map drawing tiles
         this.renderMap();
+        
         var cells = this.map.getCells();
         for (var i = cells.length - 1; i >= 0; i--) {
         	var cell = cells[i];
@@ -246,6 +231,33 @@ define(["camera", "timer",
         this.drawCursor();
         this.drawDebugInfo();
         */
+    };
+    Renderer.prototype.renderMap = function() {
+        // iterate through the map drawing tiles
+        var cells = this.map[0].getCells();
+        for (var i = cells.length - 1; i >= 0; i--) {
+        	var cell = cells[i];
+        	if (this.camera.isVisible(cell)) {
+        		console.log("render cell");
+        		console.log(cell);
+        		var cx = cell.getPosition().getX() * cell.getSize() - this.camera.getX();
+        		var cy = cell.getPosition().getY() * cell.getSize() - this.camera.getY();
+        		cy = this.canvas.height - cell.getSize() - cy;
+        		cell.render(this.elevation1, cx, cy, this.map[0]);
+        	}
+        }
+        if (this.map.length > 1) {
+            cells = this.map[1].getCells();
+            for (var i = cells.length - 1; i >= 0; i--) {
+            	var cell = cells[i];
+            	if (this.camera.isVisible(cell)) {
+            		var cx = cell.getPosition().getX() * cell.getSize() - this.camera.getX();
+            		var cy = cell.getPosition().getY() * cell.getSize() - this.camera.getY();
+            		cy = this.canvas.height - cell.getSize() - cy;
+            		cell.render(this.elevation2, cx, cy, this.map[0]);
+            	}
+            }
+        }
     };
     /**
      * Sets the game's font size on the context and background canvases.

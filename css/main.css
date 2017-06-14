@@ -16,6 +16,7 @@ table, caption, tbody, tfoot, thead, tr, th, td {
 body {
 	font-family: 'Pixel Emulator', 'Press Start 2P', Courier new, monospace;
 	line-height: 1;
+	color: white;
 }
 ol, ul {
 	list-style: none;
@@ -50,6 +51,7 @@ q:before, q:after {
     inset 0 0 0 1px #303088;
   border-radius: 5px;
   padding: 5px;
+  color: white;
 }
 .inv-slots {
 	width:128px;
@@ -118,4 +120,82 @@ canvas {
 }
 #foreground {
 	-webkit-tap-highlight-color:rgba(0,0,0,0);
+}
+#newGame {
+	left:50%;
+	top:50%;
+	-webkit-transform: translate(-50%, -50%);
+	-moz-transform: translate(-50%, -50%);
+	transform: translate(-50%, -50%);
+	position:absolute;
+	z-index:10;
+}
+#charSel {
+	left:50%;
+	top:50%;
+	-webkit-transform: translate(-50%, -50%);
+	-moz-transform: translate(-50%, -50%);
+	transform: translate(-50%, -50%);
+	position:absolute;
+	z-index:10;
+}
+#newGame>h4 {
+	color:white;
+}
+p.menuOption {
+	color:white;
+	left:50%;
+	-webkit-transform: translate(-50%, -50%);
+	-moz-transform: translate(-50%, -50%);
+	transform: translate(-50%, -50%);
+	position:absolute;
+	cursor: pointer;
+}
+p.menuOption:hover {
+	color:red;
+}
+.stats-window {
+	float:left;
+	margin-right:20px;
+}
+.inv-window {
+	float:left;
+	margin-bottom:20px;
+}
+.inv-options {
+	margin: 8px 0;
+}
+.inv_equip {
+	
+}
+.nav_hor, .nav_ver {
+    list-style:none;
+}
+.nav_hor li {
+    position:relative;
+    display:inline;
+    margin-left: 20px;
+    cursor: pointer;
+}
+.nav_ver li {
+    position:relative;
+    margin-left: 20px;
+    cursor: pointer;
+}
+.nav_hor li:hover:after, .nav_ver li:hover:after {
+    position:absolute;
+    left:-15px;
+    border-top: 8px solid transparent;
+    border-bottom: 8px solid transparent;
+    border-left: 12px solid white;
+    content: "";
+}
+.center_menu {
+	text-align: center;
+}
+.center_menu ul {
+	    display: inline-block;
+}
+.center_menu ul li {
+	margin-bottom: 8px;
 }

@@ -9,8 +9,8 @@ define(["com/dalonedrow/engine/sprite/base/simplevector2",
 	"com/dalonedrow/engine/systems/base/sprites",
 	"com/dalonedrow/rpg/base/constants/animationglobals",
 	"com/dalonedrow/utils/hashcode"],
-		function(SimpleVector2, AnimationFrame, AnimationProcess, Sprite, Sprites, AnimationGlobals,
-				Hashcode) {
+		function(SimpleVector2, AnimationFrame, AnimationProcess, Sprite, Sprites,
+				AnimationGlobals, Hashcode) {
     var MapTile = function(position, type) {
 		Hashcode.call(this);
     	try {
@@ -83,9 +83,18 @@ define(["com/dalonedrow/engine/sprite/base/simplevector2",
 	 * @param dy the Y coordinate in the destination canvas at which to place the top-left corner of
 	 * the source image
 	 */
-    MapTile.prototype.render = function(ctx, dx, dy) {
+    MapTile.prototype.render = function(ctx, dx, dy, map) {
 		try {
     		this.checkInstanceOf(ctx, CanvasRenderingContext2D);
+    	} catch (err) {
+            var s = [];
+            s.push("ERROR! Sprite.render() - ctx ");
+            s.push(err.message);
+            throw new Error(s.join(""));
+    	}
+		try {
+	    	var Map = require("com/dalonedrow/engine/sprite/base/map");
+    		this.checkInstanceOf(map, Map);
     	} catch (err) {
             var s = [];
             s.push("ERROR! Sprite.render() - ctx ");
@@ -109,6 +118,7 @@ define(["com/dalonedrow/engine/sprite/base/simplevector2",
             throw new Error(s.join(""));
     	}
     	if (this.animated) {
+    		console.log("animated");
     		this.animation.process();
     		var currentFrame = this.animation.getCurrentFrame();
     		var frame = this.animation.sequence.getFrame(currentFrame);
@@ -120,6 +130,7 @@ define(["com/dalonedrow/engine/sprite/base/simplevector2",
     						this.animation.sequence.getFrame(this.animation.getCurrentFrame())).getImageRefId()).render(ctx, dx, dy);
     		*/
     	} else { // render static image
+    		map.checkTileImage(this);
     		this.image.render(ctx, dx, dy);
     	}
 	};

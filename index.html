@@ -13,37 +13,40 @@
 	           You need to enable JavaScript.
 	       </div>
 	    </noscript>
-	    <div id="intro">
-	        <h1 id="logo">
-	           <span id="logosparks">
-	               
-	           </span>
-	        </h1>
-	        <section id="parchment" class="createcharacter">
-	            <article id="createcharacter" class="ff7">
-    			</article>
-    			<!-- 
-	            <article id="inventory" class="ff7-black" style="display:none;">
-	            	<div class="char-inv">
-						<div class="rpgui-icon empty-slot" id="wpn_slot"></div>
-						<div class="rpgui-icon empty-slot" id="shld_slot"></div>
-						<!-- 4x4 matrix of empty slots --><!-- 
-						<div class="inv-slots">
-						<div class="rpgui-icon empty-slot" id="slot_0"></div>
-						<div class="rpgui-icon empty-slot" id="slot_1"></div>
-						<div class="rpgui-icon empty-slot" id="slot_2"></div>
-						<div class="rpgui-icon empty-slot" id="slot_3"></div>
-						<div class="rpgui-icon empty-slot" id="slot_4"></div>
-						<div class="rpgui-icon empty-slot" id="slot_5"></div>
-						<div class="rpgui-icon empty-slot" id="slot_6"></div>
-						<div class="rpgui-icon empty-slot" id="slot_7"></div>
-						</div>
-	            	</div>
-    			</article>
-    			-->
-			</section>
-		</div>
 		<div id="container">
+			<div id="newGame">
+				<h4>The Warlock of Firetop Mountain</h4>
+				<p class="menuOption" id="menuNewGame">New Game</p>
+			</div>
+			<div id="charSel" style="display:none;width:80%">
+				<div id="warpper" style="border:1px solid #eee;width:100%;">					
+					<div class="ff7-black stats-window">
+						<IMG SRC="./img/ff_char_anim.gif" style="float:left;">
+						<div id="stats"></div>
+					</div>
+					<div class="inv-window">
+						<div class="ff7-black" style="margin-bottom:20px;">
+							INVENTORY
+							<div class="inv-options">
+								<ul class="nav_hor">
+									<li>Weapon</li>
+									<li>Shield</li>
+									<li>Item</li>
+								</ul>
+							</div>
+						</div>
+						<div class="ff7-black inv_equip">equip</div>
+					</div>
+					<div style="clear:both;"></div>
+					<div class="center_menu">
+						<ul class="nav_ver">
+							<li id="rerollChar">Re-roll this character?</li>
+							<li>Start the Adventure!</li>
+						</ul>
+					</div>
+				</div>
+				<div style="clear:both"></div>
+			</div>
 		    <div id="canvasborder">
     			<div id="canvas">
     				<canvas id="background"></canvas>
