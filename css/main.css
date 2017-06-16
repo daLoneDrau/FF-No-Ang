@@ -177,12 +177,12 @@ p.menuOption:hover {
     margin-left: 20px;
     cursor: pointer;
 }
-.nav_ver li {
+.nav_ver li.menu {
     position:relative;
     margin-left: 20px;
     cursor: pointer;
 }
-.nav_hor li:hover:after, .nav_ver li:hover:after {
+.nav_hor li:hover:after, .nav_ver li.menu:hover:after {
     position:absolute;
     left:-15px;
     border-top: 8px solid transparent;
@@ -198,4 +198,20 @@ p.menuOption:hover {
 }
 .center_menu ul li {
 	margin-bottom: 8px;
+}
+.justify_items {
+  text-align: justify;
+  -ms-text-justify: distribute-all-lines;
+  text-justify: distribute-all-lines;
+  width:100%;
+  div {
+    display: inline-block;
+  }
+  &:after {
+    content: '';
+    width: 100%;
+    display: inline-block;
+    font-size: 0;
+    line-height: 0;
+  }
 }

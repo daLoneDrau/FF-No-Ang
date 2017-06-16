@@ -526,7 +526,7 @@ define(["require", "com/dalonedrow/engine/systems/base/interactive",
             if (this.io.getMainevent() === null
                     || (this.io.getMainevent() !== null
                             && !this.io.getMainevent().equalsIgnoreCase("DEAD"))) {
-                Script.getInstance().notifyIOEvent(this.io, ScriptConsts.SM_017_DIE, "");
+                Script.getInstance().notifyIOEvent(this.io, ScriptGlobals.SM_017_DIE, "");
             }
 
             if (Interactive.getInstance().hasIO(this.io)) {
@@ -955,7 +955,7 @@ define(["require", "com/dalonedrow/engine/systems/base/interactive",
                     "OUCH", io.getDamageSum() ];
         }
         return Script.getInstance().sendIOScriptEvent(
-        		this.io, ScriptConsts.SM_016_HIT, params, null);
+        		this.io, ScriptGlobals.SM_016_HIT, params, null);
     }
     /**
      * Sends the NPC IO an 'Ouch' event.
@@ -997,7 +997,7 @@ define(["require", "com/dalonedrow/engine/systems/base/interactive",
                     "OUCH", this.io.getDamageSum() ];
         }
         Script.getInstance().sendIOScriptEvent(io,
-                ScriptConsts.SM_045_OUCH, params, null);
+        		ScriptGlobals.SM_045_OUCH, params, null);
         this.io.setDamageSum(0);
     }
     /**

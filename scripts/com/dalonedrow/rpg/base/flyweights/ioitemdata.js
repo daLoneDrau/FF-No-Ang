@@ -6,13 +6,12 @@ define(["require",
 	"com/dalonedrow/rpg/base/constants/equipmentglobals",
 	"com/dalonedrow/rpg/base/constants/ioglobals",
 	"com/dalonedrow/rpg/base/constants/scriptglobals",
-	"com/dalonedrow/rpg/base/flyweights/baseinteractiveobject",
 	"com/dalonedrow/rpg/base/flyweights/iocharacter",
 	"com/dalonedrow/rpg/base/flyweights/ioequipitem",
 	"com/dalonedrow/rpg/base/systems/script",
 	"com/dalonedrow/utils/hashcode"],
 		function(require, ProjectConstants, EquipmentGlobals, IoGlobals, ScriptGlobals,
-				BaseInteractiveObject, IOCharacter, IOEquipItem, Script, Hashcode) {
+				IOCharacter, IOEquipItem, Script, Hashcode) {
 	function IOItemData() {
 		Hashcode.call(this);
 	    /** the current number in an inventory slot. */
@@ -259,7 +258,7 @@ define(["require",
      * @throws PooledException if an error occurs
      * @if an error occurs
      */
-    IOItemData.prototype.ARX_EQUIPMENT_Equip = function(target) {
+    IOItemData.prototype.equipOnIo = function(target) {
     	var Interactive = require("com/dalonedrow/engine/systems/base/interactive");
     	var BaseInteractiveObject =
     		require("com/dalonedrow/rpg/base/flyweights/baseinteractiveobject");
@@ -267,7 +266,7 @@ define(["require",
     		this.checkInstanceOf(target, BaseInteractiveObject);
     	} catch (err) {
             var s = [];
-            s.push("ERROR! IOItemData.ARX_EQUIPMENT_Equip() - target ");
+            s.push("ERROR! IOItemData.equipOnIo() - target ");
             s.push(err.message);
             throw new Error(s.join(""));
     	}
@@ -375,6 +374,7 @@ define(["require",
      * @if an error occurs
      */
     IOItemData.prototype.ARX_EQUIPMENT_UnEquip = function(target, isDestroyed) {
+    	var Interactive = require("com/dalonedrow/engine/systems/base/interactive");
     	var BaseInteractiveObject =
     		require("com/dalonedrow/rpg/base/flyweights/baseinteractiveobject");
     	try {
@@ -419,11 +419,11 @@ define(["require",
                     // send event from this item to target to unequip
                     Script.getInstance().setEventSender(this.io);
                     Script.getInstance().sendIOScriptEvent(
-                    		target, ScriptConsts.SM_007_EQUIPOUT, null, null);
+                    		target, ScriptGlobals.SM_007_EQUIPOUT, null, null);
                     // send event from target to this item to unequip
                     Script.getInstance().setEventSender(target);
                     Script.getInstance().sendIOScriptEvent(
-                    		this.io, ScriptConsts.SM_007_EQUIPOUT, null, null);
+                    		this.io, ScriptGlobals.SM_007_EQUIPOUT, null, null);
                 }
             }
             if (this.io.hasTypeFlag(EquipmentGlobals.OBJECT_TYPE_HELMET)
@@ -910,6 +910,7 @@ define(["require",
             throw new Error(s.join(""));
     	}
 		if (player.getEquippedItem(slot) >= 0) {
+	    	var Interactive = require("com/dalonedrow/engine/systems/base/interactive");
 		    var slotioid = player.getEquippedItem(slot);
 		    if (Interactive.getInstance().hasIO(slotioid)) {
 		        var equipIO = Interactive.getInstance().getIO(slotioid);

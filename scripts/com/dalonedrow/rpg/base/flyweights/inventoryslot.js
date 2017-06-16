@@ -31,15 +31,14 @@ define(["require", "com/dalonedrow/utils/watchable"], function(require, Watchabl
 	InventorySlot.prototype.setIo = function(val) {
     	var BaseInteractiveObject =
     		require("com/dalonedrow/rpg/base/flyweights/baseinteractiveobject");
-	    if (val === undefined
-	    		|| val === null
-	    		|| typeof val !== "object"
-	    		|| !(val instanceof BaseInteractiveObject)) {
+    	try {
+    		this.checkInstanceOfNullsAllowed(val, BaseInteractiveObject);
+    	} catch (err) {
             var s = [];
-            s.push("ERROR! InventorySlot.setIo() - ");
-            s.push("argument must be BaseInteractiveObject");
+            s.push("ERROR! InventorySlot.setIo() - val ");
+            s.push(err.message);
             throw new Error(s.join(""));
-	    }
+    	}
         this.io = val;
         this.notifyWatchers();
     }
@@ -47,16 +46,16 @@ define(["require", "com/dalonedrow/utils/watchable"], function(require, Watchabl
      * Sets the flag indicating the item is showing and should be rendered.
      * @param flag the show to set
      */
-	InventorySlot.prototype.setIsShow = function(val) {
-	    if (val === undefined
-	    		|| val === null
-	    		|| typeof val !== "boolean") {
+	InventorySlot.prototype.setIsShow = function(flag) {
+    	try {
+    		this.checkBoolean(flag);
+    	} catch (err) {
             var s = [];
-            s.push("ERROR! InventorySlot.setShow() - ");
-            s.push("argument must be boolean");
+            s.push("ERROR! InventorySlot.setIsShow() - flag ");
+            s.push(err.message);
             throw new Error(s.join(""));
-	    }
-        this.show = val;
+    	}
+        this.show = flag;
         this.notifyWatchers();
     }
 	return InventorySlot;

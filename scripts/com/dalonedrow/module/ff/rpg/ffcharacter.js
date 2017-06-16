@@ -153,7 +153,7 @@ define(["com/dalonedrow/module/ff/constants/ffequipmentelements",
         this.setBaseAttributeScore("MLK", roll);
         // equip iron sword
         WebServiceClient.getInstance().loadItem(
-        		"IRON SWORD").getItemData().ARX_EQUIPMENT_Equip(this.getIo());
+        		"IRON SWORD").getItemData().equipOnIo(this.getIo());
         this.computeFullStats();
     }
     /**

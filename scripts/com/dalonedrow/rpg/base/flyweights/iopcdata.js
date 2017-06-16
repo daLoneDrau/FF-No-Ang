@@ -197,7 +197,7 @@ define(["require", "com/dalonedrow/engine/systems/base/interactive",
 			}
 			// send ouch event to IO
 			Script.getInstance().sendIOScriptEvent(this.io,
-			        ScriptConsts.SM_045_OUCH,
+					ScriptGlobals.SM_045_OUCH,
 			        [ "OUCH", this.io.getDamageSum(),
 			        	"SUMMONED_OUCH", 0 ],
 			        null);
@@ -256,7 +256,7 @@ define(["require", "com/dalonedrow/engine/systems/base/interactive",
 						// }
 
 						Script.getInstance().sendIOScriptEvent(
-								this.io, ScriptConsts.SM_017_DIE, null, null);
+								this.io, ScriptGlobals.SM_017_DIE, null, null);
 
 						var i = Interactive.getInstance().getMaxIORefId();
 						for (; i >= 0; i--) {

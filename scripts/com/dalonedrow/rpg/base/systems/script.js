@@ -8,7 +8,6 @@ define(["require", "com/dalonedrow/engine/sprite/base/simplevector2",
 	"com/dalonedrow/engine/systems/base/time",
 	"com/dalonedrow/rpg/base/constants/ioglobals",
 	"com/dalonedrow/rpg/base/constants/scriptglobals",
-	"com/dalonedrow/rpg/base/flyweights/baseinteractiveobject",
 	"com/dalonedrow/rpg/base/flyweights/scripttimer",
 	"com/dalonedrow/rpg/base/flyweights/scripttimeraction",
 	"com/dalonedrow/rpg/base/flyweights/scripttimerinitializationparameters",
@@ -20,7 +19,7 @@ define(["require", "com/dalonedrow/engine/sprite/base/simplevector2",
 	"com/dalonedrow/rpg/base/systems/speech",
 	"com/dalonedrow/utils/hashcode"],
 		function(require, SimpleVector2, Interactive, ProjectConstants, Time, IoGlobals,
-				ScriptGlobals, BaseInteractiveObject, ScriptTimer, ScriptTimerAction,
+				ScriptGlobals, ScriptTimer, ScriptTimerAction,
 				ScriptTimerInitializationParameters, ScriptVariable, Scriptable, SendParameters,
 				SpeechParameters, StackedEvent, Speech, Hashcode) {
 	/** the singleton instance. */
@@ -1620,6 +1619,8 @@ define(["require", "com/dalonedrow/engine/sprite/base/simplevector2",
      * @if an error occurs
      */
     Script.prototype.sendIOScriptEvent = function(target, msg, params, eventname) {
+    	var BaseInteractiveObject =
+    		require("com/dalonedrow/rpg/base/flyweights/baseinteractiveobject");
     	try {
     		this.checkInstanceOfNullsAllowed(target, BaseInteractiveObject);
     	} catch (err) {
@@ -2070,6 +2071,8 @@ define(["require", "com/dalonedrow/engine/sprite/base/simplevector2",
      * @param val the new value to set
      */
     Script.prototype.setEventSender = function(io) {
+    	var BaseInteractiveObject =
+    		require("com/dalonedrow/rpg/base/flyweights/baseinteractiveobject");
     	try {
     		this.checkInstanceOfNullsAllowed(io, BaseInteractiveObject);
     	} catch (err) {

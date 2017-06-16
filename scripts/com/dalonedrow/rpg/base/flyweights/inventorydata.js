@@ -115,11 +115,11 @@ define(["require", "com/dalonedrow/engine/systems/base/interactive",
 			// send event from item to inventory owner
 			Script.getInstance().setEventSender(itemIO);
 			Script.getInstance().sendIOScriptEvent(
-					invOwnerIO, ScriptConsts.SM_002_INVENTORYIN, [], null);
+					invOwnerIO, ScriptGlobals.SM_002_INVENTORYIN, [], null);
 			// send event from inventory owner to item
 			Script.getInstance().setEventSender(invOwnerIO);
 			Script.getInstance().sendIOScriptEvent(
-					itemIO, ScriptConsts.SM_002_INVENTORYIN, [], null);
+					itemIO, ScriptGlobals.SM_002_INVENTORYIN, [], null);
 			// clear global event sender
 			Script.getInstance().setEventSender(null);
 		}
@@ -155,7 +155,7 @@ define(["require", "com/dalonedrow/engine/systems/base/interactive",
 				&& itemIO.getItemData() !== null
 				&& itemIO.getItemData().getEquipitem() !== null) {
 			if (playerIO.getPCData().canIdentifyEquipment(itemIO.getItemData().getEquipitem())) {
-				Script.getInstance().sendIOScriptEvent(itemIO, ScriptConsts.SM_69_IDENTIFY, null, "");
+				Script.getInstance().sendIOScriptEvent(itemIO, ScriptGlobals.SM_69_IDENTIFY, null, "");
 			}
 		}
 	}
@@ -256,8 +256,8 @@ define(["require", "com/dalonedrow/engine/systems/base/interactive",
 					// got an empty slot - add it
 					if (this.slots[i].getIo() === null) {
 						this.slots[i].setIo(itemIO);
-						this.slots[i].setShow(true);
-						this.ARX_INVENTORY_Declare_InventoryIn(io, itemIO);
+						this.slots[i].setIsShow(true);
+						this.ARX_INVENTORY_Declare_InventoryIn(this.io, itemIO);
 						can = true;
 						break;
 					}
@@ -276,7 +276,7 @@ define(["require", "com/dalonedrow/engine/systems/base/interactive",
 		}
 		for (var i = this.slots.length - 1; i >= 0; i--) {
 			this.slots[i].setIo(null);
-			this.slots[i].setShow(true);
+			this.slots[i].setIsShow(true);
 		}
 	}
 	/**

@@ -124,7 +124,7 @@ define(["com/dalonedrow/engine/systems/base/interactive",
             // send a message
             // else
             // have player equip the item
-            this.getIO().getItemData().ARX_EQUIPMENT_Equip(
+            this.getIO().getItemData().equipOnIo(
             		ProjectConstants.getInstance().getPlayerIO());
         }
         return this.oldOnInventoryUse();

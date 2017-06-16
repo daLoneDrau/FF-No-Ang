@@ -16,7 +16,11 @@
 		<div id="container">
 			<div id="newGame">
 				<h4>The Warlock of Firetop Mountain</h4>
-				<p class="menuOption" id="menuNewGame">New Game</p>
+				<div class="center_menu">
+					<ul class="nav_ver">
+						<li id="menuNewGame" class="menu">New Game</li>
+					</ul>
+				</div>
 			</div>
 			<div id="charSel" style="display:none;width:80%">
 				<div id="warpper" style="border:1px solid #eee;width:100%;">					
@@ -29,19 +33,27 @@
 							INVENTORY
 							<div class="inv-options">
 								<ul class="nav_hor">
-									<li>Weapon</li>
-									<li>Shield</li>
-									<li>Item</li>
+									<li id="btnWpn">Weapon</li>
+									<li id="btnShld">Shield</li>
+									<li id="btnItem">Item</li>
 								</ul>
 							</div>
 						</div>
-						<div class="ff7-black inv_equip">equip</div>
+						<div class="ff7-black inv_equip" id="inv_equip" style="margin-bottom:10px;">
+							<ul class="nav_ver">
+								<li>&nbsp;</li>
+								<li>&nbsp;</li>
+								<li>&nbsp;</li>
+								<li>&nbsp;</li>
+							</ul>
+						</div>
+						<div class="ff7-black inv_equip" id="inv_desc">&nbsp;<br></div>
 					</div>
 					<div style="clear:both;"></div>
 					<div class="center_menu">
 						<ul class="nav_ver">
-							<li id="rerollChar">Re-roll this character?</li>
-							<li>Start the Adventure!</li>
+							<li id="rerollChar" class="menu">Re-roll this character?</li>
+							<li id="startGame" class="menu">Start the Adventure!</li>
 						</ul>
 					</div>
 				</div>

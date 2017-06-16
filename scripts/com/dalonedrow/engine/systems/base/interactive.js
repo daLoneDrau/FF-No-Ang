@@ -475,7 +475,7 @@ define(["require", "com/dalonedrow/rpg/base/flyweights/baseinteractiveobject",
                             if (slot.getIo() !== null
                                     && slot.getIo().equals(itemIO)) {
                                 slot.setIo(null);
-                                slot.setShow(true);
+                                slot.setIsShow(true);
                             }
                         }
                     }
