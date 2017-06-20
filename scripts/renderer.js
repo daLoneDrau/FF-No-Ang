@@ -190,6 +190,9 @@ define(["camera", "timer",
         case FFGameStates.CHARACTER_SELECTION:
         	console.log("charsel");
         	break;
+        case FFGameStates.IN_PLAY:
+        	console.log("in play");
+        	break;
         }
         /*
         // iterate through the map drawing tiles

@@ -29,14 +29,19 @@ define(['jquery', 'app', 'test/FFInteractiveObjectTest',
     // 2. initialize the game
     // 3. display the intro screen
     var newHero = function() {
+    	clearItem();
+    	clearItemList();
 		var io = game.newHero();
-		console.log("reroll")
-		console.log(io)
 		$("#stats").html(["HEALTH: ", io.getPCData().getFullAttributeScore("ST"), "/",
 			io.getPCData().getFullAttributeScore("MST"), "<br>ATTACK: ",
 			io.getPCData().getFullAttributeScore("SK")].join(""));
     }
+    /**
+     * Unequips an item.
+     * @param e the jQuery.Event object
+     */
     var unequip = function(e) {
+    	clearItem();
     	if (e.data.ioid >= 0) {
     		var io = ProjectConstants.getInstance().getPlayerIO();
 			var itemio = Interactive.getInstance().getIO(e.data.ioid);
@@ -48,7 +53,12 @@ define(['jquery', 'app', 'test/FFInteractiveObjectTest',
 			}
     	}
     }
+    /**
+     * Equips an item.
+     * @param e the jQuery.Event object
+     */
     var equip = function(e) {
+    	clearItem();
     	if (e.data.ioid >= 0) {
     		var io = ProjectConstants.getInstance().getPlayerIO();
 			var itemio = Interactive.getInstance().getIO(e.data.ioid);
@@ -60,8 +70,22 @@ define(['jquery', 'app', 'test/FFInteractiveObjectTest',
 			}
     	}
     }
+    /** Clears the inventory item list section. */
+    var clearItemList = function() {
+		$("#inv_equip").html("");
+		var $ul = $("<ul>", {"class": "nav_ver"});
+		for (var i = maxItemDisplayed - 1; i >= 0; i--) {
+			var $li = $("<li>", { });
+			$li.html("&nbsp;");
+			$ul.append($li);
+			$li = null;
+		}
+		$("#inv_equip").append($ul);
+		$ul = null;
+    }
+    /** Clears the inventory description section. */
     var clearItem = function() {
-    	console.log("clear item description");
+		$("#inv_desc").html("&nbsp;<br>&nbsp;<br>");
     }
     var showItem = function(e) {
 		$("#inv_desc").html("");
@@ -69,6 +93,10 @@ define(['jquery', 'app', 'test/FFInteractiveObjectTest',
     		var itemio = Interactive.getInstance().getIO(e.data.ioid);
 			if (itemio !== null) {
 				if (itemio.hasTypeFlag(EquipmentGlobals.OBJECT_TYPE_WEAPON)) {
+					var h = [itemio.getItemData().getDescription(), "<br>"];
+					h.push("DMG: ");
+					h.push(itemio.getItemData().getEquipitem().getElement(
+							FFEquipmentElements.ELEMENT_DAMAGE.index).getValue());
 					var $div = $("<div>", {"class": "justify_items"});
 					var $divl = $("<div>", {});
 					var $p = $("<p>", {});
@@ -80,31 +108,30 @@ define(['jquery', 'app', 'test/FFInteractiveObjectTest',
 					$p = $("<p>", {});
 					$p.html(["DMG: ", itemio.getItemData().getEquipitem().getElement(
 							FFEquipmentElements.ELEMENT_DAMAGE.index).getValue()].join(""));
-					console.log(itemio);
 					$divl.append($p)
 					$div.append($divl);
-					$("#inv_desc").append($div);
+					$("#inv_desc").html(h.join(""));
 				}
 			}
     	}
     }
-    var showWeapons = function() {
+    var showEquippableItems = function(slot, type) {
+    	console.log(slot)
+    	console.log(type)
 		var io = ProjectConstants.getInstance().getPlayerIO();
-		console.log("weapons")
 		// get all weapons
-		//io.getPCData()
-		var wpnIo = null, wpnId = io.getPCData().getEquippedItem(
-				FFEquipmentSlots.EQUIP_SLOT_WEAPON.index);
-		//var mkUp = ["<ul class=\"nav_ver\">"];
+		var wpnIo = null, wpnId = io.getPCData().getEquippedItem(slot);
 		$("#inv_equip").html("");
 		var c = 0;
 		var $ul = $("<ul>", {"class": "nav_ver"});
 		$ul.mouseleave(clearItem);
 		if (wpnId >= 0) {
 			wpnIo = Interactive.getInstance().getIO(wpnId);
+			console.log(wpnIo)
 			var $li = $("<li>", {"class": "menu"});
-			$li.click({"ioid":wpnId, "slot": FFEquipmentSlots.EQUIP_SLOT_WEAPON.index}, unequip);
+			$li.click({"ioid":wpnId, "slot": slot}, unequip);
 			$li.mouseenter({"ioid":wpnIo.getRefId()}, showItem);
+			$li.mouseleave(clearItem);
 			$li.html(["E-", wpnIo.getItemData().getItemName()].join(""));
 			$ul.append($li);
 			c++;
@@ -113,13 +140,13 @@ define(['jquery', 'app', 'test/FFInteractiveObjectTest',
 		// go through character's inventory
 		var lis = [];
 		for (var i = io.getInventory().getNumInventorySlots() - 1; i >= 0; i--) {
-			console.log("loop "+i)
 			var itemio = io.getInventory().getSlot(i).getIo();
 			if (itemio !== null
-					&& itemio.hasTypeFlag(EquipmentGlobals.OBJECT_TYPE_WEAPON)) {
+					&& itemio.hasTypeFlag(type)) {
 				var $li = $("<li>", {"class": "menu"});
-				$li.click({"ioid":itemio.getRefId(), "slot": FFEquipmentSlots.EQUIP_SLOT_WEAPON.index}, equip);
+				$li.click({"ioid":itemio.getRefId(), "slot": slot}, equip);
 				$li.mouseenter({"ioid":itemio.getRefId()}, showItem);
+				$li.mouseleave(clearItem);
 				$li.html(itemio.getItemData().getItemName());
 				$ul.append($li);
 				c++;
@@ -128,7 +155,6 @@ define(['jquery', 'app', 'test/FFInteractiveObjectTest',
 		}
 		while (c < maxItemDisplayed) {
 			var $li = $("<li>", { });
-			$li.mouseleave(clearItem);
 			$li.html("&nbsp;");
 			$ul.append($li);
 			c++;
@@ -136,10 +162,10 @@ define(['jquery', 'app', 'test/FFInteractiveObjectTest',
 		}
 		console.log($ul)
 		$("#inv_equip").append($ul);
+		io = null;
 		$ul = null;
-		//mkUp.push("</ul>");
-		
-		//$("#inv_equip").html(mkUp.join(""));
+		wpnId = null;
+		wpnIo = null;
     }
     /**
      * App initialization called when page loads.
@@ -164,9 +190,22 @@ define(['jquery', 'app', 'test/FFInteractiveObjectTest',
     		$('#rerollChar').click(function(event) {
     			newHero();
             });
+            // clicked Start Game
+    		$('#startGame').click(function(event) {
+    			game.state = 2;
+    			$('div#charSel').hide();
+    			$('div#scroll').show();
+  	            window.setTimeout(callback, 1000 / 60);
+            });
             // clicked Weapon list
     		$('#btnWpn').click(function(event) {
-    			showWeapons();
+    			showEquippableItems(FFEquipmentSlots.EQUIP_SLOT_WEAPON.index,
+    					EquipmentGlobals.OBJECT_TYPE_WEAPON);
+            });
+            // clicked Shield list
+    		$('#btnShld').click(function(event) {
+    			showEquippableItems(FFEquipmentSlots.EQUIP_SLOT_SHIELD.index,
+    					EquipmentGlobals.OBJECT_TYPE_SHIELD);
             });
             initGame();
             app.tryStartingGame(name);

@@ -44,9 +44,9 @@ define(["com/dalonedrow/utils/hashcode"], function(Hashcode) {
 	    return FFEquipmentElements.values.length;
 	}
 	/**
-	 * Gets the {@link FFEquipmentSlots} value of a specific element code.
+	 * Gets the {@link FFEquipmentElements} value of a specific element code.
 	 * @param code the code
-	 * @return {@link FFEquipmentSlots}
+	 * @return {@link FFEquipmentElements}
 	 */
 	FFEquipmentElements.valueOf = function(code) {
 	    var value = null;

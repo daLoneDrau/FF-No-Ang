@@ -240,15 +240,6 @@ define(["require",
 	            FFEquipmentSlots.values.push(new FFEquipmentSlots(list[i].name, list[i].value));
 	        }
 	    };
-	    this.loadMapTiles = function() {
-	        var list = WebServiceClient.getInstance().getMapTileEntities();
-	        for (var i = 0, len = list.length; i < len; i++) {
-	        	if (!list[i].code_number) {
-	        		list[i].code_number = 0;
-	        	}
-	        	FFMapTiles.values.push(new FFMapTiles(list[i].name, list[i].code_number));
-	        }
-	    };
 	    this.loadItem = function(name) {
 	        var obj = this.getItemByName(name);
 	        if (obj.length > 1) {
@@ -361,6 +352,15 @@ define(["require",
 	        }
 	        levels = null;
             return map;
+	    };
+	    this.loadMapTiles = function() {
+	        var list = WebServiceClient.getInstance().getMapTileEntities();
+	        for (var i = 0, len = list.length; i < len; i++) {
+	        	if (!list[i].code_number) {
+	        		list[i].code_number = 0;
+	        	}
+	        	FFMapTiles.values.push(new FFMapTiles(list[i].name, list[i].code_number));
+	        }
 	    };
 	}
 	WebServiceClient.getInstance = function() {
