@@ -192,10 +192,10 @@ define(['jquery', 'app', 'test/FFInteractiveObjectTest',
             });
             // clicked Start Game
     		$('#startGame').click(function(event) {
-    			game.state = 2;
     			$('div#charSel').hide();
-    			$('div#scroll').show();
-  	            window.setTimeout(callback, 1000 / 60);
+    			$('div#introScroll').show();
+    			game.state = 2;
+    			
             });
             // clicked Weapon list
     		$('#btnWpn').click(function(event) {
@@ -206,6 +206,10 @@ define(['jquery', 'app', 'test/FFInteractiveObjectTest',
     		$('#btnShld').click(function(event) {
     			showEquippableItems(FFEquipmentSlots.EQUIP_SLOT_SHIELD.index,
     					EquipmentGlobals.OBJECT_TYPE_SHIELD);
+            });
+            // clicked continue intro text
+    		$('#nextPage').click(function(event) {
+    			game.renderer.nextPage();
             });
             initGame();
             app.tryStartingGame(name);

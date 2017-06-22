@@ -65,7 +65,149 @@ define(["camera", "timer",
         // mfgggwwwwwwwwgggbbb
         // fffggcwwwwwwgggbmlm
         // mmmfgggwwwwgggbmmmm
+        /** introduction text. */
+        this.introPages = this.loadIntroText();
+    	console.log(this.introPages);
+        this.introScreen = 0;
+        this.introRendered = false;
 	};
+	Renderer.prototype.nextPage = function() {
+        this.introScreen++;
+        this.introRendered = false;
+	}
+	Renderer.prototype.textDimensions = function(text) {
+	    var div = document.createElement("div");
+	    div.style.position = "absolute";
+	    div.style.top="-999px";
+	    div.style.left="-999px";
+	    div.style.fontFamily = "Pixel Emulator, Press Start 2P, Courier new, monospace"
+	    div.id = "width";
+	    div.innerHTML = text;
+	    document.body.appendChild(div);
+	    var el = document.getElementById("width");
+	    var w = [el.offsetWidth, el.offsetHeight];
+	    el.parentNode.removeChild(el);
+	    return w;
+    }
+    Renderer.prototype.loadIntroText = function() {
+    	var paragraphs = WebServiceClient.getInstance().loadText("START");
+    	var pages = [];
+    	paragraphs = paragraphs.split("\r\n");
+    	console.log(paragraphs);
+    	var divWidth = $("#introScroll").width();
+    	var sh = parseInt(.8 * $("#canvas").height());
+    	var spaceDim = this.textDimensions("&nbsp;");
+    	console.log(divWidth+","+sh);
+    	for (var i = 0, numParas = paragraphs.length; i < numParas; i++) {
+    		var page = [], tokens = paragraphs[i].split(" ");
+    		var line = [], lineWidth = 0;
+    		for (var j = 0, ltkn = tokens.length; j < ltkn; j++) {
+    			var word = tokens[j], wordWidth = this.textDimensions(word)[0];
+    			if (word.length === 0) {
+    				continue;
+    			}
+    			if (lineWidth + wordWidth < divWidth) {
+    				// word fits on line
+    				line.push(word);
+    				lineWidth += wordWidth;
+    				// peek ahead - will next word also fit?
+    				if (j + 1 < ltkn) {
+	    				var nextWidth = this.textDimensions(tokens[j + 1])[0] + spaceDim[0];
+	        			if (lineWidth + nextWidth < divWidth) {
+	        				//next word will fit - add a space
+	        				line.push(" ");
+	        				lineWidth += spaceDim[0];
+	        			} else {
+	        				// next word will not fit - push line to page and start new line
+	        				if (this.textDimensions(page.join(""))[1] + spaceDim[1] < sh) {
+	        					// page will still fit on screen with line - add it
+			    				page.push(line.join(""));
+			    				page.push("<br>");
+	        				} else {
+	        					// page will still NOT fit on screen with line -  new page
+	        					pages.push(page.join(""));
+	        					page = [line.join(""), "<br>"];
+	        				}
+		    				line = [], lineWidth = 0;
+	        			}
+	    			} else {
+	    				// no more words in paragraph - push line to page and start new line
+        				if (this.textDimensions(page.join(""))[1] + spaceDim[1] < sh) {
+        					// page will still fit on screen with line - add it
+		    				page.push(line.join(""));
+		    				page.push("<br>");
+        				} else {
+        					// page will still NOT fit on screen with line -  new page
+        					pages.push(page.join(""));
+        					page = [line.join(""), "<br>"];
+        				}
+	    				line = [], lineWidth = 0;
+	    			}
+    			} else {
+    				// word does not fit - push line to page and start new line
+        			console.log(line);
+    				if (this.textDimensions(page.join(""))[1] + spaceDim[1] < sh) {
+    					// page will still fit on screen with line - add it
+	    				page.push(line.join(""));
+	    				page.push("<br>");
+    				} else {
+    					// page will still NOT fit on screen with line -  new page
+    					pages.push(page.join(""));
+    					page = [line.join(""), "<br>"];
+    				}
+    				line = [word], lineWidth = wordWidth;
+    				// peek ahead - will next word also fit?
+    				if (j + 1 < ltkn) {
+	    				var nextWidth = this.textDimensions(tokens[j + 1])[0] + spaceDim[0];
+	        			if (lineWidth + nextWidth < divWidth) {
+	        				//next word will fit - add a space
+	        				line.push(" ");
+	        				lineWidth += spaceDim[0];
+	        			} else {
+	        				// next word will not fit - push line to page and start new line
+	        				if (this.textDimensions(page.join(""))[1] + spaceDim[1] < sh) {
+	        					// page will still fit on screen with line - add it
+			    				page.push(line.join(""));
+			    				page.push("<br>");
+	        				} else {
+	        					// page will still NOT fit on screen with line -  new page
+	        					pages.push(page.join(""));
+	        					page = [line.join(""), "<br>"];
+	        				}
+		    				line = [], lineWidth = 0;
+	        			}
+	    			} else {
+	    				// no more words in paragraph - push line to page and start new line
+        				if (this.textDimensions(page.join(""))[1] + spaceDim[1] < sh) {
+        					// page will still fit on screen with line - add it
+		    				page.push(line.join(""));
+		    				page.push("<br>");
+        				} else {
+        					// page will still NOT fit on screen with line -  new page
+        					pages.push(page.join(""));
+        					page = [line.join(""), "<br>"];
+        				}
+	    				line = [], lineWidth = 0;
+	    			}
+    			}
+    		}
+			if (line.join("").length > 0) {
+    			// put the last text on a page
+				if (this.textDimensions(page.join(""))[1] + spaceDim[1] < sh) {
+					// page will still fit on screen with line - add it
+    				page.push(line.join(""));
+    				page.push("<br>");
+				} else {
+					// page will still NOT fit on screen with line -  new page
+					pages.push(page.join(""));
+					page = [line.join(""), "<br>"];
+				}
+			}
+			// push paragraph to page
+			pages.push(page.join(""));
+    	}
+    	return pages;
+    }
 	/**
 	 * Clears all previously drawn content.
 	 * @param ctx the {@link CanvasRenderingContext2D} instance being cleared
@@ -176,6 +318,12 @@ define(["camera", "timer",
     Renderer.prototype.getMapWidth = function() {
     	return this.map.getWidth();
     }
+    Renderer.prototype.showIntro = function() {
+    	if (!this.introRendered) {
+	    	$("#introText").html(this.introPages[this.introScreen]);
+	    	this.introRendered = true;
+    	}
+    }
     Renderer.prototype.renderFrameDesktop = function() {
     	// clear the screen and push onto the drawing stack
         this.clearScreen(this.elevation2);
@@ -184,11 +332,15 @@ define(["camera", "timer",
         this.elevation1.fillStyle = "black";
         this.elevation1.fillRect(0, 0, this.canvas.width, this.canvas.height);
         switch (this.game.state) {
-        case FFGameStates.INTRO:
-        	console.log("intro");
+        case FFGameStates.SPLASH:
+        	console.log("splash");
         	break;
         case FFGameStates.CHARACTER_SELECTION:
         	console.log("charsel");
+        	break;
+        case FFGameStates.INTRO:
+        	console.log("intro");
+        	this.showIntro();
         	break;
         case FFGameStates.IN_PLAY:
         	console.log("in play");

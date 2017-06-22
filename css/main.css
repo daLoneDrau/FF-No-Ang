@@ -15,7 +15,7 @@ table, caption, tbody, tfoot, thead, tr, th, td {
 }
 body {
 	font-family: 'Pixel Emulator', 'Press Start 2P', Courier new, monospace;
-	line-height: 1;
+	line-height: 1.25;
 	color: white;
 }
 ol, ul {
@@ -130,7 +130,7 @@ canvas {
 	position:absolute;
 	z-index:10;
 }
-#charSel {
+.overlay {
 	left:50%;
 	top:50%;
 	-webkit-transform: translate(-50%, -50%);

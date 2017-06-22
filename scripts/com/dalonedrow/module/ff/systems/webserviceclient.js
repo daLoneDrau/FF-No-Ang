@@ -362,6 +362,14 @@ define(["require",
 	        	FFMapTiles.values.push(new FFMapTiles(list[i].name, list[i].code_number));
 	        }
 	    };
+	    /**
+	     * Loads a text file by name.
+	     * @param text the text file's name
+	     * @return string
+	     */
+	    this.loadText = function(name) {
+	        return this.getTextEntityByName(name).text;
+	    };
 	}
 	WebServiceClient.getInstance = function() {
         // summary:
