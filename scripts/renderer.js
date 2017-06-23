@@ -95,8 +95,10 @@ define(["camera", "timer",
     	paragraphs = paragraphs.split("\r\n");
     	console.log(paragraphs);
     	var divWidth = $("#introScroll").width();
-    	var sh = parseInt(.8 * $("#canvas").height());
+    	var sh = parseInt(.85 * $("#canvas").height());
     	var spaceDim = this.textDimensions("&nbsp;");
+    	var LINE_MAX = parseInt(sh / spaceDim[1]);
+    	console.log(LINE_MAX);
     	console.log(divWidth+","+sh);
     	for (var i = 0, numParas = paragraphs.length; i < numParas; i++) {
     		var page = [], tokens = paragraphs[i].split(" ");
@@ -119,41 +121,38 @@ define(["camera", "timer",
 	        				lineWidth += spaceDim[0];
 	        			} else {
 	        				// next word will not fit - push line to page and start new line
-	        				if (this.textDimensions(page.join(""))[1] + spaceDim[1] < sh) {
+	        				if (this.textDimensions(page.join("<br>"))[1] + spaceDim[1] < sh) {
 	        					// page will still fit on screen with line - add it
 			    				page.push(line.join(""));
-			    				page.push("<br>");
 	        				} else {
 	        					// page will still NOT fit on screen with line -  new page
-	        					pages.push(page.join(""));
-	        					page = [line.join(""), "<br>"];
+	        					pages.push(page);
+	        					page = [line.join("")];
 	        				}
 		    				line = [], lineWidth = 0;
 	        			}
 	    			} else {
 	    				// no more words in paragraph - push line to page and start new line
-        				if (this.textDimensions(page.join(""))[1] + spaceDim[1] < sh) {
+        				if (this.textDimensions(page.join("<br>"))[1] + spaceDim[1] < sh) {
         					// page will still fit on screen with line - add it
 		    				page.push(line.join(""));
-		    				page.push("<br>");
         				} else {
         					// page will still NOT fit on screen with line -  new page
-        					pages.push(page.join(""));
-        					page = [line.join(""), "<br>"];
+        					pages.push(page);
+        					page = [line.join("")];
         				}
 	    				line = [], lineWidth = 0;
 	    			}
     			} else {
     				// word does not fit - push line to page and start new line
         			console.log(line);
-    				if (this.textDimensions(page.join(""))[1] + spaceDim[1] < sh) {
+    				if (this.textDimensions(page.join("<br>"))[1] + spaceDim[1] < sh) {
     					// page will still fit on screen with line - add it
 	    				page.push(line.join(""));
-	    				page.push("<br>");
     				} else {
     					// page will still NOT fit on screen with line -  new page
-    					pages.push(page.join(""));
-    					page = [line.join(""), "<br>"];
+    					pages.push(page);
+    					page = [line.join("")];
     				}
     				line = [word], lineWidth = wordWidth;
     				// peek ahead - will next word also fit?
@@ -165,27 +164,25 @@ define(["camera", "timer",
 	        				lineWidth += spaceDim[0];
 	        			} else {
 	        				// next word will not fit - push line to page and start new line
-	        				if (this.textDimensions(page.join(""))[1] + spaceDim[1] < sh) {
+	        				if (this.textDimensions(page.join("<br>"))[1] + spaceDim[1] < sh) {
 	        					// page will still fit on screen with line - add it
 			    				page.push(line.join(""));
-			    				page.push("<br>");
 	        				} else {
 	        					// page will still NOT fit on screen with line -  new page
-	        					pages.push(page.join(""));
-	        					page = [line.join(""), "<br>"];
+	        					pages.push(page);
+	        					page = [line.join("")];
 	        				}
 		    				line = [], lineWidth = 0;
 	        			}
 	    			} else {
 	    				// no more words in paragraph - push line to page and start new line
-        				if (this.textDimensions(page.join(""))[1] + spaceDim[1] < sh) {
+        				if (this.textDimensions(page.join("<br>"))[1] + spaceDim[1] < sh) {
         					// page will still fit on screen with line - add it
 		    				page.push(line.join(""));
-		    				page.push("<br>");
         				} else {
         					// page will still NOT fit on screen with line -  new page
-        					pages.push(page.join(""));
-        					page = [line.join(""), "<br>"];
+        					pages.push(page);
+        					page = [line.join("")];
         				}
 	    				line = [], lineWidth = 0;
 	    			}
@@ -193,18 +190,49 @@ define(["camera", "timer",
     		}
 			if (line.join("").length > 0) {
     			// put the last text on a page
-				if (this.textDimensions(page.join(""))[1] + spaceDim[1] < sh) {
+				if (this.textDimensions(page.join("<br>"))[1] + spaceDim[1] < sh) {
 					// page will still fit on screen with line - add it
     				page.push(line.join(""));
-    				page.push("<br>");
 				} else {
 					// page will still NOT fit on screen with line -  new page
-					pages.push(page.join(""));
-					page = [line.join(""), "<br>"];
+					pages.push(page);
+					page = [line.join("")];
 				}
 			}
 			// push paragraph to page
-			pages.push(page.join(""));
+			pages.push(page);
+    	}
+    	console.log(pages)
+    	// combine pages
+    	for (var i = 0; i < pages.length; i++) {
+    		if (i + 1 === pages.length) {
+    			continue;
+    		}
+    		var lena = pages[i].length, lenb = pages[i + 1].length;
+    		if (i + 2 < pages.length) {
+    			var lenc = pages[i + 2].length;
+        		if (lena + lenb < LINE_MAX
+        				&& lena + lenb > lenb + lenc) {
+        			pages[i] = pages[i].concat(pages[i + 1]);
+        			pages.splice(i + 1, 1);
+        			i--;
+        			continue;
+        		} else if (lenb + lenc < LINE_MAX
+        				&& lenb + lenc > lena + lenb) {
+        			pages[i + 1] = pages[i + 1].concat(pages[i + 2]);
+        			pages.splice(i + 2, 1);
+        			i--;
+        			continue;
+        		}
+    		}
+    	}
+    	for (var i = pages.length - 1; i >= 0; i--) {
+    		if (pages[i].length < LINE_MAX) {
+    			for (var j = LINE_MAX - pages[i].length; j >= 0; j--) {
+    				pages[i].push("&nbsp;");
+    			}
+    		}
+    		pages[i] = pages[i].join("<br>");
     	}
     	return pages;
     }
