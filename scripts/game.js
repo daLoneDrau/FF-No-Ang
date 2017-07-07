@@ -7,6 +7,7 @@ define(["renderer", "com/dalonedrow/engine/systems/base/projectconstants",
 	"com/dalonedrow/module/ff/systems/ffinteractive",
 	"com/dalonedrow/module/ff/systems/ffscript",
 	"com/dalonedrow/module/ff/systems/webserviceclient",
+	"com/dalonedrow/engine/systems/base/gamecycle",
 	'com/dalonedrow/engine/systems/base/interactive',
 	'com/dalonedrow/engine/systems/base/time',
 	"com/dalonedrow/rpg/base/constants/die",
@@ -16,8 +17,8 @@ define(["renderer", "com/dalonedrow/engine/systems/base/projectconstants",
 	"com/dalonedrow/module/ff/scripts/items/ironsword"
 	],
 	function(Renderer, ProjectConstants, FFCommand, FFEquipmentElements, FFEquipmentSlots, 
-			FFController, FFInteractive, FFScript, WebServiceClient, Interactive, Time, Die, Dice,
-			Script, IronSword) {
+			FFController, FFInteractive, FFScript, WebServiceClient, GameCycle, Interactive, Time,
+			Die, Dice, Script, IronSword) {
 	var Game = function(app) {
 		this.state = 0; // intro screen
         this.app = app;
@@ -73,7 +74,8 @@ define(["renderer", "com/dalonedrow/engine/systems/base/projectconstants",
         this.animatedTiles = null;
     
         // debug
-        this.debugPathing = false;		
+        this.debugPathing = false;
+	    GameCycle.getInstance().setParent(this);	
 	}
     /**
      * Processes game logic when the user triggers a click/touch event during the game.
@@ -166,16 +168,16 @@ define(["renderer", "com/dalonedrow/engine/systems/base/projectconstants",
     	var io = ProjectConstants.getInstance().getPlayerIO();
     	return io;
     };
-    /** Main game loop. */
+    /** Main game loop game cycle gamecycle. */
     Game.prototype.run = function() {
     	//console.log("running...")
         this.currentTime = new Date().getTime();
 
         if (this.started) {
+        	GameCycle.getInstance().execute();
             //this.updateCursorLogic();
             //this.updater.update();
         	Time.getInstance().startFrame();
-        	this.renderer.renderFrame();
         }
 
         if (!this.isStopped) {
@@ -201,6 +203,7 @@ define(["renderer", "com/dalonedrow/engine/systems/base/projectconstants",
 		ProjectConstants.setInstance(new FFController());
 		Interactive.setInstance(new FFInteractive());
 		Script.setInstance(new FFScript());
+		// load the map
     };
 	return Game;
 });

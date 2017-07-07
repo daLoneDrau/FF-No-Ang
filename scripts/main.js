@@ -32,6 +32,7 @@ define(['jquery', 'app', 'test/FFInteractiveObjectTest',
     	clearItem();
     	clearItemList();
 		var io = game.newHero();
+		console.log(io);
 		$("#stats").html(["HEALTH: ", io.getPCData().getFullAttributeScore("ST"), "/",
 			io.getPCData().getFullAttributeScore("MST"), "<br>ATTACK: ",
 			io.getPCData().getFullAttributeScore("SK")].join(""));
@@ -179,6 +180,16 @@ define(['jquery', 'app', 'test/FFInteractiveObjectTest',
             $('body').click(function(event) {
             	console.log("clicked on body");
             });
+            // capture all key events
+            $(document).keydown(function(e) {
+                e.preventDefault();
+                // do my work
+                console.log("key was pressed");
+                if (e.keyCode == 116) {
+                	console.log("f5 pressed");
+                    window.location.reload()
+                }
+            });
             // clicked New Game
     		$('#menuNewGame').click(function(event) {
     			$('div#newGame').hide();
@@ -195,6 +206,11 @@ define(['jquery', 'app', 'test/FFInteractiveObjectTest',
     			$('div#charSel').hide();
     			$('div#introScroll').show();
     			game.state = 2;
+    			game.renderer.setTextCallback(function() {
+    				console.log("text done");
+        			game.state = 3;
+        			$('div#introScroll').hide();
+    			});
     			
             });
             // clicked Weapon list

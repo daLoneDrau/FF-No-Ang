@@ -9,11 +9,10 @@ define(["com/dalonedrow/engine/systems/base/interactive",
 		function(Interactive, ProjectConstants, FFScriptable, ScriptGlobals, Script) {
 	function WeaponScript(io) {
 		FFScriptable.call(this, io);
-        this.oldOnCombine = FFScriptable.prototype.onCombine;
-        this.oldOnEquip = FFScriptable.prototype.onEquip;
-        this.oldOnInit = FFScriptable.prototype.onInit;
-        this.oldOnInventoryUse = FFScriptable.prototype.onInventoryUse;
-        this.oldOnCombine = FFScriptable.prototype.onCombine;
+        this.ffscriptOnCombine = FFScriptable.prototype.onCombine;
+        this.ffscriptOnEquip = FFScriptable.prototype.onEquip;
+        this.ffscriptOnInit = FFScriptable.prototype.onInit;
+        this.ffscriptOnInventoryUse = FFScriptable.prototype.onInventoryUse;
 	}
 	WeaponScript.prototype = Object.create(FFScriptable.prototype);
     /**
@@ -95,7 +94,7 @@ define(["com/dalonedrow/engine/systems/base/interactive",
                 this.reagentMixed();
             }
         }
-        return this.oldOnCombine();
+        return this.ffscriptOnCombine();
     }
     /** no durability in this game. */
     WeaponScript.prototype.onDurability = function() {
@@ -105,13 +104,13 @@ define(["com/dalonedrow/engine/systems/base/interactive",
     WeaponScript.prototype.onEquip = function() {
         // play sound file "equip_sword"
         // PLAY "equip_sword"
-        return this.oldOnEquip();
+        return this.ffscriptOnEquip();
     }
     WeaponScript.prototype.onInit = function() {
         // set local variables
-        this.setLocalVariable("reagent", "none");
+    	this.setLocalVariable("reagent", "none");
         this.setLocalVariable("poisonable", 1);
-        return this.oldOnInit();
+        return this.ffscriptOnInit();
     }
     WeaponScript.prototype.onInventoryUse = function() {
         var fighting = Script.getInstance().getGlobalIntVariableValue("FIGHTING");
@@ -127,7 +126,7 @@ define(["com/dalonedrow/engine/systems/base/interactive",
             this.getIO().getItemData().equipOnIo(
             		ProjectConstants.getInstance().getPlayerIO());
         }
-        return this.oldOnInventoryUse();
+        return this.ffscriptOnInventoryUse();
     }
     /** No repair in this game. */
     WeaponScript.prototype.onRepaired = function() {

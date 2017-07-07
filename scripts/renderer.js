@@ -51,13 +51,7 @@ define(["camera", "timer",
         //***************************************
         //              CREATE MAP
         //***************************************
-    	if (FFMapTiles.values.length === 0) {
-    		WebServiceClient.getInstance().loadMapTiles();
-    	}
-        this.map = WebServiceClient.getInstance().loadMap("Warlock of Firetop Mountain Tunnels",
-        		this.scale,
-        		"com/dalonedrow/module/ff/sprite/sharmmap");
-        this.map.sort(Map.sort);
+        this.initMap();
         // exodus map
         // mmmfgggggggwwgbbmmm
         // mmfggCwwggwwwwgbbmm
@@ -67,39 +61,28 @@ define(["camera", "timer",
         // mmmfgggwwwwgggbmmmm
         /** introduction text. */
         this.introPages = this.loadIntroText();
-    	console.log(this.introPages);
         this.introScreen = 0;
         this.introRendered = false;
+        this.txtPages = this.introPages.length;
+        this.afterText = null;
 	};
-	Renderer.prototype.nextPage = function() {
-        this.introScreen++;
-        this.introRendered = false;
-	}
-	Renderer.prototype.textDimensions = function(text) {
-	    var div = document.createElement("div");
-	    div.style.position = "absolute";
-	    div.style.top="-999px";
-	    div.style.left="-999px";
-	    div.style.fontFamily = "Pixel Emulator, Press Start 2P, Courier new, monospace"
-	    div.id = "width";
-	    div.innerHTML = text;
-	    document.body.appendChild(div);
-	    var el = document.getElementById("width");
-	    var w = [el.offsetWidth, el.offsetHeight];
-	    el.parentNode.removeChild(el);
-	    return w;
-    }
+	Renderer.prototype.initMap = function() {
+    	if (FFMapTiles.values.length === 0) {
+    		WebServiceClient.getInstance().loadMapTiles();
+    	}
+        this.map = WebServiceClient.getInstance().loadMap("Warlock of Firetop Mountain",
+        		this.scale,
+        		"com/dalonedrow/module/ff/sprite/sharmmap");
+        this.map.sort(Map.sort);		
+	};
     Renderer.prototype.loadIntroText = function() {
     	var paragraphs = WebServiceClient.getInstance().loadText("START");
     	var pages = [];
     	paragraphs = paragraphs.split("\r\n");
-    	console.log(paragraphs);
     	var divWidth = $("#introScroll").width();
     	var sh = parseInt(.85 * $("#canvas").height());
     	var spaceDim = this.textDimensions("&nbsp;");
     	var LINE_MAX = parseInt(sh / spaceDim[1]);
-    	console.log(LINE_MAX);
-    	console.log(divWidth+","+sh);
     	for (var i = 0, numParas = paragraphs.length; i < numParas; i++) {
     		var page = [], tokens = paragraphs[i].split(" ");
     		var line = [], lineWidth = 0;
@@ -202,7 +185,6 @@ define(["camera", "timer",
 			// push paragraph to page
 			pages.push(page);
     	}
-    	console.log(pages)
     	// combine pages
     	for (var i = 0; i < pages.length; i++) {
     		if (i + 1 === pages.length) {
@@ -306,13 +288,21 @@ define(["camera", "timer",
                 fontsize = 20;
         }
         this.setFontSize(fontsize);
-    },
+    };
     /**
      * Initializes the Frame Per Second.  Always 50.
      */
 	Renderer.prototype.initFPS = function() {
         this.FPS = this.mobile ? 50 : 50;
     };
+	Renderer.prototype.nextPage = function() {
+        this.introScreen++;
+		if (this.introScreen >= this.txtPages) {
+			this.introScreen = 0;
+			this.afterText();
+		}
+        this.introRendered = false;
+	};
     Renderer.prototype.rescale = function(factor) {
         this.scale = this.getScaleFactor();
     
@@ -346,6 +336,13 @@ define(["camera", "timer",
     Renderer.prototype.getMapWidth = function() {
     	return this.map.getWidth();
     }
+    /**
+     * Sets the callback function after page text has been displayed.
+     * @param callback
+     */
+	Renderer.prototype.setTextCallback = function(callback) {
+		this.afterText = callback;
+    };
     Renderer.prototype.showIntro = function() {
     	if (!this.introRendered) {
 	    	$("#introText").html(this.introPages[this.introScreen]);
@@ -415,6 +412,9 @@ define(["camera", "timer",
         this.drawDebugInfo();
         */
     };
+    Renderer.prototype.renderGame = function() {
+    	
+    }
     Renderer.prototype.renderMap = function() {
         // iterate through the map drawing tiles
         var cells = this.map[0].getCells();
@@ -451,6 +451,20 @@ define(["camera", "timer",
     
         this.elevation2.font = font;
         this.elevation1.font = font;
+    };
+	Renderer.prototype.textDimensions = function(text) {
+	    var div = document.createElement("div");
+	    div.style.position = "absolute";
+	    div.style.top="-999px";
+	    div.style.left="-999px";
+	    div.style.fontFamily = "Pixel Emulator, Press Start 2P, Courier new, monospace"
+	    div.id = "width";
+	    div.innerHTML = text;
+	    document.body.appendChild(div);
+	    var el = document.getElementById("width");
+	    var w = [el.offsetWidth, el.offsetHeight];
+	    el.parentNode.removeChild(el);
+	    return w;
     };
 	return Renderer;
 });

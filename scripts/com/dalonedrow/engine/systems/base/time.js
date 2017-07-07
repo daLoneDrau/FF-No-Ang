@@ -169,14 +169,7 @@ define(["com/dalonedrow/utils/hashcode"], function(Hashcode) {
 		return 1;
 	}
 	Time.getInstance = function() {
-		/*
-	}
         if (instance === null) {
-        	throw new Error("No instance has been set!");
-        }
-        */
-        if (instance === null) {
-        	console.log("no instance of Time")
             instance = new Time();
         }
         return instance;

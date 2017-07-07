@@ -1,13 +1,16 @@
 /**
  * 
  */
-define(["com/dalonedrow/module/ff/rpg/ffscriptable",
+define(["com/dalonedrow/engine/sprite/base/simplevector2",
+	"com/dalonedrow/module/ff/rpg/ffscriptable",
 	"com/dalonedrow/rpg/base/constants/scriptglobals",
+	"com/dalonedrow/rpg/base/flyweights/scriptable",
 	"com/dalonedrow/rpg/base/flyweights/speechparameters"],
-		function(FFScriptable, ScriptGlobals, SpeechParameters) {
+		function(SimpleVector2, FFScriptable, ScriptGlobals, Scriptable, SpeechParameters) {
 	function Hero(io) {
 		FFScriptable.call(this, io);
-        this.oldOnInit = FFScriptable.prototype.onInit;
+		console.log("new hhhhero")
+        this.ffscriptOnInit = FFScriptable.prototype.onInit;
         if (!String.format) {
         	String.format = function(format) {
         		var args = Array.prototype.slice.call(arguments, 1);
@@ -50,6 +53,10 @@ define(["com/dalonedrow/module/ff/rpg/ffscriptable",
     Hero.prototype.getLocalVarSummonedOuch = function() {
         return this.getLocalFloatVariableValue("SUMMONED_OUCH");
     }
+    /**
+     * Gets the value of the 'tmp_int1' variable.
+     * @return {@link int}
+     */
     Hero.prototype.getLocalVarTmpInt1 = function() {
         return this.getLocalIntVariableValue("tmp_int1");
     }
@@ -75,7 +82,8 @@ define(["com/dalonedrow/module/ff/rpg/ffscriptable",
      */
     Hero.prototype.onInit = function() {
         this.initLocalVars();
-        return this.oldOnInit();
+        this.getIO().setInitPosition(new SimpleVector2(2, 0));
+        return this.ffscriptOnInit();
     }
     /**
      * {@inheritDoc}

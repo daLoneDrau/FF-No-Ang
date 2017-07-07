@@ -1544,6 +1544,7 @@ define(["require", "com/dalonedrow/engine/sprite/base/simplevector2",
             s.push(err.message);
             throw new Error(s.join(""));
     	}
+    	console.log("sned init")
     	var Interactive = require("com/dalonedrow/engine/systems/base/interactive");
         if (io === null) {
             return -1;
@@ -1942,7 +1943,8 @@ define(["require", "com/dalonedrow/engine/sprite/base/simplevector2",
         }
         // use master script if available
         var script = localScript.getMaster();
-        if (script === null) { // no master - use local script
+        if (script === null
+        		|| script === undefined) { // no master - use local script
             script = localScript;
         }
         // set parameters on script that will be used
